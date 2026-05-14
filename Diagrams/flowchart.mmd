@@ -1,0 +1,37 @@
+flowchart TD
+
+    USER[User / Frontend]
+
+    AUTH[Auth System]
+    MODELS[AI Models Module]
+    SCENARIOS[Attack Scenarios Module]
+    TESTS[Test Engine]
+    ANALYZER[Response Analyzer]
+    RESULTS[Results Service]
+    DASHBOARD[Dashboard Service]
+
+    DB[(Database)]
+
+    OPENROUTER[OpenRouter API]
+    GEMINI[Gemini API]
+
+    USER --> AUTH
+    USER --> MODELS
+    USER --> SCENARIOS
+    USER --> TESTS
+    USER --> DASHBOARD
+
+    AUTH --> DB
+    MODELS --> DB
+    SCENARIOS --> DB
+
+    TESTS --> OPENROUTER
+    TESTS --> GEMINI
+
+    TESTS --> ANALYZER
+
+    ANALYZER --> RESULTS
+
+    RESULTS --> DB
+
+    DASHBOARD --> DB
