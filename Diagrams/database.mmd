@@ -1,0 +1,65 @@
+erDiagram
+
+    USERS {
+        int id PK
+        string full_name
+        string email
+        string password_hash
+        string role
+        datetime created_at
+    }
+
+    AI_MODELS {
+        int id PK
+        string name
+        string provider
+        string model_key
+        boolean is_active
+        datetime created_at
+    }
+
+    ATTACK_SCENARIOS {
+        int id PK
+        string title
+        string description
+        string attack_type
+        text prompt_text
+        boolean is_predefined
+        int created_by FK
+        datetime created_at
+    }
+
+    TEST_RUNS {
+        int id PK
+        int user_id FK
+        int model_id FK
+        int scenario_id FK
+        text custom_prompt
+        string status
+        datetime created_at
+        datetime completed_at
+    }
+
+    TEST_RESULTS {
+        int id PK
+        int test_run_id FK
+        text raw_response
+        text masked_response
+        boolean is_sensitive
+        int safety_score
+        string risk_level
+        string result
+        text analysis_summary
+        text detected_issues
+        datetime created_at
+    }
+
+    USERS ||--o{ ATTACK_SCENARIOS : creates
+
+    USERS ||--o{ TEST_RUNS : runs
+
+    AI_MODELS ||--o{ TEST_RUNS : tested_on
+
+    ATTACK_SCENARIOS ||--o{ TEST_RUNS : uses
+
+    TEST_RUNS ||--|| TEST_RESULTS : generates
