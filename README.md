@@ -29,7 +29,7 @@ The platform provides a centralized environment for testing and evaluating AI mo
 
 Users can:
 
-- Select AI models such as GPT or Gemini
+- Select AI models such as GPT, Gemini, and open-source models
 - Run predefined attack scenarios
 - Create custom attack prompts
 - Analyze AI responses automatically
@@ -37,7 +37,9 @@ Users can:
 - Compare model performance
 - Review test history and statistics
 
-The system also protects sensitive AI outputs using role-based access control (RBAC), where risky responses are hidden from regular users and only accessible to authorized roles.
+The platform also supports testing lightweight and open-source AI models with weaker safety protections in order to validate the effectiveness of the platform’s security analysis and risk detection system.
+
+The system protects sensitive AI outputs using role-based access control (RBAC), where risky responses are hidden from regular users and only accessible to authorized roles.
 
 ---
 
@@ -53,6 +55,7 @@ The system also protects sensitive AI outputs using role-based access control (R
 - Model comparison
 - Test history tracking
 - Role-based access control (RBAC)
+- Support for testing both highly secured and lightweight/open-source AI models for security evaluation comparison.
 
 ---
 
@@ -60,6 +63,8 @@ The system also protects sensitive AI outputs using role-based access control (R
 
 - GPT
 - Gemini
+- Mistral 7B Instruct
+- Other open-source AI models
 
 ---
 
