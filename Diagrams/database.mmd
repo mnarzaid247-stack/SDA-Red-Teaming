@@ -18,8 +18,15 @@ erDiagram
         datetime created_at
     }
 
+    ATTACK_TYPES {
+    int id PK
+    string name
+    string description
+}
+
     ATTACK_SCENARIOS {
         int id PK
+        int attack_type_id FK
         string title
         string description
         string attack_type
@@ -33,6 +40,7 @@ erDiagram
         int id PK
         int user_id FK
         int model_id FK
+        int attack_type_id FK
         string attack_type
         string status
         datetime created_at
@@ -55,7 +63,8 @@ erDiagram
     }
 
     USERS ||--o{ ATTACK_SCENARIOS : creates
-
+    ATTACK_TYPES ||--o{ ATTACK_SCENARIOS : contains
+    ATTACK_TYPES ||--o{ TEST_RUNS : used_in
     USERS ||--o{ TEST_RUNS : runs
 
     AI_MODELS ||--o{ TEST_RUNS : tested_on
