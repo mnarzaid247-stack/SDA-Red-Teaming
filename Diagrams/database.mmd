@@ -19,17 +19,16 @@ erDiagram
     }
 
     ATTACK_TYPES {
-    int id PK
-    string name
-    string description
-}
+        int id PK
+        string name
+        string description
+    }
 
     ATTACK_SCENARIOS {
         int id PK
         int attack_type_id FK
         string title
         string description
-        string attack_type
         text prompt_text
         boolean is_predefined
         int created_by FK
@@ -41,7 +40,6 @@ erDiagram
         int user_id FK
         int model_id FK
         int attack_type_id FK
-        string attack_type
         string status
         datetime created_at
         datetime completed_at
@@ -63,12 +61,12 @@ erDiagram
     }
 
     USERS ||--o{ ATTACK_SCENARIOS : creates
-    ATTACK_TYPES ||--o{ ATTACK_SCENARIOS : contains
-    ATTACK_TYPES ||--o{ TEST_RUNS : used_in
     USERS ||--o{ TEST_RUNS : runs
 
     AI_MODELS ||--o{ TEST_RUNS : tested_on
 
-    ATTACK_SCENARIOS ||--o{ TEST_RESULTS : tested_as
+    ATTACK_TYPES ||--o{ ATTACK_SCENARIOS : contains
+    ATTACK_TYPES ||--o{ TEST_RUNS : selected_for
 
+    ATTACK_SCENARIOS ||--o{ TEST_RESULTS : tested_as
     TEST_RUNS ||--o{ TEST_RESULTS : generates
