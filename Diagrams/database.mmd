@@ -33,8 +33,7 @@ erDiagram
         int id PK
         int user_id FK
         int model_id FK
-        int scenario_id FK
-        text custom_prompt
+        string attack_type
         string status
         datetime created_at
         datetime completed_at
@@ -43,6 +42,7 @@ erDiagram
     TEST_RESULTS {
         int id PK
         int test_run_id FK
+        int scenario_id FK
         text raw_response
         text masked_response
         boolean is_sensitive
@@ -60,6 +60,6 @@ erDiagram
 
     AI_MODELS ||--o{ TEST_RUNS : tested_on
 
-    ATTACK_SCENARIOS ||--o{ TEST_RUNS : uses
+    ATTACK_SCENARIOS ||--o{ TEST_RESULTS : tested_as
 
-    TEST_RUNS ||--|| TEST_RESULTS : generates
+    TEST_RUNS ||--o{ TEST_RESULTS : generates
