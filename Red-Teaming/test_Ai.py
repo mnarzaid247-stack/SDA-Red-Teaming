@@ -1,22 +1,12 @@
-from App.Models.ollamaModel import OllamaModel
-from App.Attacks.sample_attacks import ATTACKS
+from App.Models.modelFactory import get_model
 
-model = OllamaModel()
+model = get_model(
+    "gemini",
+    api_key="GEMINI_API_KEY"
+)
 
-for attack in ATTACKS:
+response = model.generate(
+    "Introduce yourself"
+)
 
-    print("\n========================")
-    print("Category:", attack["category"])
-    print("========================")
-
-    prompt = attack["prompt"]
-
-    response = model.generate(prompt)
-
-    print("\nPrompt:")
-    print(prompt)
-
-    print("\nResponse:")
-    print(response)
-
-    print("\n")
+print(response)
