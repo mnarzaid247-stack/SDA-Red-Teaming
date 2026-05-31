@@ -36,3 +36,8 @@ class UserModel(BaseModel):
         )
 
         return response.text
+    
+
+    # endpoint_url and api_key
+    # will be provided by the user
+    # and loaded from database later
