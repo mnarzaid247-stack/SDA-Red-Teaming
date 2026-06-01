@@ -2,7 +2,10 @@ from App.Models.ollamaModel import OllamaModel
 from App.Models.openAiModel import OpenAIModel
 from App.Models.geminiModel import GeminiModel
 from App.Models.userModel import UserModel
-
+from App.Models.config import (
+    GEMINI_API_KEY,
+    OPENAI_API_KEY
+)
 
 def get_model(
         model_type,
@@ -14,12 +17,12 @@ def get_model(
 
     elif model_type == "gpt":
         return OpenAIModel(
-            api_key=kwargs["api_key"]
+            api_key=kwargs.get("api_key") or OPENAI_API_KEY
         )
 
     elif model_type == "gemini":
         return GeminiModel(
-            api_key=kwargs["api_key"]
+            api_key=kwargs.get("api_key") or GEMINI_API_KEY
         )
 
     elif model_type == "user":
