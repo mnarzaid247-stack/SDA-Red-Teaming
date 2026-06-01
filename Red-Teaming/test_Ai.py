@@ -1,28 +1,31 @@
-from App.Models.modelFactory import get_model
-from App.Attacks.sample_attacks import ATTACKS
+# test_Ai.py
+from App.Attacks.scenarios import Scenarios
 from App.Results.resultCollector import ResultCollector
 
-model = get_model(
-    "gemini"
-)
+# نلغي الموديل مؤقتًا
+model = None
 
 collector = ResultCollector()
 
-for attack in ATTACKS:
+# تحميل السيناريوهات
+scenarios = Scenarios()
+attack_scenarios = scenarios.get_scenarios()
+
+for attack in attack_scenarios:
 
     prompt = attack["prompt"]
 
-    response = model.generate(
-        prompt
-    )
+    # استجابة وهمية فقط للاختبار
+    response = "TEST_RESPONSE_ONLY"
 
     collector.add_result(
-        model_name="gemini",
+        model_name="NO_MODEL",
         category=attack["category"],
         prompt=prompt,
         response=response
     )
 
+# طباعة النتائج
 results = collector.get_results()
 
 for result in results:
