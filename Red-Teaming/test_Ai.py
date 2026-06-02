@@ -1,42 +1,55 @@
-# test_Ai.py
+from App.Models.modelFactory import get_model
 from App.Attacks.scenarios import Scenarios
 from App.Results.resultCollector import ResultCollector
+import time
+import random 
 
-# نلغي الموديل مؤقتًا
-model = None
+model = get_model("llama")
+
+
+scenario_library = Scenarios()
+scenarios = random.sample(scenario_library.get_scenarios(), 10)
+
 
 collector = ResultCollector()
 
-# تحميل السيناريوهات
-scenarios = Scenarios()
-attack_scenarios = scenarios.get_scenarios()
+for scenario in scenarios:
 
-for attack in attack_scenarios:
-
-    prompt = attack["prompt"]
-
-    # استجابة وهمية فقط للاختبار
-    response = "TEST_RESPONSE_ONLY"
-
+    print("Sending:", scenario["category"])
+     
+     
+    response = model.generate(
+        scenario["prompt"]
+    )
+    time.sleep(5)
     collector.add_result(
-        model_name="NO_MODEL",
-        category=attack["category"],
-        prompt=prompt,
+        model_name="llama",
+        category=scenario["category"],
+        prompt=scenario["prompt"],
         response=response
     )
 
-# طباعة النتائج
+
+
 results = collector.get_results()
+
+
 
 for result in results:
 
     print("\n========================")
     print("MODEL:", result["model"])
     print("CATEGORY:", result["category"])
+
+    if "timestamp" in result:
+        print("TIME:", result["timestamp"])
+
     print("========================")
 
-    print("PROMPT:")
+    print("\nPROMPT:")
     print(result["prompt"])
 
     print("\nRESPONSE:")
     print(result["response"])
+
+    print("\n" + "=" * 50)
