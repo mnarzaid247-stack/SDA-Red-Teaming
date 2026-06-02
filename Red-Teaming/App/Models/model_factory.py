@@ -1,8 +1,8 @@
-from App.Models.ollamaModel import OllamaModel
-from App.Models.openAiModel import OpenAIModel
-from App.Models.geminiModel import GeminiModel
-from App.Models.userModel import UserModel
-from App.Models.config import (
+from app.models.ollamaModel import OllamaModel
+from app.models.openAiModel import OpenAIModel
+from app.models.geminiModel import GeminiModel
+from app.models.userModel import UserModel
+from app.models.config import (
     GEMINI_API_KEY,
     OPENAI_API_KEY
 )

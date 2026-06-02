@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
-from App.extensions import Base, engine
-from App.database_models import User
-from App.routes.user_routes import router as user_router
+from app.extensions import Base, engine
+import app.database_models
+from app.routes.user_routes import router as user_router
 
 
 

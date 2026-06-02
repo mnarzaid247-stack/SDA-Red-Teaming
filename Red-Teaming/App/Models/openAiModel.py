@@ -1,5 +1,5 @@
 from openai import OpenAI
-from App.Models.BaseModel import BaseModel
+from app.models.base_model import BaseModel
 
 
 class OpenAIModel(BaseModel):

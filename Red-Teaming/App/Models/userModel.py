@@ -4,7 +4,7 @@
 # MODEL NAME
 import requests
 
-from App.Models.BaseModel import BaseModel
+from app.models.base_model import BaseModel
 
 
 class UserModel(BaseModel):
