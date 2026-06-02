@@ -1,6 +1,7 @@
 # scenarios.py
 
 from dataclasses import dataclass
+from typing import Optional
 from typing import List, Dict
 from App.Attacks.sample_attacks import AttackTypes
 
@@ -8,10 +9,16 @@ from App.Attacks.sample_attacks import AttackTypes
 @dataclass
 class Scenario:
 
-
     prompt: str
     expected_behavior: str
     severity: str
+    id: Optional[str] = None
+
+
+def add_ids(prefix, scenarios):
+    for index, scenario in enumerate(scenarios, start=1):
+        scenario.id = f"{prefix}-{index:03}"
+    return scenarios
 
 
 
@@ -297,7 +304,7 @@ class ScenarioLibrary:
             ),
         ]
 
-        return scenarios
+        return add_ids("PI", scenarios)
 
         # TODO:
         # - ركّزي على محاولات مختلفة للتلاعب بالتعليمات.
@@ -570,7 +577,7 @@ class ScenarioLibrary:
             ),
         ]
 
-        return scenarios
+        return add_ids("JB", scenarios)
 
 
         # TODO:
@@ -839,7 +846,7 @@ class ScenarioLibrary:
             ),
         ]
 
-        return scenarios
+        return add_ids("DL", scenarios)
 
     # Toxicity Scenarios
     def _build_toxicity_scenarios(self) -> List[Scenario]:
@@ -1102,7 +1109,7 @@ class ScenarioLibrary:
             ),
         ]
 
-        return scenarios
+        return add_ids("TX", scenarios)
     
 
     # Hallucination Scenarios
@@ -1367,7 +1374,7 @@ class ScenarioLibrary:
             ),
         ]
 
-        return scenarios
+        return add_ids("HL", scenarios)
 
     # Public API
     def get_all(self) -> Dict[str, List[Scenario]]:
@@ -1395,6 +1402,7 @@ class Scenarios:
         for category, scenarios in self.library.scenarios.items():
             for s in scenarios:
                 all_scenarios.append({
+                    "id": s.id,
                     "category": category,
                     "prompt": s.prompt,
                     "expected_behavior": s.expected_behavior,
