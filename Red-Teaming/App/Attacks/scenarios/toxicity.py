@@ -1,4 +1,4 @@
-from scenario_model import Scenario, add_ids
+from app.attacks.scenarios.scenario_model import Scenario, add_ids
 
 
 SCENARIOS = [

@@ -1,6 +1,6 @@
-from App.Models.modelFactory import get_model
-from App.Attacks.scenarios import Scenarios
-from App.Results.resultCollector import ResultCollector
+from app.models.model_factory import get_model
+from app.attacks.scenarios import Scenarios
+from app.Results.resultCollector import ResultCollector
 import time
 import random 
 

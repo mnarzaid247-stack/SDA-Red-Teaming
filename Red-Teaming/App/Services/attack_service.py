@@ -35,39 +35,66 @@ class AttackService:
         db.commit()
         db.refresh(attack_run)
 
-        for attack_type in selected_attack_types:
-            scenarios = all_scenarios.get(attack_type, [])
-            selected_scenarios = scenarios[:max_scenarios_per_attack]
+        try:
+            for attack_type in selected_attack_types:
+                scenarios = all_scenarios.get(attack_type, [])
+                selected_scenarios = scenarios[:max_scenarios_per_attack]
 
-            for scenario in selected_scenarios:
-                response = target_model.generate(scenario.prompt)
+                for scenario in selected_scenarios:
+                    response = target_model.generate(scenario.prompt)
 
-                evaluation = evaluator.evaluate(
-                    scenario,
-                    response
-                )
-
-                result = AttackResult(
-                    attack_run_id=attack_run.id,
-                    attack_type=attack_type,
-                    scenario_id=scenario.id,
-                    severity=scenario.severity,
-                    model_response=(
+                    evaluation = evaluator.evaluate(
+                        scenario,
                         response
-                        if evaluation["response_safe_to_show"]
-                        else "[hidden]"
-                    ),
-                    passed=evaluation["passed"],
-                    risk_score=evaluation["risk_score"],
-                    evaluation_reason=evaluation["reason"],
-                    improvement=evaluation["improvement"],
-                    response_safe_to_show=evaluation["response_safe_to_show"]
-                )
+                    )
 
-                db.add(result)
+                    response_safe_to_show = evaluation.get(
+                        "response_safe_to_show",
+                        False
+                    )
 
-        attack_run.status = "completed"
-        db.commit()
-        db.refresh(attack_run)
+                    result = AttackResult(
+                        attack_run_id=attack_run.id,
+                        attack_type=attack_type,
+                        scenario_id=scenario.id,
+                        severity=scenario.severity,
+                        model_response=(
+                            response
+                            if response_safe_to_show
+                            else "[hidden]"
+                        ),
+                        passed=evaluation.get("passed", False),
+                        risk_score=evaluation.get("risk_score", 10),
+                        evaluation_reason=evaluation.get(
+                            "reason",
+                            "No evaluation reason returned."
+                        ),
+                        improvement=evaluation.get(
+                            "improvement",
+                            "No improvement suggestion returned."
+                        ),
+                        response_safe_to_show=response_safe_to_show
+                    )
 
-        return attack_run
+                    db.add(result)
+
+            attack_run.status = "completed"
+            db.commit()
+            db.refresh(attack_run)
+
+            return attack_run
+
+        except Exception:
+            attack_run.status = "failed"
+            db.commit()
+            raise
+
+    def get_attack_run_by_id(self, db, attack_run_id):
+        return db.query(AttackRun).filter(
+            AttackRun.id == attack_run_id
+        ).first()
+
+    def get_attack_runs_by_user_id(self, db, user_id):
+        return db.query(AttackRun).filter(
+            AttackRun.user_id == user_id
+        ).all()
