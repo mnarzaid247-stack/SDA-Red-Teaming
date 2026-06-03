@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 from typing import List, Optional
+from datetime import datetime
+
 
 
 class AttackRunRequest(BaseModel):
@@ -14,6 +16,9 @@ class AttackRunRequest(BaseModel):
 class AttackRunResponse(BaseModel):
     attack_run_id: str
     status: str
+    created_at: datetime
+    duration_seconds: int | None = None
+
 
 
 class AttackResultResponse(BaseModel):
@@ -27,6 +32,8 @@ class AttackResultResponse(BaseModel):
     evaluation_reason: Optional[str]
     improvement: Optional[str]
     response_safe_to_show: bool
+    evidence_summary: Optional[str]
+    unsafe_categories: Optional[str]
 
     class Config:
         from_attributes = True
@@ -39,7 +46,11 @@ class AttackRunDetailsResponse(BaseModel):
     model_name: str
     selected_attack_types: str
     status: str
+    created_at: datetime
+    completed_at: Optional[datetime]
+    duration_seconds: Optional[int]
     results: List[AttackResultResponse]
+
 
     class Config:
         from_attributes = True

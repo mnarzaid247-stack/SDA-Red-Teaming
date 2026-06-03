@@ -1,6 +1,5 @@
 from sqlalchemy import Column, String, Text, Boolean, ForeignKey, Integer
 from sqlalchemy.orm import relationship
-
 from app.database_models.base_model import BaseModel
 
 
@@ -27,5 +26,7 @@ class AttackResult(BaseModel):
     evaluation_reason = Column(Text, nullable=True)
     improvement = Column(Text, nullable=True)
     response_safe_to_show = Column(Boolean, default=False)
+    evidence_summary = Column(Text, nullable=True)
+    unsafe_categories = Column(Text, nullable=True)
 
     

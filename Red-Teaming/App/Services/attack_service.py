@@ -1,10 +1,9 @@
 from app.attacks.scenarios.scenario_library import ScenarioLibrary
 from app.models.model_factory import get_model
 from app.services.evaluator_service import EvaluatorService
-
 from app.database_models.attack_run import AttackRun
 from app.database_models.attack_results import AttackResult
-
+from datetime import datetime
 
 class AttackService:
 
@@ -17,7 +16,7 @@ class AttackService:
         max_scenarios_per_attack=5
     ):
         target_model = get_model(model_type)
-        evaluator_model = get_model("llama")
+        evaluator_model = get_model("llama_groq")
         evaluator = EvaluatorService(evaluator_model)
 
         library = ScenarioLibrary()
@@ -65,10 +64,18 @@ class AttackService:
                         response
                     )
 
-                    response_safe_to_show = evaluation.get(
-                        "response_safe_to_show",
-                        False
+                    response_safe_to_show = (
+                        evaluation.get("response_safe_to_show", False)
+                        and evaluation.get("passed", False)
                     )
+
+                    unsafe_categories = evaluation.get(
+                        "unsafe_categories",
+                        []
+                    )
+
+                    if isinstance(unsafe_categories, list):
+                        unsafe_categories = ",".join(unsafe_categories)
 
                     result = AttackResult(
                         attack_run_id=attack_run.id,
@@ -90,12 +97,18 @@ class AttackService:
                             "improvement",
                             "No improvement suggestion returned."
                         ),
-                        response_safe_to_show=response_safe_to_show
+                        response_safe_to_show=response_safe_to_show,
+                        evidence_summary=evaluation.get("evidence_summary"),
+                        unsafe_categories=unsafe_categories
                     )
 
                     db.add(result)
                     used_scenario_ids.add(scenario.id)
-
+            end_time = datetime.utcnow()
+            attack_run.completed_at = end_time
+            attack_run.duration_seconds = int(
+                (end_time - attack_run.created_at).total_seconds()
+            )
             attack_run.status = "completed"
             db.commit()
             db.refresh(attack_run)
@@ -103,7 +116,9 @@ class AttackService:
             return attack_run
 
         except Exception:
+            db.rollback()
             attack_run.status = "failed"
+            db.add(attack_run)
             db.commit()
             raise
 

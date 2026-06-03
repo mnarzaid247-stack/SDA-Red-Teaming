@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, DateTime, ForeignKey
+from sqlalchemy import Column, String, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import relationship
 
 from app.database_models.base_model import BaseModel
@@ -15,6 +15,7 @@ class AttackRun(BaseModel):
     selected_attack_types = Column(String(255), nullable=False)
     status = Column(String(20), default="pending")
     completed_at = Column(DateTime, nullable=True)
+    duration_seconds = Column(Integer, nullable=True)
 
     results = relationship(
     "AttackResult",

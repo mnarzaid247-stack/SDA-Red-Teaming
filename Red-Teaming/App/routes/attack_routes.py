@@ -36,7 +36,9 @@ def run_attack(
 
     return AttackRunResponse(
         attack_run_id=attack_run.id,
-        status=attack_run.status
+        status=attack_run.status,
+        created_at=attack_run.created_at,
+        duration_seconds=attack_run.duration_seconds
     )
 
 
