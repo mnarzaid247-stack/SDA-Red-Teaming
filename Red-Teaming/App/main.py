@@ -1,16 +1,18 @@
 from fastapi import FastAPI
-
+from app.seed import seed_database
 from app.extensions import Base, engine
 import app.database_models
 from app.routes.user_routes import router as user_router
 from app.routes.attack_routes import router as attack_router
-
+from app.routes.scenario_routes import router as scenario_router
 
 
 Base.metadata.create_all(bind=engine)
+seed_database()
 app = FastAPI(title="Red Teaming Platform")
 app.include_router(user_router)
 app.include_router(attack_router)
+app.include_router(scenario_router)
 
 
 

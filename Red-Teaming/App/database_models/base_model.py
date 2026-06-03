@@ -1,6 +1,5 @@
 from datetime import datetime
 import uuid
-
 from sqlalchemy import Column, String, DateTime
 from app.extensions import Base
 
