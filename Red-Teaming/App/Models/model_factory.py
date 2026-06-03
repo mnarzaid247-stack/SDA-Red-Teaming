@@ -1,10 +1,12 @@
 from app.models.ollamaModel import OllamaModel
 from app.models.openAiModel import OpenAIModel
 from app.models.geminiModel import GeminiModel
+from app.models.groqModel import GroqModel
 from app.models.userModel import UserModel
 from app.models.config import (
     GEMINI_API_KEY,
-    OPENAI_API_KEY
+    OPENAI_API_KEY,
+    GROQ_API_KEY
 )
 
 def get_model(
@@ -14,6 +16,11 @@ def get_model(
 
     if model_type == "llama":
         return OllamaModel()
+    
+    elif model_type == "llama_groq":
+        return GroqModel(
+            api_key=kwargs.get("api_key") or GROQ_API_KEY
+        )
 
     elif model_type == "gpt":
         return OpenAIModel(
@@ -35,7 +42,3 @@ def get_model(
         raise ValueError(
             "Unsupported model type"
         )
-    
-
-
-    # هذا الملف لأنشاء النموذج المطلوب بدل من تكرار الكود في كل ملف

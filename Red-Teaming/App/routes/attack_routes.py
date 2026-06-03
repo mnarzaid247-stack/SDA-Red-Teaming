@@ -6,7 +6,6 @@ from app.schemas.attack_schema import (
     AttackRunResponse,
     AttackRunDetailsResponse
 )
-
 from app.services.attack_service import AttackService
 from app.extensions import get_db
 

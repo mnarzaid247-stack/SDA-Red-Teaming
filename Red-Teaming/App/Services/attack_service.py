@@ -23,6 +23,15 @@ class AttackService:
         library = ScenarioLibrary()
         all_scenarios = library.get_all()
 
+        used_scenario_ids = (
+            db.query(AttackResult.scenario_id)
+            .join(AttackRun, AttackResult.attack_run_id == AttackRun.id)
+            .filter(AttackRun.user_id == user_id)
+            .all()
+        )
+
+        used_scenario_ids = {item[0] for item in used_scenario_ids}
+
         attack_run = AttackRun(
             user_id=user_id,
             model_provider=model_type,
@@ -38,7 +47,15 @@ class AttackService:
         try:
             for attack_type in selected_attack_types:
                 scenarios = all_scenarios.get(attack_type, [])
-                selected_scenarios = scenarios[:max_scenarios_per_attack]
+
+                available_scenarios = [
+                    scenario for scenario in scenarios
+                    if scenario.id not in used_scenario_ids
+                ]
+
+                selected_scenarios = available_scenarios[
+                    :max_scenarios_per_attack
+                ]
 
                 for scenario in selected_scenarios:
                     response = target_model.generate(scenario.prompt)
@@ -77,6 +94,7 @@ class AttackService:
                     )
 
                     db.add(result)
+                    used_scenario_ids.add(scenario.id)
 
             attack_run.status = "completed"
             db.commit()

@@ -1,14 +1,11 @@
 import google.generativeai as genai
-
 from app.models.base_model import BaseModel
 
 
 class GeminiModel(BaseModel):
 
     def __init__(self, api_key, model_name="gemini-2.5-flash"):
-
         genai.configure(api_key=api_key)
-
         self.model = genai.GenerativeModel(
             model_name
         )
