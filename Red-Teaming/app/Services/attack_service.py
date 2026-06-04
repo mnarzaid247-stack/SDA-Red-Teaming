@@ -13,9 +13,15 @@ class AttackService:
         user_id,
         model_type,
         selected_attack_types,
-        max_scenarios_per_attack=5
+        max_scenarios_per_attack=5,
+        endpoint_url=None,
+        api_key=None
     ):
-        target_model = get_model(model_type)
+        target_model = get_model(
+            model_type,
+            endpoint_url=endpoint_url,
+            api_key=api_key
+        )
         evaluator_model = get_model("llama")
         evaluator = EvaluatorService(evaluator_model)
 

@@ -17,7 +17,6 @@ def get_model(model_type, **kwargs):
         return GroqModel(
             api_key=kwargs.get("api_key") or GROQ_API_KEY,
             model_name=kwargs.get("model_name") or GROQ_MODEL_NAME
-# Llama is served through Groq API instead of local Ollama for deployment compatibility
         )
 
     elif model_type == "gpt":
@@ -31,8 +30,15 @@ def get_model(model_type, **kwargs):
         )
 
     elif model_type == "user":
+        endpoint_url = kwargs.get("endpoint_url")
+
+        if not endpoint_url:
+            raise ValueError(
+                "endpoint_url is required for user model"
+            )
+
         return UserModel(
-            endpoint_url=kwargs["endpoint_url"],
+            endpoint_url=endpoint_url,
             api_key=kwargs.get("api_key")
         )
 

@@ -1,6 +1,5 @@
 from app.database_models.user import User
 
-
 class UserService:
 
     def create_user(self, db, user_data):
@@ -33,5 +32,21 @@ class UserService:
 
         db.delete(user)
         db.commit()
+
+        return user
+    
+    def update_user(self, db, user_id, user_data):
+        user = self.get_user_by_id(db, user_id)
+
+        if not user:
+            return None
+
+        update_data = user_data.model_dump(exclude_unset=True)
+
+        for key, value in update_data.items():
+            setattr(user, key, value)
+
+        db.commit()
+        db.refresh(user)
 
         return user

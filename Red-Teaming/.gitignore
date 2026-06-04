@@ -7,3 +7,14 @@ venv/
 .venv/
 
 red_teaming.db
+
+*.pyo
+*.pyd
+
+
+*.db
+*.sqlite
+*.sqlite3
+
+.DS_Store
+.vscode/
