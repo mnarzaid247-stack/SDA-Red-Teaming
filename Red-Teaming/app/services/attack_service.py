@@ -1,4 +1,4 @@
-from app.attacks.scenarios.scenario_library import ScenarioLibrary
+from app.database_models.scenario import Scenario
 from app.models.model_factory import get_model
 from app.services.evaluator_service import EvaluatorService
 from app.database_models.attack_run import AttackRun
@@ -17,6 +17,11 @@ class AttackService:
         endpoint_url=None,
         api_key=None
     ):
+        normalized_attack_types = [
+            attack_type.value if hasattr(attack_type, "value") else attack_type
+            for attack_type in selected_attack_types
+        ]
+
         target_model = get_model(
             model_type,
             endpoint_url=endpoint_url,
@@ -25,8 +30,6 @@ class AttackService:
         evaluator_model = get_model("llama")
         evaluator = EvaluatorService(evaluator_model)
 
-        library = ScenarioLibrary()
-        all_scenarios = library.get_all()
 
         used_scenario_ids = (
             db.query(AttackResult.scenario_id)
@@ -41,7 +44,7 @@ class AttackService:
             user_id=user_id,
             model_provider=model_type,
             model_name=model_type,
-            selected_attack_types=",".join(selected_attack_types),
+            selected_attack_types=",".join(normalized_attack_types),
             status="running"
         )
 
@@ -50,12 +53,14 @@ class AttackService:
         db.refresh(attack_run)
 
         try:
-            for attack_type in selected_attack_types:
-                scenarios = all_scenarios.get(attack_type, [])
+            for attack_type in normalized_attack_types:
+                scenarios = db.query(Scenario).filter(
+                    Scenario.attack_type == attack_type
+                ).all()
 
                 available_scenarios = [
                     scenario for scenario in scenarios
-                    if scenario.id not in used_scenario_ids
+                    if scenario.scenario_code not in used_scenario_ids
                 ]
 
                 selected_scenarios = available_scenarios[
@@ -86,7 +91,7 @@ class AttackService:
                     result = AttackResult(
                         attack_run_id=attack_run.id,
                         attack_type=attack_type,
-                        scenario_id=scenario.id,
+                        scenario_id=scenario.scenario_code,
                         severity=scenario.severity,
                         model_response=(
                             response
@@ -109,7 +114,7 @@ class AttackService:
                     )
 
                     db.add(result)
-                    used_scenario_ids.add(scenario.id)
+                    used_scenario_ids.add(scenario.scenario_code)
             end_time = datetime.utcnow()
             attack_run.completed_at = end_time
             attack_run.duration_seconds = int(

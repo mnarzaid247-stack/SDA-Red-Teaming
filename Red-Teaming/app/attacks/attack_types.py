@@ -19,11 +19,11 @@ class AttackTypes:
     نستخدمها كمفاتيح (keys) في باقي النظام.
     """
 
-    PROMPT_INJECTION = "Prompt Injection"      # هجوم التلاعب بالتعليمات
-    JAILBREAK = "Jailbreak"                    # هجوم كسر القيود
-    DATA_LEAKAGE = "Data Leakage"              # هجوم تسريب البيانات
-    TOXICITY = "Toxicity"                      # هجوم المحتوى الضار
-    HALLUCINATION = "Hallucination"            # هجوم الهلوسة
+    PROMPT_INJECTION = "prompt_injection"
+    JAILBREAK = "jailbreak"
+    DATA_LEAKAGE = "data_leakage"
+    TOXICITY = "toxicity"
+    HALLUCINATION = "hallucination"            # هجوم الهلوسة
 
 # قائمة الهجمات المتاحة في النظام
 ATTACKS = [

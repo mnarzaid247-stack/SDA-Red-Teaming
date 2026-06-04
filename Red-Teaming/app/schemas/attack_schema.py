@@ -16,7 +16,11 @@ class AttackRunRequest(BaseModel):
 
 class AttackRunResponse(BaseModel):
     attack_run_id: str
+    model_provider: str
+    model_name: str
+    selected_attack_types: str
     status: str
+    passed: bool
     created_at: datetime
     duration_seconds: int | None = None
 
@@ -24,7 +28,7 @@ class AttackRunResponse(BaseModel):
 
 class AttackResultResponse(BaseModel):
     id: str
-    attack_type: AttackType
+    attack_type: str
     scenario_id: str
     severity: str
     model_response: Optional[str]

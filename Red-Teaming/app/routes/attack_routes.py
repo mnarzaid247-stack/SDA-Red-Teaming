@@ -17,10 +17,7 @@ router = APIRouter(
 attack_service = AttackService()
 
 
-@router.post(
-    "/run",
-    response_model=AttackRunResponse
-)
+@router.post("/run", response_model=AttackRunResponse)
 def run_attack(
     request: AttackRunRequest,
     db: Session = Depends(get_db)
@@ -35,13 +32,19 @@ def run_attack(
         api_key=request.api_key
     )
 
+    results = attack_run.results
+    passed = all(result.passed for result in results) if results else False
+
     return AttackRunResponse(
         attack_run_id=attack_run.id,
+        model_provider=attack_run.model_provider,
+        model_name=attack_run.model_name,
+        selected_attack_types=attack_run.selected_attack_types,
         status=attack_run.status,
+        passed=passed,
         created_at=attack_run.created_at,
         duration_seconds=attack_run.duration_seconds
     )
-
 
 @router.get(
     "/{attack_run_id}",

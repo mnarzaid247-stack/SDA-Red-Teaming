@@ -26,7 +26,7 @@ class ScenarioUpdate(BaseModel):
 
 class ScenarioResponse(BaseModel):
     id: str
-    attack_type: AttackType
+    attack_type: str
     prompt: str
     expected_behavior: str
     severity: str

@@ -87,6 +87,21 @@ class ScenarioService:
 
         update_data = scenario_data.model_dump(exclude_unset=True)
 
+        if "attack_type" in update_data:
+            new_attack_type = update_data["attack_type"]
+
+            if hasattr(new_attack_type, "value"):
+                new_attack_type = new_attack_type.value
+
+            if new_attack_type != scenario.attack_type:
+                scenario.scenario_code = self.generate_scenario_code(
+                    db,
+                    new_attack_type
+                )
+
+            scenario.attack_type = new_attack_type
+            update_data.pop("attack_type")
+
         for key, value in update_data.items():
             setattr(scenario, key, value)
 
