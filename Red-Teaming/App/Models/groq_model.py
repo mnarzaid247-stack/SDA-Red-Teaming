@@ -1,7 +1,7 @@
 from openai import OpenAI
 from app.models.base_model import BaseModel
 
-
+# GroqModel connects to Groq's OpenAI-compatible API to run Llama remotely
 class GroqModel(BaseModel):
 
     def __init__(

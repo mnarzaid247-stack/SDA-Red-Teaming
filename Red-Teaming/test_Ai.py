@@ -1,55 +1,55 @@
 from app.models.model_factory import get_model
-from app.attacks.scenarios import Scenarios
-from app.Results.resultCollector import ResultCollector
+from app.Services.scenario_service import ScenarioService
+from app.extensions import SessionLocal
+
 import time
-import random 
-
-model = get_model("llama")
+import random
 
 
-scenario_library = Scenarios()
-scenarios = random.sample(scenario_library.get_scenarios(), 10)
+MODEL_NAME = "llama"
 
+model = get_model(MODEL_NAME)
 
-collector = ResultCollector()
+db = SessionLocal()
 
-for scenario in scenarios:
+scenario_service = ScenarioService()
 
-    print("Sending:", scenario["category"])
-     
-     
-    response = model.generate(
-        scenario["prompt"]
-    )
-    time.sleep(5)
-    collector.add_result(
-        model_name="llama",
-        category=scenario["category"],
-        prompt=scenario["prompt"],
-        response=response
+try:
+    scenarios = scenario_service.get_all_scenarios(db)
+
+    if len(scenarios) == 0:
+        scenario_service.seed_scenarios(db)
+        scenarios = scenario_service.get_all_scenarios(db)
+
+    selected_scenarios = random.sample(
+        scenarios,
+        min(10, len(scenarios))
     )
 
+    for scenario in selected_scenarios:
 
+        print(f"Sending [{MODEL_NAME}] -> {scenario.attack_type}")
 
-results = collector.get_results()
+        response = model.generate(
+            scenario.prompt
+        )
+        #save_response(..)
+        print("\n========================")
+        print("MODEL:", MODEL_NAME)
+        print("CATEGORY:", scenario.attack_type)
+        print("SEVERITY:", scenario.severity)
 
+        print("\nPROMPT:")
+        print(scenario.prompt)
 
+        print("\nRESPONSE:")
+        print(response)
 
-for result in results:
+        print("\n" + "=" * 50)
 
-    print("\n========================")
-    print("MODEL:", result["model"])
-    print("CATEGORY:", result["category"])
+        time.sleep(5)
 
-    if "timestamp" in result:
-        print("TIME:", result["timestamp"])
+finally:
+    db.close()
 
-    print("========================")
-
-    print("\nPROMPT:")
-    print(result["prompt"])
-
-    print("\nRESPONSE:")
-    print(result["response"])
-
-    print("\n" + "=" * 50)
+    

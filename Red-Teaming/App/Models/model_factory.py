@@ -1,25 +1,23 @@
-from app.models.ollamaModel import OllamaModel
-from app.models.openAiModel import OpenAIModel
-from app.models.geminiModel import GeminiModel
-from app.models.groqModel import GroqModel
-from app.models.userModel import UserModel
+from app.models.openai_model import OpenAIModel
+from app.models.gemini_model import GeminiModel
+from app.models.groq_model import GroqModel
+from app.models.user_model import UserModel
+
 from app.models.config import (
     GEMINI_API_KEY,
     OPENAI_API_KEY,
-    GROQ_API_KEY
+    GROQ_API_KEY,
+    GROQ_MODEL_NAME
 )
 
-def get_model(
-        model_type,
-        **kwargs
-):
+
+def get_model(model_type, **kwargs):
 
     if model_type == "llama":
-        return OllamaModel()
-    
-    elif model_type == "llama_groq":
         return GroqModel(
-            api_key=kwargs.get("api_key") or GROQ_API_KEY
+            api_key=kwargs.get("api_key") or GROQ_API_KEY,
+            model_name=kwargs.get("model_name") or GROQ_MODEL_NAME
+# Llama is served through Groq API instead of local Ollama for deployment compatibility
         )
 
     elif model_type == "gpt":
@@ -39,6 +37,4 @@ def get_model(
         )
 
     else:
-        raise ValueError(
-            "Unsupported model type"
-        )
+        raise ValueError("Unsupported model type")

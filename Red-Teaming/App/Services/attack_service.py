@@ -16,7 +16,7 @@ class AttackService:
         max_scenarios_per_attack=5
     ):
         target_model = get_model(model_type)
-        evaluator_model = get_model("llama_groq")
+        evaluator_model = get_model("llama")
         evaluator = EvaluatorService(evaluator_model)
 
         library = ScenarioLibrary()
