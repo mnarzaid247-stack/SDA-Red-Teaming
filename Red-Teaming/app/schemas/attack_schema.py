@@ -1,13 +1,14 @@
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
+from app.schemas.scenario_schema import AttackType
 
 
 
 class AttackRunRequest(BaseModel):
     user_id: str
     model_type: str
-    selected_attack_types: List[str]
+    selected_attack_types: List[AttackType]
     endpoint_url: Optional[str] = None
     api_key: Optional[str] = None
     max_scenarios_per_attack: int = 5
@@ -23,7 +24,7 @@ class AttackRunResponse(BaseModel):
 
 class AttackResultResponse(BaseModel):
     id: str
-    attack_type: str
+    attack_type: AttackType
     scenario_id: str
     severity: str
     model_response: Optional[str]

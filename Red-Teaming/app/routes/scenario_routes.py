@@ -6,7 +6,8 @@ from app.services.scenario_service import ScenarioService
 from app.schemas.scenario_schema import (
     ScenarioCreate,
     ScenarioUpdate,
-    ScenarioResponse
+    ScenarioResponse,
+    AttackType
 )
 
 
@@ -37,7 +38,7 @@ def get_scenarios(
 
 @router.get("/type/{attack_type}", response_model=list[ScenarioResponse])
 def get_scenarios_by_attack_type(
-    attack_type: str,
+    attack_type: AttackType,
     db: Session = Depends(get_db)
 ):
     return scenario_service.get_scenarios_by_attack_type(

@@ -3,6 +3,13 @@ from app.database_models.user import User
 class UserService:
 
     def create_user(self, db, user_data):
+        existing_user = db.query(User).filter(
+            User.email == user_data.email
+        ).first()
+
+        if existing_user:
+            return None
+
         user = User(
             full_name=user_data.full_name,
             email=user_data.email,

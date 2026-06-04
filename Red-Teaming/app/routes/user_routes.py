@@ -16,15 +16,23 @@ router = APIRouter(
 user_service = UserService()
 
 
-@router.post("", response_model=UserResponse)
+@router.post("", response_model=UserResponse, status_code=201)
 def create_user(
     user_data: UserCreate,
     db: Session = Depends(get_db)
 ):
-    return user_service.create_user(
+    user = user_service.create_user(
         db,
         user_data
     )
+
+    if not user:
+        raise HTTPException(
+            status_code=409,
+            detail="Email already exists"
+        )
+
+    return user
 
 
 @router.get("", response_model=list[UserResponse])
