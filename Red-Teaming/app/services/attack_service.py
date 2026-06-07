@@ -27,7 +27,7 @@ class AttackService:
             endpoint_url=endpoint_url,
             api_key=api_key
         )
-        evaluator_model = get_model("llama")
+        evaluator_model = get_model("Qwen")
         evaluator = EvaluatorService(evaluator_model)
 
 

@@ -1,15 +1,15 @@
-from app.models.openai_model import OpenAIModel
-from app.models.gemini_model import GeminiModel
+# Factory function for selecting the correct model provider.
+# Maps user-facing model choices to their backend provider implementation.
 from app.models.groq_model import GroqModel
-from app.models.user_model import UserModel
 from app.models.openrouter_model import OpenRouterModel
+from app.models.user_model import UserModel
 
 from app.models.config import (
-    GEMINI_API_KEY,
-    OPENAI_API_KEY,
-    OPENROUTER_API_KEY,
     GROQ_API_KEY,
-    GROQ_MODEL_NAME
+    GROQ_LLAMA_MODEL,
+    GROQ_GPT_MODEL,
+    OPENROUTER_GEMMA_MODEL,
+    OPENROUTER_JUDGE_MODEL
 )
 
 
@@ -18,22 +18,24 @@ def get_model(model_type, **kwargs):
     if model_type == "llama":
         return GroqModel(
             api_key=kwargs.get("api_key") or GROQ_API_KEY,
-            model_name=kwargs.get("model_name") or GROQ_MODEL_NAME
+            model_name=kwargs.get("model_name") or GROQ_LLAMA_MODEL
         )
 
     elif model_type == "gpt":
-        return OpenAIModel(
-            api_key=kwargs.get("api_key") or OPENAI_API_KEY
+        return GroqModel(
+            api_key=kwargs.get("api_key") or GROQ_API_KEY,
+            model_name=kwargs.get("model_name") or GROQ_GPT_MODEL
         )
 
-    elif model_type == "gemini":
-        return GeminiModel(
-            api_key=kwargs.get("api_key") or GEMINI_API_KEY
-        )
-    elif model_type == "gemini_openrouter":
+    elif model_type == "gemma":
         return OpenRouterModel(
-            model_name="google/gemini-2.5-flash"
-    )
+            model_name=kwargs.get("model_name") or OPENROUTER_GEMMA_MODEL
+        )
+
+    elif model_type == "judge":
+        return OpenRouterModel(
+            model_name=kwargs.get("model_name") or OPENROUTER_JUDGE_MODEL
+        )
 
     elif model_type == "user":
         endpoint_url = kwargs.get("endpoint_url")

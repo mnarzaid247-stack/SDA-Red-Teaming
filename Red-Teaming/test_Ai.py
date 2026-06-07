@@ -8,7 +8,7 @@ import time
 
 Base.metadata.create_all(bind=engine)
 
-MODEL_NAME = "gemini_openrouter"
+MODEL_NAME = "gpt"
 
 model = get_model(MODEL_NAME)
 
@@ -26,7 +26,7 @@ try:
 
     selected_scenarios = random.sample(
         scenarios,
-        min(15, len(scenarios))
+        min(20, len(scenarios))
     )
 
     for index, scenario in enumerate(selected_scenarios, start=1):
