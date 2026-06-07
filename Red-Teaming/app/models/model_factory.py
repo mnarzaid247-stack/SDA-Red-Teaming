@@ -2,10 +2,12 @@ from app.models.openai_model import OpenAIModel
 from app.models.gemini_model import GeminiModel
 from app.models.groq_model import GroqModel
 from app.models.user_model import UserModel
+from app.models.openrouter_model import OpenRouterModel
 
 from app.models.config import (
     GEMINI_API_KEY,
     OPENAI_API_KEY,
+    OPENROUTER_API_KEY,
     GROQ_API_KEY,
     GROQ_MODEL_NAME
 )
@@ -28,6 +30,10 @@ def get_model(model_type, **kwargs):
         return GeminiModel(
             api_key=kwargs.get("api_key") or GEMINI_API_KEY
         )
+    elif model_type == "gemini_openrouter":
+        return OpenRouterModel(
+            model_name="google/gemini-2.5-flash"
+    )
 
     elif model_type == "user":
         endpoint_url = kwargs.get("endpoint_url")
