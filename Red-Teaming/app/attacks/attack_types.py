@@ -1,31 +1,29 @@
-# sample_attacks.py
 
 """
-هذا الملف يحتوي على تعريف (أنواع الهجمات) فقط.
+This file defines all attack types used across the project.
 
-الفكرة:
-نخلي أسماء الهجمات في مكان واحد.
-باقي الملفات (scenarios, scoring, engine) تستخدم نفس الأسماء.
-لو أضفنا هجوم جديد، نعدّل هنا فقط.
+The idea is to keep the attack names in one place so the rest of the system
+(scenarios, scoring, engine) can reference them consistently. If we ever add
+a new attack, we only update this file.
 
-ملاحظة:
-باقي الفريق (باك إند / فرونت إند) ما يحتاج يلمسه.
 """
 
 class AttackTypes:
 
     """
-    هذا الكلاس يحتوي أسماء الهجمات بشكل ثابت.
-    نستخدمها كمفاتيح (keys) في باقي النظام.
+    Centralized list of attack identifiers.
+    These values act as keys throughout the system.
     """
-
+     
     PROMPT_INJECTION = "prompt_injection"
     JAILBREAK = "jailbreak"
     DATA_LEAKAGE = "data_leakage"
     TOXICITY = "toxicity"
-    HALLUCINATION = "hallucination"            # هجوم الهلوسة
+    HALLUCINATION = "hallucination"            
 
-# قائمة الهجمات المتاحة في النظام
+# List of all supported attacks.
+# Keeping this as a separate list makes it easier to loop through them when needed.
+
 ATTACKS = [
     AttackTypes.PROMPT_INJECTION,
     AttackTypes.JAILBREAK,
@@ -34,6 +32,7 @@ ATTACKS = [
     AttackTypes.HALLUCINATION
 ]
 
-    # لو بغيت اضيف هجمات جديدة لاحقاً:
-    # MODEL_EXTRACTION = "Model Extraction"
-    # ROLEPLAY_ABUSE = "Roleplay Abuse"
+# Future attacks can be added here if needed.
+# Example:
+# MODEL_EXTRACTION = "model_extraction"
+# ROLEPLAY_ABUSE = "roleplay_abuse"

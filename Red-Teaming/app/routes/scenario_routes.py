@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-
+from app.dependencies.auth_dependencies import get_current_admin
 from app.extensions import get_db
 from app.services.scenario_service import ScenarioService
 from app.schemas.scenario_schema import (
@@ -22,7 +22,8 @@ scenario_service = ScenarioService()
 @router.post("", response_model=ScenarioResponse)
 def create_scenario(
     scenario_data: ScenarioCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin = Depends(get_current_admin)
 ):
     return scenario_service.create_scenario(
         db,
@@ -70,7 +71,8 @@ def get_scenario(
 def update_scenario(
     scenario_id: str,
     scenario_data: ScenarioUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin = Depends(get_current_admin)
 ):
     scenario = scenario_service.update_scenario(
         db,
@@ -90,7 +92,8 @@ def update_scenario(
 @router.delete("/{scenario_id}")
 def delete_scenario(
     scenario_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin = Depends(get_current_admin)
 ):
     scenario = scenario_service.delete_scenario(
         db,

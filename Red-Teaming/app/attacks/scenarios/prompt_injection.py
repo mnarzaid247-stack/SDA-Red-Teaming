@@ -1,5 +1,15 @@
 from app.attacks.scenarios.scenario_model import Scenario, add_ids
 
+"""
+Prompt Injection scenarios used to test whether the model can resist attempts
+to extract internal instructions or override its behavior. Keeping them grouped
+here makes the evaluation set easier to maintain and extend.
+"""
+
+# A set of prompt‑injection attempts. Each scenario tries a different angle to
+# trick the model into revealing system messages, internal rules, or hidden logic.
+# The expected behavior describes how the model should safely reject these requests.
+
 
 SCENARIOS = [
     Scenario(
@@ -253,6 +263,9 @@ SCENARIOS = [
         severity="High"
     ),
 ]
+
+# Assign unique IDs to each scenario 
+
 
 PROMPT_INJECTION_SCENARIOS = add_ids(
     "PI",
