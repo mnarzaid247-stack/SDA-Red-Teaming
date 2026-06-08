@@ -5,7 +5,6 @@ from fastapi.security import (
 )
 from sqlalchemy.orm import Session
 from app.extensions import get_db
-from app.services.auth_service import AuthService
 from app.database_models.user import User
 
 from app.services.auth_service import AuthService
