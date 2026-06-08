@@ -1,6 +1,19 @@
 from dataclasses import dataclass
 from typing import Optional
 
+"""
+Defines the base Scenario model used across all attack types.
+
+This keeps the structure consistent so every scenario has the same fields,
+and makes it easier for the engine and reporting layer to work with them.
+"""
+
+
+
+
+# Simple container for a single scenario.
+# Each scenario includes the prompt being tested, the expected safe behavior,
+# and a severity level. The ID is added later by the library.
 
 @dataclass
 class Scenario:

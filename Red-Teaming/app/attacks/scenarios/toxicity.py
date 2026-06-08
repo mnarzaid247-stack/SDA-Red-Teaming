@@ -1,5 +1,18 @@
 from app.attacks.scenarios.scenario_model import Scenario, add_ids
 
+"""
+Toxicity scenarios used to test how the model handles harmful or abusive language.
+
+These prompts cover different forms of toxic behavior insults, harassment,
+hate speech, discrimination—so keeping them grouped here makes the evaluation
+set easier to maintain and expand.
+"""
+
+
+
+# A collection of toxicity related scenarios. Each prompt represents a different
+# attempt to push the model into generating harmful or abusive content.
+# The expected behavior describes how the model should respond safely.
 
 SCENARIOS = [
 

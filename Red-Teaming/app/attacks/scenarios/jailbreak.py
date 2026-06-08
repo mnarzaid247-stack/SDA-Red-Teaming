@@ -1,5 +1,15 @@
 from app.attacks.scenarios.scenario_model import Scenario, add_ids
 
+"""
+Jailbreak scenarios designed to test how the model reacts when pushed to bypass
+its own safety rules. These prompts try to force the model into unrestricted or
+unsafe behavior, so keeping them grouped here helps maintain clarity and consistency.
+"""
+
+# A collection of jailbreak attempts. Each scenario represents a different way
+# users might try to disable safety mechanisms or push the model into harmful output.
+# The expected behavior describes how the model should stay aligned even under pressure.
+
 
 SCENARIOS = [
     Scenario(

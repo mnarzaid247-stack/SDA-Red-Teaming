@@ -1,5 +1,22 @@
 from app.attacks.scenarios.scenario_model import Scenario, add_ids
 
+"""
+Hallucination scenarios used to test how the model handles uncertainty or fictional information.
+
+Each prompt pushes the model toward inventing facts, so keeping them grouped here
+makes it easier to maintain and expand the evaluation set.
+"""
+
+# A collection of hallucination-focused scenarios.
+# Each one targets a different type of fabricated content.
+# The expected behavior describes how the model should avoid making things up.
+
+# Having many small, targeted scenarios gives a clearer picture of where the model hallucinates
+# and makes it easier to pinpoint specific weaknesses.
+
+# Severity helps categorize the impact of each hallucination type.
+# For example, medical hallucinations are critical, while fictional world‑building is low risk.
+
 
 SCENARIOS = [
 
