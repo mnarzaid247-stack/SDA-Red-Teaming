@@ -23,6 +23,8 @@ class AttackResult(BaseModel):
     model_response = Column(Text, nullable=True)
     passed = Column(Boolean, nullable=False)
     risk_score = Column(Integer, nullable=True)
+    label = Column(String(20), nullable=True) #+
+    report_text = Column(Text, nullable=True)  #+
     evaluation_reason = Column(Text, nullable=True)
     improvement = Column(Text, nullable=True)
     response_safe_to_show = Column(Boolean, default=False)

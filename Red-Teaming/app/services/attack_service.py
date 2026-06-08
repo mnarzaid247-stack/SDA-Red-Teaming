@@ -5,6 +5,7 @@ from app.database_models.attack_run import AttackRun
 from app.database_models.attack_results import AttackResult
 from datetime import datetime
 
+
 class AttackService:
 
     def run_attack(
@@ -27,9 +28,9 @@ class AttackService:
             endpoint_url=endpoint_url,
             api_key=api_key
         )
-        evaluator_model = get_model("Qwen")
-        evaluator = EvaluatorService(evaluator_model)
 
+        evaluator_model = get_model("judge")
+        evaluator = EvaluatorService(evaluator_model)
 
         used_scenario_ids = (
             db.query(AttackResult.scenario_id)
@@ -53,6 +54,8 @@ class AttackService:
         db.refresh(attack_run)
 
         try:
+            collected_items = []
+
             for attack_type in normalized_attack_types:
                 scenarios = db.query(Scenario).filter(
                     Scenario.attack_type == attack_type
@@ -68,59 +71,92 @@ class AttackService:
                 ]
 
                 for scenario in selected_scenarios:
-                    response = target_model.generate(scenario.prompt)
-
-                    evaluation = evaluator.evaluate(
-                        scenario,
-                        response
+                    response = target_model.generate(
+                        scenario.prompt
                     )
 
-                    response_safe_to_show = (
-                        evaluation.get("response_safe_to_show", False)
-                        and evaluation.get("passed", False)
-                    )
+                    collected_items.append({
+                        "scenario_id": scenario.scenario_code,
+                        "attack_type": attack_type,
+                        "severity": scenario.severity,
+                        "prompt": scenario.prompt,
+                        "expected_behavior": scenario.expected_behavior,
+                        "model_response": response
+                    })
 
-                    unsafe_categories = evaluation.get(
-                        "unsafe_categories",
-                        []
-                    )
-
-                    if isinstance(unsafe_categories, list):
-                        unsafe_categories = ",".join(unsafe_categories)
-
-                    result = AttackResult(
-                        attack_run_id=attack_run.id,
-                        attack_type=attack_type,
-                        scenario_id=scenario.scenario_code,
-                        severity=scenario.severity,
-                        model_response=(
-                            response
-                            if response_safe_to_show
-                            else "[hidden]"
-                        ),
-                        passed=evaluation.get("passed", False),
-                        risk_score=evaluation.get("risk_score", 10),
-                        evaluation_reason=evaluation.get(
-                            "reason",
-                            "No evaluation reason returned."
-                        ),
-                        improvement=evaluation.get(
-                            "improvement",
-                            "No improvement suggestion returned."
-                        ),
-                        response_safe_to_show=response_safe_to_show,
-                        evidence_summary=evaluation.get("evidence_summary"),
-                        unsafe_categories=unsafe_categories
-                    )
-
-                    db.add(result)
                     used_scenario_ids.add(scenario.scenario_code)
+
+            judge_items = [
+                {
+                    "scenario_id": item["scenario_id"],
+                    "attack_type": item["attack_type"],
+                    "severity": item["severity"],
+                    "prompt": item["prompt"],
+                    "expected_behavior": item["expected_behavior"],
+                    "model_response": item["model_response"]
+                }
+                for item in collected_items
+            ]
+
+            evaluations = evaluator.evaluate_batch(judge_items)
+
+            for item in collected_items:
+                scenario_id = item["scenario_id"]
+
+                evaluation = evaluations.get(
+                    scenario_id,
+                    evaluator._fallback_evaluation()
+                )
+
+                response_safe_to_show = (
+                    evaluation.get("response_safe_to_show", False)
+                    and evaluation.get("passed", False)
+                )
+
+                unsafe_categories = evaluation.get(
+                    "unsafe_categories",
+                    []
+                )
+
+                if isinstance(unsafe_categories, list):
+                    unsafe_categories = ",".join(unsafe_categories)
+
+                result = AttackResult(
+                    attack_run_id=attack_run.id,
+                    attack_type=item["attack_type"],
+                    scenario_id=scenario_id,
+                    severity=item["severity"],
+                    model_response=(
+                        item["model_response"]
+                        if response_safe_to_show
+                        else "[hidden]"
+                    ),
+                    passed=evaluation.get("passed", False),
+                    risk_score=evaluation.get("risk_score", 100),
+                    label=evaluation.get("label", "Unsafe"),
+                    evaluation_reason=evaluation.get(
+                        "reason",
+                        "No evaluation reason returned."
+                    ),
+                    improvement=evaluation.get(
+                        "improvement",
+                        "No improvement suggestion returned."
+                    ),
+                    response_safe_to_show=response_safe_to_show,
+                    evidence_summary=evaluation.get("evidence_summary"),
+                    unsafe_categories=unsafe_categories,
+                    report_text=evaluation.get("report_text")
+                )
+
+                db.add(result)
+
             end_time = datetime.utcnow()
             attack_run.completed_at = end_time
             attack_run.duration_seconds = int(
                 (end_time - attack_run.created_at).total_seconds()
             )
             attack_run.status = "completed"
+
             db.commit()
             db.refresh(attack_run)
 
