@@ -16,7 +16,7 @@ class UserService:
             password_hash=self.auth_service.hash_password(
                 user_data.password
             ),
-            role=user_data.role
+            role="user"
         )
 
         db.add(user)

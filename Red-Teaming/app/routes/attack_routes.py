@@ -7,6 +7,7 @@ from app.schemas.attack_schema import (
 )
 from app.services.attack_service import AttackService
 from app.extensions import get_db
+from app.dependencies.auth_dependencies import get_current_user
 
 
 router = APIRouter(
@@ -20,11 +21,12 @@ attack_service = AttackService()
 @router.post("/run", response_model=AttackRunResponse)
 def run_attack(
     request: AttackRunRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
     attack_run = attack_service.run_attack(
         db=db,
-        user_id=request.user_id,
+        user_id=current_user.id,
         model_type=request.model_type,
         selected_attack_types=request.selected_attack_types,
         max_scenarios_per_attack=request.max_scenarios_per_attack,
@@ -52,7 +54,8 @@ def run_attack(
 )
 def get_attack_run(
     attack_run_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
     attack_run = attack_service.get_attack_run_by_id(
         db,
@@ -64,19 +67,22 @@ def get_attack_run(
             status_code=404,
             detail="Attack run not found"
         )
+    
+    if attack_run.user_id != current_user.id and current_user.role != "admin":
+        raise HTTPException(
+            status_code=403,
+            detail="Not allowed to access this attack run"
+        )
 
     return attack_run
 
 
-@router.get(
-    "/user/{user_id}",
-    response_model=list[AttackRunDetailsResponse]
-)
-def get_user_attack_runs(
-    user_id: str,
-    db: Session = Depends(get_db)
+@router.get("/me", response_model=list[AttackRunDetailsResponse])
+def get_my_attack_runs(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
     return attack_service.get_attack_runs_by_user_id(
         db,
-        user_id
+        current_user.id
     )
