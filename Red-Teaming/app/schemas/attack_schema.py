@@ -6,7 +6,6 @@ from app.schemas.scenario_schema import AttackType
 
 
 class AttackRunRequest(BaseModel):
-    user_id: str
     model_type: str
     selected_attack_types: List[AttackType]
     endpoint_url: Optional[str] = None

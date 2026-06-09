@@ -2,7 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.extensions import get_db
 from app.services.user_service import UserService
-from app.dependencies.auth_dependencies import get_current_user
+from app.dependencies.auth_dependencies import (
+    get_current_user,
+    get_current_admin
+)
 from app.schemas.user_schema import (
     UserCreate,
     UserLogin,
@@ -91,7 +94,8 @@ def create_user(
 
 @router.get("", response_model=list[UserResponse])
 def get_users(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin = Depends(get_current_admin)
 ):
     return user_service.get_all_users(db)
 
@@ -99,7 +103,8 @@ def get_users(
 @router.get("/{user_id}", response_model=UserResponse)
 def get_user(
     user_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin = Depends(get_current_admin)
 ):
     user = user_service.get_user_by_id(
         db,
@@ -119,11 +124,12 @@ def get_user(
 def update_user(
     user_id: str,
     user_data: UserUpdate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
     user = user_service.update_user(
         db,
-        user_id,
+        current_user.id,
         user_data
     )
 
@@ -139,11 +145,12 @@ def update_user(
 @router.delete("/{user_id}")
 def delete_user(
     user_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
 ):
     user = user_service.delete_user(
         db,
-        user_id
+        current_user.id
     )
 
     if not user:
