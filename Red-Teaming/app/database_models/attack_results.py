@@ -25,10 +25,12 @@ class AttackResult(BaseModel):
     risk_score = Column(Integer, nullable=True)
     label = Column(String(20), nullable=True) #+
     report_text = Column(Text, nullable=True)  #+
-    evaluation_reason = Column(Text, nullable=True)
-    improvement = Column(Text, nullable=True)
+    evaluation_reason = Column(Text, nullable=True) #+
+    improvement = Column(Text, nullable=True) #+
     response_safe_to_show = Column(Boolean, default=False)
-    evidence_summary = Column(Text, nullable=True)
-    unsafe_categories = Column(Text, nullable=True)
+    evidence_summary = Column(Text, nullable=True) #+ وش الشيء الي اثبت وجود المشكله؟ يعني وش الرد 
+    unsafe_categories = Column(Text, nullable=True) #+ 
 
     
+
+    #يخزن تقييم الجادج لكل سيناريو 

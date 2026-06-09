@@ -54,7 +54,7 @@ class AttackService:
         db.refresh(attack_run)
 
         try:
-            collected_items = []
+            collected_items = [] #+
 
             for attack_type in normalized_attack_types:
                 scenarios = db.query(Scenario).filter(
@@ -75,7 +75,7 @@ class AttackService:
                         scenario.prompt
                     )
 
-                    collected_items.append({
+                    collected_items.append({  #+
                         "scenario_id": scenario.scenario_code,
                         "attack_type": attack_type,
                         "severity": scenario.severity,
@@ -86,7 +86,7 @@ class AttackService:
 
                     used_scenario_ids.add(scenario.scenario_code)
 
-            judge_items = [
+            judge_items = [ #+
                 {
                     "scenario_id": item["scenario_id"],
                     "attack_type": item["attack_type"],
@@ -98,7 +98,7 @@ class AttackService:
                 for item in collected_items
             ]
 
-            evaluations = evaluator.evaluate_batch(judge_items)
+            evaluations = evaluator.evaluate_batch(judge_items) #+ صار الاستدعاء بعد ماتجمعت الردود
 
             for item in collected_items:
                 scenario_id = item["scenario_id"]
@@ -123,29 +123,29 @@ class AttackService:
 
                 result = AttackResult(
                     attack_run_id=attack_run.id,
-                    attack_type=item["attack_type"],
+                    attack_type=item["attack_type"], 
                     scenario_id=scenario_id,
                     severity=item["severity"],
                     model_response=(
                         item["model_response"]
                         if response_safe_to_show
-                        else "[hidden]"
+                        else "[hidden]" #+ اذا انجكم ان الرد خطر لاتخزنه للعرض 
                     ),
                     passed=evaluation.get("passed", False),
                     risk_score=evaluation.get("risk_score", 100),
-                    label=evaluation.get("label", "Unsafe"),
-                    evaluation_reason=evaluation.get(
+                    label=evaluation.get("label", "Unsafe"), #+
+                    evaluation_reason=evaluation.get( #+
                         "reason",
                         "No evaluation reason returned."
                     ),
-                    improvement=evaluation.get(
+                    improvement=evaluation.get( #+
                         "improvement",
                         "No improvement suggestion returned."
                     ),
                     response_safe_to_show=response_safe_to_show,
-                    evidence_summary=evaluation.get("evidence_summary"),
-                    unsafe_categories=unsafe_categories,
-                    report_text=evaluation.get("report_text")
+                    evidence_summary=evaluation.get("evidence_summary"), #+
+                    unsafe_categories=unsafe_categories, #+
+                    report_text=evaluation.get("report_text") #+
                 )
 
                 db.add(result)
