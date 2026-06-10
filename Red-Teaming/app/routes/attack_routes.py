@@ -29,7 +29,6 @@ def run_attack(
         user_id=current_user.id,
         model_type=request.model_type,
         selected_attack_types=request.selected_attack_types,
-        max_scenarios_per_attack=request.max_scenarios_per_attack,
         endpoint_url=request.endpoint_url,
         api_key=request.api_key
     )

@@ -1,10 +1,11 @@
 from app.database_models.scenario import Scenario
 from app.models.model_factory import get_model
-from app.services.evaluator_service import EvaluatorService
+from app.ai_judge.scenario_evaluator import ScenarioEvaluator
 from app.database_models.attack_run import AttackRun
 from app.database_models.attack_results import AttackResult
 from datetime import datetime
 
+SCENARIOS_PER_ATTACK = 10
 
 class AttackService:
 
@@ -14,7 +15,6 @@ class AttackService:
         user_id,
         model_type,
         selected_attack_types,
-        max_scenarios_per_attack=5,
         endpoint_url=None,
         api_key=None
     ):
@@ -22,16 +22,10 @@ class AttackService:
             attack_type.value if hasattr(attack_type, "value") else attack_type
             for attack_type in selected_attack_types
         ]
-
-        target_model = get_model(
-            model_type,
-            endpoint_url=endpoint_url,
-            api_key=api_key
-        )
-
+        target_model = get_model(model_type, endpoint_url=endpoint_url, api_key=api_key)
         evaluator_model = get_model("judge")
-        evaluator = EvaluatorService(evaluator_model)
-
+        evaluator = ScenarioEvaluator(evaluator_model)
+        include_improvement = model_type == "user"
         used_scenario_ids = (
             db.query(AttackResult.scenario_id)
             .join(AttackRun, AttackResult.attack_run_id == AttackRun.id)
@@ -54,7 +48,7 @@ class AttackService:
         db.refresh(attack_run)
 
         try:
-            collected_items = [] #+
+            collected_items = []
 
             for attack_type in normalized_attack_types:
                 scenarios = db.query(Scenario).filter(
@@ -65,15 +59,10 @@ class AttackService:
                     scenario for scenario in scenarios
                     if scenario.scenario_code not in used_scenario_ids
                 ]
-
-                selected_scenarios = available_scenarios[
-                    :max_scenarios_per_attack
-                ]
+                selected_scenarios = available_scenarios[:SCENARIOS_PER_ATTACK]
 
                 for scenario in selected_scenarios:
-                    response = target_model.generate(
-                        scenario.prompt
-                    )
+                    response = target_model.generate(scenario.prompt)
 
                     collected_items.append({  #+
                         "scenario_id": scenario.scenario_code,
@@ -85,41 +74,26 @@ class AttackService:
                     })
 
                     used_scenario_ids.add(scenario.scenario_code)
-
-            judge_items = [ #+
-                {
-                    "scenario_id": item["scenario_id"],
+                
+            for item in collected_items:
+                scenario_id = item["scenario_id"]
+                judge_item = {
                     "attack_type": item["attack_type"],
                     "severity": item["severity"],
                     "prompt": item["prompt"],
                     "expected_behavior": item["expected_behavior"],
                     "model_response": item["model_response"]
                 }
-                for item in collected_items
-            ]
 
-            evaluations = evaluator.evaluate_batch(judge_items) 
-
-            for item in collected_items:
-                scenario_id = item["scenario_id"]
-
-                evaluation = evaluations.get(
-                    scenario_id,
-                    evaluator._fallback_evaluation()
-                )
-
+                evaluation = evaluator.evaluate_one(judge_item, include_improvement=include_improvement)
                 response_safe_to_show = (
                     evaluation.get("response_safe_to_show", False)
                     and evaluation.get("passed", False)
                 )
-
-                unsafe_categories = evaluation.get(
-                    "unsafe_categories",
-                    []
-                )
-
+                unsafe_categories = evaluation.get("unsafe_categories", [])
                 if isinstance(unsafe_categories, list):
                     unsafe_categories = ",".join(unsafe_categories)
+
 
                 result = AttackResult(
                     attack_run_id=attack_run.id,
@@ -129,32 +103,22 @@ class AttackService:
                     model_response=(
                         item["model_response"]
                         if response_safe_to_show
-                        else "[hidden]" #+ اذا انجكم ان الرد خطر لاتخزنه للعرض 
+                        else "[hidden]"
                     ),
                     passed=evaluation.get("passed", False),
                     risk_score=evaluation.get("risk_score", 100),
-                    label=evaluation.get("label", "Unsafe"), #+
-                    evaluation_reason=evaluation.get( #+
-                        "reason",
-                        "No evaluation reason returned."
-                    ),
-                    improvement=evaluation.get( #+
-                        "improvement",
-                        "No improvement suggestion returned."
-                    ),
+                    evaluation_reason=evaluation.get("reason", "No evaluation reason returned."),
+                    improvement=evaluation.get("improvement"),
                     response_safe_to_show=response_safe_to_show,
-                    evidence_summary=evaluation.get("evidence_summary"), #+
-                    unsafe_categories=unsafe_categories, #+
-                    report_text=evaluation.get("report_text") #+
+                    evidence_summary=evaluation.get("evidence_summary"), 
+                    unsafe_categories=unsafe_categories,
                 )
 
                 db.add(result)
 
             end_time = datetime.utcnow()
             attack_run.completed_at = end_time
-            attack_run.duration_seconds = int(
-                (end_time - attack_run.created_at).total_seconds()
-            )
+            attack_run.duration_seconds = int((end_time - attack_run.created_at).total_seconds())
             attack_run.status = "completed"
 
             db.commit()

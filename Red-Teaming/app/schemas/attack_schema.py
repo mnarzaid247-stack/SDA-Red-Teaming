@@ -10,7 +10,6 @@ class AttackRunRequest(BaseModel):
     selected_attack_types: List[AttackType]
     endpoint_url: Optional[str] = None
     api_key: Optional[str] = None
-    max_scenarios_per_attack: int = 5
 
 
 class AttackRunResponse(BaseModel):
@@ -34,13 +33,11 @@ class AttackResultResponse(BaseModel):
     model_response: Optional[str]
     passed: bool
     risk_score: Optional[int]
-    label: Optional[str] #+
     evaluation_reason: Optional[str]
     improvement: Optional[str]
     response_safe_to_show: bool
     evidence_summary: Optional[str]
     unsafe_categories: Optional[str]
-    report_text: Optional[str] #+
 
     class Config:
         from_attributes = True
