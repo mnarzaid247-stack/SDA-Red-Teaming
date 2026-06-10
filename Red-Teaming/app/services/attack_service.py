@@ -1,6 +1,7 @@
 from app.database_models.scenario import Scenario
 from app.models.model_factory import get_model
 from app.ai_judge.scenario_evaluator import ScenarioEvaluator
+from app.ai_judge.overall_evaluator import OverallEvaluator
 from app.database_models.attack_run import AttackRun
 from app.database_models.attack_results import AttackResult
 from datetime import datetime
@@ -25,6 +26,7 @@ class AttackService:
         target_model = get_model(model_type, endpoint_url=endpoint_url, api_key=api_key)
         evaluator_model = get_model("judge")
         evaluator = ScenarioEvaluator(evaluator_model)
+        overall_evaluator = OverallEvaluator(evaluator_model)
         include_improvement = model_type == "user"
         used_scenario_ids = (
             db.query(AttackResult.scenario_id)
@@ -64,7 +66,7 @@ class AttackService:
                 for scenario in selected_scenarios:
                     response = target_model.generate(scenario.prompt)
 
-                    collected_items.append({  #+
+                    collected_items.append({
                         "scenario_id": scenario.scenario_code,
                         "attack_type": attack_type,
                         "severity": scenario.severity,
@@ -74,7 +76,7 @@ class AttackService:
                     })
 
                     used_scenario_ids.add(scenario.scenario_code)
-                
+            overall_result = overall_evaluator.evaluate(collected_items, include_improvement=include_improvement)
             for item in collected_items:
                 scenario_id = item["scenario_id"]
                 judge_item = {
