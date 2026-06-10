@@ -26,6 +26,7 @@ class AttackRunResponse(BaseModel):
 
 
 class AttackResultResponse(BaseModel):
+    
     id: str
     attack_type: str
     scenario_id: str

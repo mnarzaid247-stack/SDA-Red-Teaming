@@ -98,7 +98,7 @@ class AttackService:
                 for item in collected_items
             ]
 
-            evaluations = evaluator.evaluate_batch(judge_items) #+ صار الاستدعاء بعد ماتجمعت الردود
+            evaluations = evaluator.evaluate_batch(judge_items) 
 
             for item in collected_items:
                 scenario_id = item["scenario_id"]

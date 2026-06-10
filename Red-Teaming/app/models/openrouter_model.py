@@ -22,7 +22,7 @@ class OpenRouterModel(BaseModel):
                     "content": prompt
                 }
             ],
-            max_tokens=1200,
+            max_tokens=2500,
             temperature=0.2
         )
 

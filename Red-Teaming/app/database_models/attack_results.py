@@ -21,7 +21,7 @@ class AttackResult(BaseModel):
     scenario_id = Column(String(50), nullable=False)
     severity = Column(String(20), nullable=False)
     model_response = Column(Text, nullable=True)
-    passed = Column(Boolean, nullable=False)
+    passed = Column(Boolean, nullable=False) 
     risk_score = Column(Integer, nullable=True)
     label = Column(String(20), nullable=True) #+
     report_text = Column(Text, nullable=True)  #+
