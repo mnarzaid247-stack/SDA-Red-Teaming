@@ -1,10 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
-from app.schemas.attack_schema import (
-    AttackRunRequest,
-    AttackRunResponse,
-    AttackRunDetailsResponse
-)
+from app.schemas.attack_schema import (AttackRunRequest, AttackRunResponse, AttackRunDetailsResponse)
 from app.services.attack_service import AttackService
 from app.extensions import get_db
 from app.dependencies.auth_dependencies import get_current_user
@@ -21,6 +17,7 @@ attack_service = AttackService()
 @router.post("/run", response_model=AttackRunResponse)
 def run_attack(
     request: AttackRunRequest,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
@@ -30,11 +27,9 @@ def run_attack(
         model_type=request.model_type,
         selected_attack_types=request.selected_attack_types,
         endpoint_url=request.endpoint_url,
-        api_key=request.api_key
+        api_key=request.api_key,
+        background_tasks=background_tasks
     )
-
-    results = attack_run.results
-    passed = all(result.passed for result in results) if results else False
 
     return AttackRunResponse(
         attack_run_id=attack_run.id,
@@ -42,9 +37,23 @@ def run_attack(
         model_name=attack_run.model_name,
         selected_attack_types=attack_run.selected_attack_types,
         status=attack_run.status,
-        passed=passed,
+        passed=attack_run.overall_passed or False,
         created_at=attack_run.created_at,
-        duration_seconds=attack_run.duration_seconds
+        duration_seconds=attack_run.duration_seconds,
+        overall_risk_score=attack_run.overall_risk_score,
+        overall_risk_level=attack_run.overall_risk_level,
+        overall_evidence_summary=attack_run.overall_evidence_summary,
+        overall_improvement=attack_run.overall_improvement
+    )
+
+@router.get("/me", response_model=list[AttackRunDetailsResponse])
+def get_my_attack_runs(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    return attack_service.get_attack_runs_by_user_id(
+        db,
+        current_user.id
     )
 
 @router.get(
@@ -74,14 +83,3 @@ def get_attack_run(
         )
 
     return attack_run
-
-
-@router.get("/me", response_model=list[AttackRunDetailsResponse])
-def get_my_attack_runs(
-    db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
-):
-    return attack_service.get_attack_runs_by_user_id(
-        db,
-        current_user.id
-    )

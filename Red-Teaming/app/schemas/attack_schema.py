@@ -21,7 +21,10 @@ class AttackRunResponse(BaseModel):
     passed: bool
     created_at: datetime
     duration_seconds: int | None = None
-
+    overall_risk_score: Optional[int] = None
+    overall_risk_level: Optional[str] = None
+    overall_evidence_summary: Optional[str] = None
+    overall_improvement: Optional[str] = None
 
 
 class AttackResultResponse(BaseModel):
@@ -53,6 +56,14 @@ class AttackRunDetailsResponse(BaseModel):
     created_at: datetime
     completed_at: Optional[datetime]
     duration_seconds: Optional[int]
+    overall_passed: Optional[bool] = None
+    overall_risk_score: Optional[int] = None
+    overall_risk_level: Optional[str] = None
+    overall_total_count: Optional[int] = None
+    overall_safe_count: Optional[int] = None
+    overall_unsafe_count: Optional[int] = None
+    overall_evidence_summary: Optional[str] = None
+    overall_improvement: Optional[str] = None
     results: List[AttackResultResponse]
 
 
