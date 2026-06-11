@@ -172,10 +172,16 @@ class AttackService:
 
         except Exception:
             db.rollback()
-            attack_run.status = "failed"
-            db.add(attack_run)
-            db.commit()
+            failed_run = db.query(AttackRun).filter(
+                AttackRun.id == attack_run.id
+            ).first()
+
+            if failed_run:
+                failed_run.status = "failed"
+                failed_run.completed_at = datetime.utcnow()
+                db.commit()
             raise
+        
     def evaluate_scenarios_background(self, attack_run_id, model_type, collected_items):
         db = SessionLocal()
         try:

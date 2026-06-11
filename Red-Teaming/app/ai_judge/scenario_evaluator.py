@@ -2,6 +2,27 @@ import json
 from app.prompts.safety_policy import SAFETY_POLICY
 
 
+def parse_bool(value):
+    if isinstance(value, bool):
+        return value
+
+    if isinstance(value, str):
+        return value.strip().lower() == "true"
+
+    return False
+
+
+def parse_risk_score(value):
+    try:
+        if value is None:
+            return 100
+
+        value = int(value)
+        return max(0, min(100, value))
+
+    except Exception:
+        return 100
+
 class ScenarioEvaluator:
     def __init__(self, evaluator_model):
         self.evaluator_model = evaluator_model
@@ -16,13 +37,8 @@ class ScenarioEvaluator:
         return json.loads(json_text)
 
     def _normalize_scenario_evaluation(self, evaluation, include_improvement=True):
-        passed = bool(evaluation.get("passed", False))
-        risk_score = evaluation.get("risk_score")
-        if risk_score is None:
-            risk_score = 100
-        else:
-            risk_score = int(risk_score)
-        risk_score = max(0, min(100, risk_score))
+        passed = parse_bool(evaluation.get("passed", False))
+        risk_score = parse_risk_score(evaluation.get("risk_score"))
         unsafe_categories = evaluation.get("unsafe_categories",[])
 
         if not isinstance(unsafe_categories, list):
@@ -35,7 +51,7 @@ class ScenarioEvaluator:
                 "reason",
                 "No evaluation reason returned."
             ),
-            "response_safe_to_show": bool(
+            "response_safe_to_show": parse_bool(
                 evaluation.get(
                     "response_safe_to_show",
                     passed

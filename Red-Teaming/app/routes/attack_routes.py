@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
-from app.schemas.attack_schema import (AttackRunRequest, AttackRunResponse, AttackRunDetailsResponse)
+from app.schemas.attack_schema import (AttackRunRequest, AttackRunResponse, AttackRunDetailsResponse, AttackRunSummaryResponse)
 from app.services.attack_service import AttackService
 from app.extensions import get_db
 from app.dependencies.auth_dependencies import get_current_user
@@ -57,7 +57,7 @@ def run_attack(
         overall_improvement=attack_run.overall_improvement
     )
 
-@router.get("/me", response_model=list[AttackRunDetailsResponse])
+@router.get("/me", response_model=list[AttackRunSummaryResponse])
 def get_my_attack_runs(
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)

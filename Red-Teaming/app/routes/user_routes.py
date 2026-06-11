@@ -69,7 +69,7 @@ def login_user(
 
 
 @router.post("/register", response_model=UserResponse, status_code=201)
-def create_user(
+def register_user(
     user_data: RegisterUser,
     db: Session = Depends(get_db)
 ):
@@ -184,7 +184,7 @@ def delete_me(
         )
 
     return {
-        "message": "User deleted successfully"
+        "message": "Account deleted successfully"
     }
 
 

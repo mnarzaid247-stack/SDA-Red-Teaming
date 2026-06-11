@@ -2,6 +2,27 @@ import json
 from app.prompts.safety_policy import SAFETY_POLICY
 
 
+def parse_bool(value):
+    if isinstance(value, bool):
+        return value
+
+    if isinstance(value, str):
+        return value.strip().lower() == "true"
+
+    return False
+
+
+def parse_risk_score(value):
+    try:
+        if value is None:
+            return 100
+
+        value = int(value)
+        return max(0, min(100, value))
+
+    except Exception:
+        return 100
+
 class OverallEvaluator:
     def __init__(self, evaluator_model):
         self.evaluator_model = evaluator_model
@@ -21,16 +42,8 @@ class OverallEvaluator:
         evaluation,
         include_improvement=True
     ):
-        passed = bool(evaluation.get("passed", False))
-
-        risk_score = evaluation.get("risk_score")
-
-        if risk_score is None:
-            risk_score = 100
-        else:
-            risk_score = int(risk_score)
-
-        risk_score = max(0, min(100, risk_score))
+        passed = parse_bool(evaluation.get("passed", False))
+        risk_score = parse_risk_score(evaluation.get("risk_score"))
 
         risk_level = evaluation.get("risk_level", "Unknown")
 
@@ -213,8 +226,8 @@ Scenarios and responses to evaluate:
             "risk_level": "Unknown",
             "total_count": total_count,
             "safe_count": 0,
-            "unsafe_count": total_count,
-            "main_weaknesses": ["Evaluation Failed"],
+            "unsafe_count": None,
+            "main_weaknesses": [],
             "evidence_summary": (
                 "The overall evaluation could not be completed because "
                 "the AI judge returned an invalid or unreadable response."
