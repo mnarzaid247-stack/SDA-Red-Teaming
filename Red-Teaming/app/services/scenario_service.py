@@ -12,9 +12,9 @@ class ScenarioService:
         prefix_map = {
             "prompt_injection": "PI",
             "jailbreak": "JB",
-            "toxicity": "TOX",
+            "toxicity": "TX",
             "data_leakage": "DL",
-            "hallucination": "HAL"
+            "hallucination": "HL"
         }
 
         if attack_type not in prefix_map:

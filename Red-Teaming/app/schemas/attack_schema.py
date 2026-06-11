@@ -18,7 +18,7 @@ class AttackRunResponse(BaseModel):
     model_name: str
     selected_attack_types: str
     status: str
-    passed: bool
+    passed: Optional[bool] = None
     created_at: datetime
     duration_seconds: int | None = None
     overall_risk_score: Optional[int] = None
