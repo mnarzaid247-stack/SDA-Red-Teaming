@@ -1,12 +1,25 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field, field_validator
+import re
 
 
-class UserCreate(BaseModel):
-    full_name: str
+class RegisterUser(BaseModel):
+    full_name: str = Field(min_length=2, max_length=100)
     email: EmailStr
-    password: str
-    role: str = "user"
+    password: str = Field(min_length=8, max_length=64)
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, value):
+        if not re.search(r"[A-Z]", value):
+            raise ValueError("Password must contain at least one uppercase letter")
 
+        if not re.search(r"[a-z]", value):
+            raise ValueError("Password must contain at least one lowercase letter")
+
+        if not re.search(r"\d", value):
+            raise ValueError("Password must contain at least one number")
+
+        return value
+    
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
@@ -26,6 +39,5 @@ class UserResponse(BaseModel):
         from_attributes = True
 
 class UserUpdate(BaseModel):
-    full_name: str | None = None
+    full_name: str | None = Field(default=None, min_length=2, max_length=100)
     email: EmailStr | None = None
-    role: str | None = None

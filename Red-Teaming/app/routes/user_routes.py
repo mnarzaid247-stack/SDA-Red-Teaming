@@ -2,12 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.extensions import get_db
 from app.services.user_service import UserService
-from app.dependencies.auth_dependencies import (
-    get_current_user,
-    get_current_admin
-)
+from app.dependencies.auth_dependencies import (get_current_user, get_current_admin)
 from app.schemas.user_schema import (
-    UserCreate,
+    RegisterUser,
     UserLogin,
     UserResponse,
     UserUpdate,
@@ -71,11 +68,9 @@ def login_user(
     )
 
 
-
-
-@router.post("", response_model=UserResponse, status_code=201)
+@router.post("/register", response_model=UserResponse, status_code=201)
 def create_user(
-    user_data: UserCreate,
+    user_data: RegisterUser,
     db: Session = Depends(get_db)
 ):
     user = user_service.create_user(
@@ -120,19 +115,23 @@ def get_user(
     return user
 
 
-@router.put("/{user_id}", response_model=UserResponse)
-def update_user(
-    user_id: str,
+@router.put("/me", response_model=UserResponse)
+def update_me(
     user_data: UserUpdate,
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    user = user_service.update_user(
-        db,
-        current_user.id,
-        user_data
-    )
-
+    try:
+        user = user_service.update_user(
+            db,
+            current_user.id,
+            user_data
+        )
+    except ValueError as error:
+        raise HTTPException(
+            status_code=409,
+            detail=str(error)
+        )
     if not user:
         raise HTTPException(
             status_code=404,
@@ -142,15 +141,62 @@ def update_user(
     return user
 
 
+@router.put("/{user_id}", response_model=UserResponse)
+def update_any_user(
+    user_id: str,
+    user_data: UserUpdate,
+    db: Session = Depends(get_db),
+    current_admin = Depends(get_current_admin)
+):
+    try:
+        user = user_service.update_user(
+            db,
+            user_id,
+            user_data
+        )
+    except ValueError as error:
+        raise HTTPException(
+            status_code=409,
+            detail=str(error)
+        )
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    return user
+
+
+@router.delete("/me")
+def delete_me(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)):
+    user = user_service.delete_user(
+        db,
+        current_user.id
+    )
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    return {
+        "message": "User deleted successfully"
+    }
+
+
 @router.delete("/{user_id}")
 def delete_user(
     user_id: str,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    current_admin = Depends(get_current_admin)
 ):
     user = user_service.delete_user(
         db,
-        current_user.id
+        user_id
     )
 
     if not user:

@@ -1,5 +1,7 @@
 from app.database_models.user import User
 from app.services.auth_service import AuthService
+from sqlalchemy.exc import IntegrityError
+
 class UserService:
     auth_service = AuthService()
     def create_user(self, db, user_data):
@@ -19,9 +21,13 @@ class UserService:
             role="user"
         )
 
-        db.add(user)
-        db.commit()
-        db.refresh(user)
+        try:
+            db.add(user)
+            db.commit()
+            db.refresh(user)
+        except IntegrityError:
+            db.rollback()
+            return None
 
         return user
 
@@ -48,11 +54,23 @@ class UserService:
 
         update_data = user_data.model_dump(exclude_unset=True)
 
+        new_email = update_data.get("email")
+
+        if new_email and new_email != user.email:
+            existing_user = self.get_user_by_email(db, new_email)
+
+            if existing_user:
+                raise ValueError("Email already exists")
+
         for key, value in update_data.items():
             setattr(user, key, value)
 
-        db.commit()
-        db.refresh(user)
+        try:
+            db.commit()
+            db.refresh(user)
+        except IntegrityError:
+            db.rollback()
+            raise ValueError("Email already exists")
 
         return user
     
