@@ -2,11 +2,18 @@ from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
 from app.schemas.scenario_schema import AttackType
+from enum import Enum
 
+
+class ModelType(str, Enum):
+    gemma = "gemma"
+    gpt = "gpt"
+    llama = "llama"
+    user = "user"
 
 
 class AttackRunRequest(BaseModel):
-    model_type: str
+    model_type: ModelType
     selected_attack_types: List[AttackType]
     endpoint_url: Optional[str] = None
     api_key: Optional[str] = None

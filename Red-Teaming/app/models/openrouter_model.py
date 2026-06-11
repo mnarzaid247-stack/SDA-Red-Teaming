@@ -6,6 +6,8 @@ from app.models.config import OPENROUTER_API_KEY
 class OpenRouterModel(BaseModel):
 
     def __init__(self, model_name):
+        if not OPENROUTER_API_KEY:
+            raise RuntimeError("OPENROUTER_API_KEY is missing from environment variables")
         self.client = OpenAI(
             base_url="https://openrouter.ai/api/v1",
             api_key=OPENROUTER_API_KEY

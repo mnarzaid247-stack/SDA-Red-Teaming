@@ -21,15 +21,26 @@ def run_attack(
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    attack_run = attack_service.run_attack(
-        db=db,
-        user_id=current_user.id,
-        model_type=request.model_type,
-        selected_attack_types=request.selected_attack_types,
-        endpoint_url=request.endpoint_url,
-        api_key=request.api_key,
-        background_tasks=background_tasks
-    )
+    try:
+        attack_run = attack_service.run_attack(
+            db=db,
+            user_id=current_user.id,
+            model_type=request.model_type.value,
+            selected_attack_types=request.selected_attack_types,
+            endpoint_url=request.endpoint_url,
+            api_key=request.api_key,
+            background_tasks=background_tasks
+        )
+    except ValueError as error:
+        raise HTTPException(
+            status_code=400,
+            detail=str(error)
+        )
+    except RuntimeError as error:
+        raise HTTPException(
+            status_code=500,
+            detail=str(error)
+        )
 
     return AttackRunResponse(
         attack_run_id=attack_run.id,
