@@ -53,7 +53,9 @@ class UserService:
             return None
 
         update_data = user_data.model_dump(exclude_unset=True)
-
+        if not update_data:
+            raise ValueError("No update data provided")
+        
         new_email = update_data.get("email")
 
         if new_email and new_email != user.email:
