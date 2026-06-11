@@ -1,6 +1,11 @@
 from pydantic import BaseModel, EmailStr, Field, field_validator
+from enum import Enum
 import re
 
+
+class UserRole(str, Enum):
+    user = "user"
+    admin = "admin"
 
 class RegisterUser(BaseModel):
     full_name: str = Field(min_length=2, max_length=100)
@@ -45,4 +50,4 @@ class UserUpdate(BaseModel):
 class AdminUserUpdate(BaseModel):
     full_name: str | None = Field(default=None, min_length=2, max_length=100)
     email: EmailStr | None = None
-    role: str | None = None
+    role: UserRole | None = None

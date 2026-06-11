@@ -161,8 +161,13 @@ def update_any_user(
             user_data
         )
     except ValueError as error:
+        status_code = 400
+
+        if str(error) == "Email already exists":
+            status_code = 409
+
         raise HTTPException(
-            status_code=409,
+            status_code=status_code,
             detail=str(error)
         )
     if not user:

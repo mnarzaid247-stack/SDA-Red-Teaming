@@ -19,7 +19,7 @@ router = APIRouter(
 scenario_service = ScenarioService()
 
 
-@router.post("", response_model=ScenarioResponse)
+@router.post("", response_model=ScenarioResponse, status_code=201)
 def create_scenario(
     scenario_data: ScenarioCreate,
     db: Session = Depends(get_db),

@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from enum import Enum
+from pydantic import Field
 
 
 class AttackType(str, Enum):
@@ -13,8 +14,8 @@ class AttackType(str, Enum):
 class ScenarioCreate(BaseModel):
     attack_type: AttackType
     prompt: str
-    expected_behavior: str
-    severity: str
+    expected_behavior: str = Field(min_length=1)
+    severity: str = Field(min_length=1)
 
 
 class ScenarioUpdate(BaseModel):
