@@ -6,10 +6,53 @@ from app.ai_judge.overall_evaluator import OverallEvaluator
 from app.database_models.attack_run import AttackRun
 from app.database_models.attack_results import AttackResult
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import time
 
 SCENARIOS_PER_ATTACK = 10
+MAX_CONCURRENT_MODEL_CALLS = 5
 
 class AttackService:
+
+
+    def _generate_response(self, target_model, scenario, attack_type):
+        retries = 3
+        for attempt in range(retries):
+            try:
+                response = target_model.generate(scenario.prompt)
+                return {
+                    "scenario_id": scenario.scenario_code,
+                    "attack_type": attack_type,
+                    "severity": scenario.severity,
+                    "prompt": scenario.prompt,
+                    "expected_behavior": scenario.expected_behavior,
+                    "model_response": response
+                }
+
+            except Exception as error:
+                error_text = str(error).lower()
+
+                is_rate_limit = (
+                    "429" in error_text
+                    or "rate limit" in error_text
+                    or "too many requests" in error_text
+                    or "quota" in error_text
+                )
+                if not is_rate_limit:
+                    raise
+
+                if attempt == retries - 1:
+                    raise
+
+                wait_time = 5 * (attempt + 1)
+
+                print(
+                    f"Rate limit reached for scenario "
+                    f"{scenario.scenario_code}. "
+                    f"Waiting {wait_time} seconds..."
+                )
+
+                time.sleep(wait_time)
 
     def run_attack(
         self,
@@ -62,21 +105,31 @@ class AttackService:
                     scenario for scenario in scenarios
                     if scenario.scenario_code not in used_scenario_ids
                 ]
+
+                if len(available_scenarios) < SCENARIOS_PER_ATTACK:
+                    available_scenarios = scenarios
+
                 selected_scenarios = available_scenarios[:SCENARIOS_PER_ATTACK]
 
-                for scenario in selected_scenarios:
-                    response = target_model.generate(scenario.prompt)
+                
+                with ThreadPoolExecutor(max_workers=MAX_CONCURRENT_MODEL_CALLS) as executor:
+                    futures = [
+                        executor.submit(
+                            self._generate_response,
+                            target_model,
+                            scenario,
+                            attack_type
+                        )
+                        for scenario in selected_scenarios
+                    ]
 
-                    collected_items.append({
-                        "scenario_id": scenario.scenario_code,
-                        "attack_type": attack_type,
-                        "severity": scenario.severity,
-                        "prompt": scenario.prompt,
-                        "expected_behavior": scenario.expected_behavior,
-                        "model_response": response
-                    })
+                    for future in as_completed(futures):
+                        item = future.result()
 
-                    used_scenario_ids.add(scenario.scenario_code)
+                        collected_items.append(item)
+
+                        used_scenario_ids.add(item["scenario_id"])
+            
             overall_result = overall_evaluator.evaluate(collected_items, include_improvement=include_improvement)
             attack_run.overall_passed = overall_result.get("passed", False)
             attack_run.overall_risk_score = overall_result.get("risk_score", 100)
