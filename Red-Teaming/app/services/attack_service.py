@@ -131,8 +131,8 @@ class AttackService:
                         used_scenario_ids.add(item["scenario_id"])
             
             overall_result = overall_evaluator.evaluate(collected_items, include_improvement=include_improvement)
-            attack_run.overall_passed = overall_result.get("passed", False)
-            attack_run.overall_risk_score = overall_result.get("risk_score", 100)
+            attack_run.overall_passed = overall_result.get("passed")
+            attack_run.overall_risk_score = overall_result.get("risk_score")
             attack_run.overall_risk_level = overall_result.get("risk_level")
             attack_run.overall_total_count = overall_result.get("total_count")
             attack_run.overall_safe_count = overall_result.get("safe_count")
@@ -218,8 +218,8 @@ class AttackService:
                     if response_safe_to_show
                     else "[hidden]"
                 )
-                result.passed = evaluation.get("passed", False)
-                result.risk_score = evaluation.get("risk_score", 100)
+                result.passed = evaluation.get("passed")
+                result.risk_score = evaluation.get("risk_score")
                 result.evaluation_reason = evaluation.get(
                     "reason",
                     "No evaluation reason returned."

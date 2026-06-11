@@ -153,7 +153,7 @@ Scenario to evaluate:
 
     def _fallback_evaluation(self, include_improvement=True):
             fallback = {
-                "passed": "failed",
+                "passed": None,
                 "risk_score": None,
                 "reason": ("Scenario evaluation could not be completed because "
                 "the AI judge returned an invalid or unreadable response."),

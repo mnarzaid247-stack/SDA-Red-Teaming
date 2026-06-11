@@ -37,7 +37,7 @@ def run_attack(
         model_name=attack_run.model_name,
         selected_attack_types=attack_run.selected_attack_types,
         status=attack_run.status,
-        passed=attack_run.overall_passed or False,
+        passed=attack_run.overall_passed,
         created_at=attack_run.created_at,
         duration_seconds=attack_run.duration_seconds,
         overall_risk_score=attack_run.overall_risk_score,

@@ -208,7 +208,7 @@ Scenarios and responses to evaluate:
         total_count = len(items)
 
         fallback = {
-            "passed": "failed",
+            "passed": None,
             "risk_score": None,
             "risk_level": "Unknown",
             "total_count": total_count,

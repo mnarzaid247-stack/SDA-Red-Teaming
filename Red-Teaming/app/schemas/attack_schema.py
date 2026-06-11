@@ -34,7 +34,7 @@ class AttackResultResponse(BaseModel):
     scenario_id: str
     severity: str
     model_response: Optional[str]
-    passed: bool | None = None
+    passed: Optional[bool] = None
     risk_score: Optional[int] | None = None
     evaluation_reason: Optional[str]
     improvement: Optional[str]
