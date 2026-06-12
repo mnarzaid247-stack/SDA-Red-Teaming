@@ -57,10 +57,11 @@ The platform currently supports five major AI risk categories:
 2. The user selects a target model and one or more attack types.
 3. The platform loads matching scenarios from the scenario library.
 4. Each scenario prompt is sent to the selected model.
-5. The AI judge evaluates the model's response.
-6. Results are saved with severity, pass/fail status, risk score, evidence, unsafe categories, and suggested improvements.
-7. The attack run receives an overall score, risk level, safe/unsafe counts, and summary.
-8. The user reviews their attack history and detailed results through the API.
+5. The overall evaluator scores the full attack run.
+6. Scenario-level evaluation runs in the background for each model response.
+7. Results are saved with severity, pass/fail status, risk score, evidence, unsafe categories, and suggested improvements.
+8. Unsafe responses are hidden unless the evaluator marks them safe to show.
+9. The user reviews their attack history and detailed results through the API.
 
 ## Project Structure
 
@@ -193,8 +194,8 @@ Database tables are created automatically when the app starts, and the default a
 
 Mermaid diagrams are included in the `Diagrams` folder:
 
-- `database.mmd` - database design
-- `flowchart.mmd` - platform workflow
+- `database.mmd` - database entities and relationships
+- `flowchart.mmd` - backend architecture and attack evaluation flow
 
 ## Team
 

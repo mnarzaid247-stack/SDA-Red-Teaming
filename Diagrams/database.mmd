@@ -39,8 +39,6 @@ erDiagram
         string model_name
         string selected_attack_types
         string status
-        datetime created_at
-        datetime updated_at
         datetime completed_at
         int duration_seconds
         boolean overall_passed
@@ -51,6 +49,8 @@ erDiagram
         int overall_unsafe_count
         text overall_evidence_summary
         text overall_improvement
+        datetime created_at
+        datetime updated_at
     }
 
     ATTACK_RESULTS {
@@ -73,5 +73,5 @@ erDiagram
 
     USERS ||--o{ AI_MODELS : owns
     USERS ||--o{ ATTACK_RUNS : launches
-    ATTACK_RUNS ||--o{ ATTACK_RESULTS : contains
-    SCENARIOS ||--o{ ATTACK_RESULTS : evaluated as
+    ATTACK_RUNS ||--o{ ATTACK_RESULTS : stores
+    SCENARIOS ||--o{ ATTACK_RESULTS : referenced_by_code

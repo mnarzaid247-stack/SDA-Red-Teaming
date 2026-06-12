@@ -1,55 +1,87 @@
 flowchart TD
 
-    Client[API Client / Swagger UI]
-    FastAPI[FastAPI App]
-    Auth[JWT Auth and RBAC]
-    Users[Users API]
-    Scenarios[Scenarios API]
-    Attacks[Attacks API]
-    ScenarioLibrary[Seeded Scenario Library]
-    AttackService[Attack Service]
-    ModelFactory[Model Factory]
-    TargetModel[Target Model]
-    Groq[Groq API]
-    OpenRouter[OpenRouter API]
-    CustomEndpoint[Custom User Endpoint]
-    ScenarioJudge[Scenario Evaluator]
-    OverallJudge[Overall Evaluator]
-    SafetyPolicy[Safety Policy Prompt]
-    DB[(SQLite Database)]
+    subgraph ClientLayer["Client Layer"]
+        Client["API Client / Swagger UI"]
+    end
 
-    Client --> FastAPI
-    FastAPI --> Users
-    FastAPI --> Scenarios
-    FastAPI --> Attacks
+    subgraph APILayer["FastAPI Backend"]
+        App["FastAPI App"]
+        Auth["JWT Authentication and RBAC"]
+        UsersAPI["Users API"]
+        ScenariosAPI["Scenarios API"]
+        AttacksAPI["Attacks API"]
+    end
 
-    Users --> Auth
-    Scenarios --> Auth
-    Attacks --> Auth
+    subgraph ServiceLayer["Application Services"]
+        UserService["User Service"]
+        ScenarioService["Scenario Service"]
+        AttackService["Attack Service"]
+        ScenarioLibrary["Seeded Scenario Library"]
+        ModelFactory["Model Factory"]
+    end
 
-    Auth --> DB
-    Users --> DB
-    Scenarios --> DB
+    subgraph EvaluationLayer["Attack and Evaluation Pipeline"]
+        TargetModel["Target Model"]
+        OverallEvaluator["Overall Evaluator"]
+        ScenarioEvaluator["Scenario Evaluator"]
+        SafetyPolicy["Safety Policy Prompt"]
+    end
 
-    ScenarioLibrary --> Scenarios
-    ScenarioLibrary --> DB
+    subgraph Providers["External Model Providers"]
+        Groq["Groq API"]
+        OpenRouter["OpenRouter API"]
+        CustomEndpoint["Custom User Endpoint"]
+    end
 
-    Attacks --> AttackService
-    AttackService --> DB
+    subgraph DataLayer["Data Layer"]
+        Database[("SQLite Database")]
+        UsersTable["users"]
+        ScenariosTable["scenarios"]
+        AttackRunsTable["attack_runs"]
+        AttackResultsTable["attack_results"]
+        AIModelsTable["ai_models"]
+    end
+
+    Client --> App
+
+    App --> UsersAPI
+    App --> ScenariosAPI
+    App --> AttacksAPI
+
+    UsersAPI --> Auth
+    ScenariosAPI --> Auth
+    AttacksAPI --> Auth
+
+    UsersAPI --> UserService
+    ScenariosAPI --> ScenarioService
+    AttacksAPI --> AttackService
+
+    ScenarioLibrary --> ScenarioService
+    ScenarioService --> ScenariosTable
+
     AttackService --> ModelFactory
-    AttackService --> ScenarioJudge
-    AttackService --> OverallJudge
-
     ModelFactory --> TargetModel
+
     TargetModel --> Groq
     TargetModel --> OpenRouter
     TargetModel --> CustomEndpoint
 
-    ScenarioJudge --> SafetyPolicy
-    OverallJudge --> SafetyPolicy
-    ScenarioJudge --> OpenRouter
-    OverallJudge --> OpenRouter
+    AttackService --> OverallEvaluator
+    AttackService --> ScenarioEvaluator
 
-    ScenarioJudge --> DB
-    OverallJudge --> DB
-    AttackService --> DB
+    OverallEvaluator --> SafetyPolicy
+    ScenarioEvaluator --> SafetyPolicy
+    OverallEvaluator --> OpenRouter
+    ScenarioEvaluator --> OpenRouter
+
+    UserService --> UsersTable
+    Auth --> UsersTable
+    AttackService --> ScenariosTable
+    AttackService --> AttackRunsTable
+    AttackService --> AttackResultsTable
+
+    Database --- UsersTable
+    Database --- ScenariosTable
+    Database --- AttackRunsTable
+    Database --- AttackResultsTable
+    Database --- AIModelsTable
