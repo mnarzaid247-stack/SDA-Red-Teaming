@@ -1,129 +1,205 @@
-# Red Teaming Platform
+# SDA Red Teaming Platform
 
-## Overview
+An AI security testing platform that red-teams language models, evaluates their responses, and turns risky behavior into clear, reviewable security results.
 
-Red Teaming Platform is a web-based AI security testing platform designed to evaluate the robustness of AI models against adversarial attacks such as jailbreaks, prompt injection, data leakage, and unsafe output generation.
+SDA Red Teaming Platform helps teams test how AI models behave under adversarial prompts such as jailbreaks, prompt injection, data leakage attempts, toxic requests, and hallucination checks. Instead of running manual tests one by one, the platform provides a structured backend for launching attacks, judging responses, storing evidence, and tracking risk over time.
 
-The platform allows users to test multiple AI models, analyze responses, evaluate risk levels, and review security results through an interactive dashboard.
+## What Makes It Stand Out
 
----
+- Multi-attack AI red teaming in one API
+- AI-judge evaluation for every model response
+- Overall risk score, risk level, pass/fail status, and improvement advice
+- Safe-response controls that hide risky model output when it should not be displayed
+- Scenario library seeded automatically at startup
+- Custom scenario management for admins
+- Attack history with detailed per-scenario results
+- Support for hosted models and user-provided model endpoints
+- JWT authentication with user and admin access control
+- Clean FastAPI documentation through Swagger UI
 
-# Problem
+## Core Features
 
-As AI models become increasingly integrated into applications and systems, security risks such as unsafe responses, jailbreaks, and sensitive data leakage are becoming more common.
+| Area | Features |
+| --- | --- |
+| Authentication | User registration, login, JWT bearer tokens, password hashing, profile updates, account deletion |
+| Authorization | Regular user access, admin-only management, protected attack results |
+| Scenario Library | Seeded attack scenarios, scenario codes, filtering by attack type, admin create/update/delete |
+| Attack Runner | Runs selected attack types against selected model targets and stores each test run |
+| AI Evaluation | Scenario-level judging, overall judging, risk score, risk level, safe/unsafe counts, evidence summary |
+| Output Safety | Marks whether model responses are safe to show and protects sensitive or harmful outputs |
+| Model Support | Groq models, OpenRouter models, OpenRouter judge model, and custom user endpoints |
+| Persistence | SQLite database with SQLAlchemy models for users, scenarios, attack runs, and results |
+| Documentation | Interactive API docs at `/docs` plus Mermaid database and workflow diagrams |
 
-Many AI security tests are currently performed manually without a structured evaluation process, making it difficult to detect vulnerabilities early.
+## Attack Coverage
 
-Key challenges include:
+The platform currently supports five major AI risk categories:
 
-- Difficulty testing AI models against different attack types
-- Risk of unsafe or harmful outputs
-- Possible sensitive information leakage
-- Lack of centralized AI security evaluation systems
+- `prompt_injection` - tests whether a model follows malicious instructions that override its role or policy
+- `jailbreak` - tests attempts to bypass safety behavior through roleplay or manipulation
+- `toxicity` - checks whether the model produces harmful, abusive, or unsafe language
+- `data_leakage` - tests whether the model exposes secrets, private data, or hidden instructions
+- `hallucination` - checks whether the model invents unsupported or unreliable information
 
----
+## Supported Model Targets
 
-# Solution
+| Model Type | Provider |
+| --- | --- |
+| `llama` | Groq |
+| `gpt` | Groq |
+| `gemma` | OpenRouter |
+| `user` | Custom endpoint URL |
+| `judge` | OpenRouter evaluation model |
 
-The platform provides a centralized environment for testing and evaluating AI model security.
+## How It Works
 
-Users can:
+1. A user registers or logs in.
+2. The user selects a target model and one or more attack types.
+3. The platform loads matching scenarios from the scenario library.
+4. Each scenario prompt is sent to the selected model.
+5. The AI judge evaluates the model's response.
+6. Results are saved with severity, pass/fail status, risk score, evidence, unsafe categories, and suggested improvements.
+7. The attack run receives an overall score, risk level, safe/unsafe counts, and summary.
+8. The user reviews their attack history and detailed results through the API.
 
-- Select AI models such as GPT, Gemini, and open-source models
-- Run predefined attack scenarios
-- Create custom attack prompts
-- Analyze AI responses automatically
-- Evaluate risk severity levels
-- Compare model performance
-- Review test history and statistics
+## Project Structure
 
-The platform also supports testing lightweight and open-source AI models with weaker safety protections in order to validate the effectiveness of the platform’s security analysis and risk detection system.
+```text
+SDA-Red-Teaming/
+|-- README.md
+|-- Diagrams/
+|   |-- database.mmd
+|   `-- flowchart.mmd
+`-- Red-Teaming/
+    |-- run.py
+    |-- requirements.txt
+    |-- test_Ai.py
+    `-- app/
+        |-- main.py
+        |-- routes/
+        |-- services/
+        |-- schemas/
+        |-- database_models/
+        |-- models/
+        |-- attacks/
+        |-- ai_judge/
+        `-- prompts/
+```
 
-The system protects sensitive AI outputs using role-based access control (RBAC), where risky responses are hidden from regular users and only accessible to authorized roles.
+## API Modules
 
----
+### Users
 
-# Main Features
+Base path: `/users`
 
-- AI model security testing
-- Prompt Injection testing
-- Jailbreak testing
-- Data leakage detection
-- Unsafe output detection
-- Interactive dashboard
-- Risk analysis system
-- Model comparison
-- Test history tracking
-- Role-based access control (RBAC)
-- Support for testing both highly secured and lightweight/open-source AI models for security evaluation comparison.
+- Register and log in
+- Get, update, or delete the current user
+- Admin list, view, update, and delete users
 
----
+### Scenarios
 
-# Supported AI Models
+Base path: `/scenarios`
 
-- GPT
-- Gemini
-- Mistral 7B Instruct
-- Other open-source AI models
+- Get all scenarios
+- Filter scenarios by attack type
+- Get scenario details
+- Admin create, update, and delete scenarios
 
----
+### Attacks
 
-# Technologies
+Base path: `/attacks`
 
-## Backend
+- Run a new attack test
+- View the current user's attack history
+- View detailed attack results
+- Admins can access attack runs across users
 
-- FastAPI
+## Tech Stack
+
 - Python
+- FastAPI
+- Uvicorn
 - SQLAlchemy
 - SQLite
-- JWT Authentication
+- Pydantic
+- JWT with `python-jose`
+- Password hashing with `passlib` and `bcrypt`
+- Groq API
+- OpenRouter API
+- Mermaid diagrams
 
-## Frontend
+## Setup
 
-- React
+1. Go to the backend directory:
 
-## APIs
+```bash
+cd Red-Teaming
+```
 
-- OpenAI API
-- Gemini API
+2. Create and activate a virtual environment:
 
----
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+```
 
-# Platform Workflow
+3. Install dependencies:
 
-1. User logs into the platform
-2. User selects an AI model
-3. User selects or creates an attack scenario
-4. The platform sends prompts to the AI model
-5. The system analyzes the AI response
-6. Risk levels and security results are generated
-7. Results are displayed in the dashboard
+```bash
+pip install -r requirements.txt
+```
 
----
+4. Create a `.env` file in the `Red-Teaming` directory:
 
-# Security Features
+```env
+SECRET_KEY=replace-with-a-secure-secret
+GROQ_API_KEY=your-groq-api-key
+OPENROUTER_API_KEY=your-openrouter-api-key
 
-The platform includes a role-based access control system to protect sensitive AI responses.
+GROQ_LLAMA_MODEL=llama-3.1-8b-instant
+GROQ_GPT_MODEL=openai/gpt-oss-20b
+OPENROUTER_GEMMA_MODEL=google/gemma-4-31b-it:free
+OPENROUTER_JUDGE_MODEL=qwen/qwen3-32b
+```
 
-- Regular users can only view analysis results and risk levels
-- Admins and authorized users can access full AI responses for verification and review purposes
+5. Run the API:
 
----
+```bash
+python run.py
+```
 
-# Future Improvements
+The server starts at:
 
-- Additional AI model support
-- Advanced AI response analysis
-- Automated reporting system
-- Real-time monitoring
-- More attack scenario libraries
+```text
+http://127.0.0.1:8000
+```
 
----
+Swagger API documentation:
 
-# Team
+```text
+http://127.0.0.1:8000/docs
+```
+
+## Database
+
+The platform uses SQLite:
+
+```text
+Red-Teaming/red_teaming.db
+```
+
+Database tables are created automatically when the app starts, and the default attack scenarios are seeded during startup.
+
+## Diagrams
+
+Mermaid diagrams are included in the `Diagrams` folder:
+
+- `database.mmd` - database design
+- `flowchart.mmd` - platform workflow
+
+## Team
 
 - Manar Alzhrani
 - Nora
 - Lujain
 - Ghada
-
