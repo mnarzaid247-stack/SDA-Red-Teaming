@@ -1,72 +1,77 @@
 erDiagram
 
     USERS {
-        int id PK
+        string id PK
         string full_name
         string email
         string password_hash
         string role
         datetime created_at
+        datetime updated_at
     }
 
     AI_MODELS {
-        int id PK
+        string id PK
+        string user_id FK
         string name
         string provider
-        string model_key
-        boolean is_active
+        string endpoint_url
+        string model_name
         datetime created_at
+        datetime updated_at
     }
 
-    ATTACK_SCENARIOS {
-        int id PK
-        string title
-        string description
+    SCENARIOS {
+        string id PK
         string attack_type
-        text prompt_text
-        boolean is_predefined
-        int created_by FK
+        text prompt
+        text expected_behavior
+        string severity
+        string scenario_code
         datetime created_at
+        datetime updated_at
     }
 
-    TEST_RUNS {
-        int id PK
-        int user_id FK
-        int model_id FK
-        text custom_prompt
+    ATTACK_RUNS {
+        string id PK
+        string user_id FK
+        string model_provider
+        string model_name
+        string selected_attack_types
         string status
         datetime created_at
+        datetime updated_at
         datetime completed_at
+        int duration_seconds
+        boolean overall_passed
+        int overall_risk_score
+        string overall_risk_level
+        int overall_total_count
+        int overall_safe_count
+        int overall_unsafe_count
+        text overall_evidence_summary
+        text overall_improvement
     }
 
-    TEST_RUN_SCENARIOS {
-        int id PK
-        int test_run_id FK
-        int scenario_id FK
-    }
-
-    TEST_RESULTS {
-        int id PK
-        int test_run_id FK
-        int scenario_id FK
-        text raw_response
-        text masked_response
-        boolean is_sensitive
-        int safety_score
-        string risk_level
-        string result
-        text analysis_summary
-        text detected_issues
+    ATTACK_RESULTS {
+        string id PK
+        string attack_run_id FK
+        string attack_type
+        string scenario_id
+        string severity
+        text model_response
+        boolean passed
+        int risk_score
+        text evaluation_reason
+        text improvement
+        boolean response_safe_to_show
+        text evidence_summary
+        text unsafe_categories
         datetime created_at
+        datetime updated_at
     }
 
-    USERS ||--o{ ATTACK_SCENARIOS : creates
-    USERS ||--o{ TEST_RUNS : runs
-
-    AI_MODELS ||--o{ TEST_RUNS : tested_on
-
-    TEST_RUNS ||--o{ TEST_RUN_SCENARIOS : contains
-    ATTACK_SCENARIOS ||--o{ TEST_RUN_SCENARIOS : included_in
-
-    TEST_RUNS ||--o{ TEST_RESULTS : generates
-    ATTACK_SCENARIOS ||--o{ TEST_RESULTS : tested_as
+    USERS ||--o{ AI_MODELS : owns
+    USERS ||--o{ ATTACK_RUNS : launches
+    ATTACK_RUNS ||--o{ ATTACK_RESULTS : contains
+    SCENARIOS ||--o{ ATTACK_RESULTS : evaluated as

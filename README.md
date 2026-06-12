@@ -73,7 +73,6 @@ SDA-Red-Teaming/
 `-- Red-Teaming/
     |-- run.py
     |-- requirements.txt
-    |-- test_Ai.py
     `-- app/
         |-- main.py
         |-- routes/

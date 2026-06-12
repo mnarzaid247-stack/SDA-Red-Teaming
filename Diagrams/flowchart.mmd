@@ -1,37 +1,55 @@
 flowchart TD
 
-    USER[User / Frontend]
+    Client[API Client / Swagger UI]
+    FastAPI[FastAPI App]
+    Auth[JWT Auth and RBAC]
+    Users[Users API]
+    Scenarios[Scenarios API]
+    Attacks[Attacks API]
+    ScenarioLibrary[Seeded Scenario Library]
+    AttackService[Attack Service]
+    ModelFactory[Model Factory]
+    TargetModel[Target Model]
+    Groq[Groq API]
+    OpenRouter[OpenRouter API]
+    CustomEndpoint[Custom User Endpoint]
+    ScenarioJudge[Scenario Evaluator]
+    OverallJudge[Overall Evaluator]
+    SafetyPolicy[Safety Policy Prompt]
+    DB[(SQLite Database)]
 
-    AUTH[Auth System]
-    MODELS[AI Models Module]
-    SCENARIOS[Attack Scenarios Module]
-    TESTS[Test Engine]
-    ANALYZER[Response Analyzer]
-    RESULTS[Results Service]
-    DASHBOARD[Dashboard Service]
+    Client --> FastAPI
+    FastAPI --> Users
+    FastAPI --> Scenarios
+    FastAPI --> Attacks
 
-    DB[(Database)]
+    Users --> Auth
+    Scenarios --> Auth
+    Attacks --> Auth
 
-    OPENROUTER[OpenRouter API]
-    GEMINI[Gemini API]
+    Auth --> DB
+    Users --> DB
+    Scenarios --> DB
 
-    USER --> AUTH
-    USER --> MODELS
-    USER --> SCENARIOS
-    USER --> TESTS
-    USER --> DASHBOARD
+    ScenarioLibrary --> Scenarios
+    ScenarioLibrary --> DB
 
-    AUTH --> DB
-    MODELS --> DB
-    SCENARIOS --> DB
+    Attacks --> AttackService
+    AttackService --> DB
+    AttackService --> ModelFactory
+    AttackService --> ScenarioJudge
+    AttackService --> OverallJudge
 
-    TESTS --> OPENROUTER
-    TESTS --> GEMINI
+    ModelFactory --> TargetModel
+    TargetModel --> Groq
+    TargetModel --> OpenRouter
+    TargetModel --> CustomEndpoint
 
-    TESTS --> ANALYZER
+    ScenarioJudge --> SafetyPolicy
+    OverallJudge --> SafetyPolicy
+    ScenarioJudge --> OpenRouter
+    OverallJudge --> OpenRouter
 
-    ANALYZER --> RESULTS
-
-    RESULTS --> DB
-
-    DASHBOARD --> DB
+    ScenarioJudge --> DB
+    OverallJudge --> DB
+    AttackService --> DB
