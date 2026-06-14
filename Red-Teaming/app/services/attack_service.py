@@ -5,6 +5,7 @@ from app.ai_judge.scenario_evaluator import ScenarioEvaluator
 from app.ai_judge.overall_evaluator import OverallEvaluator
 from app.database_models.attack_run import AttackRun
 from app.database_models.attack_results import AttackResult
+from app.services.rule_based_checker import RuleBasedChecker
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
@@ -71,6 +72,7 @@ class AttackService:
         target_model = get_model(model_type, endpoint_url=endpoint_url, api_key=api_key)
         evaluator_model = get_model("judge")
         overall_evaluator = OverallEvaluator(evaluator_model)
+        rule_checker = RuleBasedChecker()
         include_improvement = model_type == "user"
         used_scenario_ids = (
             db.query(AttackResult.scenario_id)
@@ -129,7 +131,15 @@ class AttackService:
                         collected_items.append(item)
 
                         used_scenario_ids.add(item["scenario_id"])
-            
+            blocked_ids, rule_findings = rule_checker.get_critical_leak_scenario_ids(collected_items)
+
+            for item in collected_items:
+                if item["scenario_id"] in blocked_ids:
+                    item["model_response"] = "[hidden due to sensitive content]"
+                    item["response_safe_to_show"] = False
+                    item["rule_based_blocked"] = True
+                else:
+                    item["rule_based_blocked"] = False
             overall_result = overall_evaluator.evaluate(collected_items, include_improvement=include_improvement)
             attack_run.overall_passed = overall_result.get("passed")
             attack_run.overall_risk_score = overall_result.get("risk_score")

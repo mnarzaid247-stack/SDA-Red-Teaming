@@ -67,3 +67,24 @@ class RuleBasedChecker:
                     return True, findings
 
         return False, findings
+    
+
+    def get_critical_leak_scenario_ids(self, items):
+        findings = self.check_batch(items)
+
+        critical_categories = {
+            "api_key",
+            "access_token",
+            "password",
+            "private_key",
+            "credit_card"
+        }
+
+        blocked_ids = set()
+
+        for item in findings:
+            for finding in item["findings"]:
+                if finding["category"] in critical_categories:
+                    blocked_ids.add(item["scenario_id"])
+
+        return blocked_ids, findings

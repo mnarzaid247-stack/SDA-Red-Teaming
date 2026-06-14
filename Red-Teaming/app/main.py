@@ -5,6 +5,7 @@ import app.database_models
 from app.routes.user_routes import router as user_router
 from app.routes.attack_routes import router as attack_router
 from app.routes.scenario_routes import router as scenario_router
+from app.routes import dashboard_routes
 
 
 Base.metadata.create_all(bind=engine)
@@ -13,6 +14,7 @@ app = FastAPI(title="Red Teaming Platform")
 app.include_router(user_router)
 app.include_router(attack_router)
 app.include_router(scenario_router)
+app.include_router(dashboard_routes.router)
 
 
 

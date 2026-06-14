@@ -33,14 +33,16 @@ def create_scenario(
 
 @router.get("", response_model=list[ScenarioResponse])
 def get_scenarios(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin = Depends(get_current_admin)
 ):
     return scenario_service.get_all_scenarios(db)
 
 @router.get("/type/{attack_type}", response_model=list[ScenarioResponse])
 def get_scenarios_by_attack_type(
     attack_type: AttackType,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin = Depends(get_current_admin)
 ):
     return scenario_service.get_scenarios_by_attack_type(
         db,
@@ -51,7 +53,8 @@ def get_scenarios_by_attack_type(
 @router.get("/{scenario_id}", response_model=ScenarioResponse)
 def get_scenario(
     scenario_id: str,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_admin = Depends(get_current_admin)
 ):
     scenario = scenario_service.get_scenario_by_id(
         db,

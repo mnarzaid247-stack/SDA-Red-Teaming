@@ -20,7 +20,6 @@ class AttackRunRequest(BaseModel):
 
 
 class AttackRunResponse(BaseModel):
-    attack_run_id: str
     model_provider: str
     model_name: str
     selected_attack_types: str

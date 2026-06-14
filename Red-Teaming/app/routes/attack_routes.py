@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.schemas.attack_schema import (AttackRunRequest, AttackRunResponse, AttackRunDetailsResponse, AttackRunSummaryResponse)
 from app.services.attack_service import AttackService
 from app.extensions import get_db
-from app.dependencies.auth_dependencies import get_current_user
+from app.dependencies.auth_dependencies import get_current_user, get_current_admin
 
 
 router = APIRouter(
@@ -43,7 +43,6 @@ def run_attack(
         )
 
     return AttackRunResponse(
-        attack_run_id=attack_run.id,
         model_provider=attack_run.model_provider,
         model_name=attack_run.model_name,
         selected_attack_types=attack_run.selected_attack_types,
@@ -74,23 +73,15 @@ def get_my_attack_runs(
 def get_attack_run(
     attack_run_id: str,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
-):
+    current_admin = Depends(get_current_admin)):
     attack_run = attack_service.get_attack_run_by_id(
         db,
         attack_run_id
     )
-
     if not attack_run:
         raise HTTPException(
             status_code=404,
             detail="Attack run not found"
-        )
-    
-    if attack_run.user_id != current_user.id and current_user.role != "admin":
-        raise HTTPException(
-            status_code=403,
-            detail="Not allowed to access this attack run"
         )
 
     return attack_run
