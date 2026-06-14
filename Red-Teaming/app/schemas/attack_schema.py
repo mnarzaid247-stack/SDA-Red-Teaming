@@ -27,10 +27,7 @@ class AttackRunResponse(BaseModel):
     passed: Optional[bool] = None
     created_at: datetime
     duration_seconds: int | None = None
-    overall_risk_score: Optional[int] = None
-    overall_risk_level: Optional[str] = None
-    overall_evidence_summary: Optional[str] = None
-    overall_improvement: Optional[str] = None
+    overall_results: List[AttackOverallResultResponse] = []
 
 
 class AdminAttackRunSummaryResponse(BaseModel):
@@ -49,7 +46,6 @@ class AdminAttackRunSummaryResponse(BaseModel):
 
 
 class AttackResultResponse(BaseModel):
-    
     id: str
     attack_type: str
     scenario_id: str
@@ -62,6 +58,21 @@ class AttackResultResponse(BaseModel):
     response_safe_to_show: bool
     evidence_summary: Optional[str]
     unsafe_categories: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+class AttackOverallResultResponse(BaseModel):
+    attack_type: str
+    passed: Optional[bool] = None
+    risk_score: Optional[int] = None
+    risk_level: Optional[str] = None
+    total_count: Optional[int] = None
+    safe_count: Optional[int] = None
+    unsafe_count: Optional[int] = None
+    evidence_summary: Optional[str] = None
+    improvement: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -86,6 +97,7 @@ class AttackRunDetailsResponse(BaseModel):
     overall_evidence_summary: Optional[str] = None
     overall_improvement: Optional[str] = None
     results: List[AttackResultResponse]
+    overall_results: List[AttackOverallResultResponse] = []
 
 
     class Config:

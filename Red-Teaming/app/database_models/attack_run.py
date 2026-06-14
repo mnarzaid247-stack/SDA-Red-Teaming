@@ -24,3 +24,8 @@ class AttackRun(BaseModel):
     overall_improvement = Column(Text, nullable=True)
 
     results = relationship("AttackResult", back_populates="attack_run", cascade="all, delete-orphan")
+    overall_results = relationship(
+    "AttackOverallResult",
+    back_populates="attack_run",
+    cascade="all, delete-orphan"
+)

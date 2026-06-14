@@ -14,7 +14,7 @@ router = APIRouter(
 attack_service = AttackService()
 
 
-@router.post("/run", response_model=AttackRunResponse)
+@router.post("/run", response_model=AttackRunResponse, response_model_exclude_none=True)
 def run_attack(
     request: AttackRunRequest,
     background_tasks: BackgroundTasks,
@@ -38,10 +38,10 @@ def run_attack(
         )
     except RuntimeError as error:
         raise HTTPException(
-            status_code=500,
+            status_code=429,
             detail=str(error)
         )
-
+    
     return AttackRunResponse(
         model_provider=attack_run.model_provider,
         model_name=attack_run.model_name,
@@ -50,10 +50,7 @@ def run_attack(
         passed=attack_run.overall_passed,
         created_at=attack_run.created_at,
         duration_seconds=attack_run.duration_seconds,
-        overall_risk_score=attack_run.overall_risk_score,
-        overall_risk_level=attack_run.overall_risk_level,
-        overall_evidence_summary=attack_run.overall_evidence_summary,
-        overall_improvement=attack_run.overall_improvement
+        overall_results=attack_run.overall_results
     )
 
 @router.get(

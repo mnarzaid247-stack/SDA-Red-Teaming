@@ -6,6 +6,7 @@ from app.ai_judge.overall_evaluator import OverallEvaluator
 from app.database_models.attack_run import AttackRun
 from app.database_models.attack_results import AttackResult
 from app.services.rule_based_checker import RuleBasedChecker
+from app.database_models.attack_overall_result import AttackOverallResult
 from datetime import datetime
 from sqlalchemy.orm import Session
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -18,7 +19,7 @@ class AttackService:
 
 
     def _generate_response(self, target_model, scenario, attack_type):
-        retries = 3
+        retries = 5
         for attempt in range(retries):
             try:
                 response = target_model.generate(scenario.prompt)
@@ -44,7 +45,9 @@ class AttackService:
                     raise
 
                 if attempt == retries - 1:
-                    raise
+                    raise RuntimeError(
+                        "Rate limit exceeded after multiple retries. Please try again later."
+                    )
 
                 wait_time = 5 * (attempt + 1)
 
@@ -141,7 +144,11 @@ class AttackService:
                     item["rule_based_blocked"] = True
                 else:
                     item["rule_based_blocked"] = False
-            overall_result = overall_evaluator.evaluate(collected_items, include_improvement=include_improvement)
+            overall_result = overall_evaluator.evaluate(
+    collected_items,
+    include_improvement=include_improvement
+)
+
             attack_run.overall_passed = overall_result.get("passed")
             attack_run.overall_risk_score = overall_result.get("risk_score")
             attack_run.overall_risk_level = overall_result.get("risk_level")
@@ -150,7 +157,50 @@ class AttackService:
             attack_run.overall_unsafe_count = overall_result.get("unsafe_count")
             attack_run.overall_evidence_summary = overall_result.get("evidence_summary")
             attack_run.overall_improvement = overall_result.get("improvement")
-            
+
+            db.add(
+                AttackOverallResult(
+                    attack_run_id=attack_run.id,
+                    attack_type="ALL",
+                    passed=overall_result.get("passed"),
+                    risk_score=overall_result.get("risk_score"),
+                    risk_level=overall_result.get("risk_level"),
+                    total_count=overall_result.get("total_count"),
+                    safe_count=overall_result.get("safe_count"),
+                    unsafe_count=overall_result.get("unsafe_count"),
+                    evidence_summary=overall_result.get("evidence_summary"),
+                    improvement=overall_result.get("improvement")
+                )
+            )
+
+            for attack_type in normalized_attack_types:
+                attack_type_items = [
+                    item for item in collected_items
+                    if item["attack_type"] == attack_type
+                ]
+
+                attack_type_overall = overall_evaluator.evaluate(
+                    attack_type_items,
+                    include_improvement=include_improvement
+                )
+
+                db.add(
+                    AttackOverallResult(
+                        attack_run_id=attack_run.id,
+                        attack_type=attack_type,
+                        passed=attack_type_overall.get("passed"),
+                        risk_score=attack_type_overall.get("risk_score"),
+                        risk_level=attack_type_overall.get("risk_level"),
+                        total_count=attack_type_overall.get("total_count"),
+                        safe_count=attack_type_overall.get("safe_count"),
+                        unsafe_count=attack_type_overall.get("unsafe_count"),
+                        evidence_summary=attack_type_overall.get("evidence_summary"),
+                        improvement=attack_type_overall.get("improvement")
+                    )
+                )
+
+
+
             for item in collected_items:
                 result = AttackResult(
                     attack_run_id=attack_run.id,
