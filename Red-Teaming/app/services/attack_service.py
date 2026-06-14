@@ -7,6 +7,7 @@ from app.database_models.attack_run import AttackRun
 from app.database_models.attack_results import AttackResult
 from app.services.rule_based_checker import RuleBasedChecker
 from datetime import datetime
+from sqlalchemy.orm import Session
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 
@@ -286,3 +287,11 @@ class AttackService:
         return db.query(AttackRun).filter(
             AttackRun.user_id == user_id
         ).all()
+    
+
+    def get_all_attack_runs(self, db: Session):
+        return (
+            db.query(AttackRun)
+            .order_by(AttackRun.created_at.desc())
+            .all()
+        )
