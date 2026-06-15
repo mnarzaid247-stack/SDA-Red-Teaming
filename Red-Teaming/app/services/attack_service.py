@@ -260,7 +260,6 @@ class AttackService:
                 item["scenario_code"]: item
                 for item in collected_items
             }
-
             for result in results:
                 item = response_map.get(result.scenario_code)
                 if not item:
