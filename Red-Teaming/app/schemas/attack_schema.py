@@ -19,15 +19,30 @@ class AttackRunRequest(BaseModel):
     api_key: Optional[str] = None
 
 
+class AttackOverallResultResponse(BaseModel):
+    attack_type: str
+    passed: Optional[bool] = None
+    risk_score: Optional[int] = None
+    risk_level: Optional[str] = None
+    total_count: Optional[int] = None
+    safe_count: Optional[int] = None
+    unsafe_count: Optional[int] = None
+    evidence_summary: Optional[str] = None
+    improvement: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
 class AttackRunResponse(BaseModel):
     model_provider: str
     model_name: str
-    selected_attack_types: str
+    selected_attack_types: List[str]
     status: str
     passed: Optional[bool] = None
     created_at: datetime
     duration_seconds: int | None = None
-    overall_results: List[AttackOverallResultResponse] = []
+    overall_results: List[AttackOverallResultResponse]
 
 
 class AdminAttackRunSummaryResponse(BaseModel):
@@ -48,34 +63,20 @@ class AdminAttackRunSummaryResponse(BaseModel):
 class AttackResultResponse(BaseModel):
     id: str
     attack_type: str
-    scenario_id: str
+    scenario_code: str
     severity: str
-    model_response: Optional[str]
-    passed: Optional[bool] = None
-    risk_score: Optional[int] | None = None
-    evaluation_reason: Optional[str]
-    improvement: Optional[str]
-    response_safe_to_show: bool
-    evidence_summary: Optional[str]
-    unsafe_categories: Optional[str]
-
-    class Config:
-        from_attributes = True
-
-
-class AttackOverallResultResponse(BaseModel):
-    attack_type: str
+    model_response: Optional[str] = None
     passed: Optional[bool] = None
     risk_score: Optional[int] = None
-    risk_level: Optional[str] = None
-    total_count: Optional[int] = None
-    safe_count: Optional[int] = None
-    unsafe_count: Optional[int] = None
-    evidence_summary: Optional[str] = None
+    evaluation_reason: Optional[str] = None
     improvement: Optional[str] = None
+    response_safe_to_show: bool
+    evidence_summary: Optional[str] = None
+    unsafe_categories: Optional[str] = None
 
     class Config:
         from_attributes = True
+
 
 
 class AttackRunDetailsResponse(BaseModel):
@@ -97,7 +98,7 @@ class AttackRunDetailsResponse(BaseModel):
     overall_evidence_summary: Optional[str] = None
     overall_improvement: Optional[str] = None
     results: List[AttackResultResponse]
-    overall_results: List[AttackOverallResultResponse] = []
+    overall_results: List[AttackOverallResultResponse]
 
 
     class Config:

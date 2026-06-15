@@ -45,7 +45,10 @@ def run_attack(
     return AttackRunResponse(
         model_provider=attack_run.model_provider,
         model_name=attack_run.model_name,
-        selected_attack_types=attack_run.selected_attack_types,
+        selected_attack_types=[
+            item.strip()
+            for item in attack_run.selected_attack_types.split(",")
+            if item.strip()],
         status=attack_run.status,
         passed=attack_run.overall_passed,
         created_at=attack_run.created_at,

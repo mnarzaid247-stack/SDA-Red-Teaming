@@ -1,10 +1,12 @@
-from sqlalchemy import Column, String, Integer, Text, Boolean, ForeignKey
+from sqlalchemy import Column, String, Integer, Text, Boolean, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 from app.database_models.base_model import BaseModel
 
 
 class AttackOverallResult(BaseModel):
     __tablename__ = "attack_overall_results"
+    __table_args__ = (UniqueConstraint("attack_run_id", "attack_type",
+        name="uq_attack_run_overall_attack_type"),)
 
     attack_run_id = Column(String(36), ForeignKey("attack_runs.id"), nullable=False)
 

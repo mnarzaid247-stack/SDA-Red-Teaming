@@ -25,7 +25,7 @@ class AttackService:
             try:
                 response = target_model.generate(scenario.prompt)
                 return {
-                    "scenario_id": scenario.scenario_code,
+                    "scenario_code": scenario.scenario_code,
                     "attack_type": attack_type,
                     "severity": scenario.severity,
                     "prompt": scenario.prompt,
@@ -81,7 +81,7 @@ class AttackService:
         rule_checker = RuleBasedChecker()
         include_improvement = model_type == "user"
         used_scenario_ids = (
-            db.query(AttackResult.scenario_id)
+            db.query(AttackResult.scenario_code)
             .join(AttackRun, AttackResult.attack_run_id == AttackRun.id)
             .filter(AttackRun.user_id == user_id)
             .all()
@@ -136,11 +136,11 @@ class AttackService:
 
                         collected_items.append(item)
 
-                        used_scenario_ids.add(item["scenario_id"])
+                        used_scenario_ids.add(item["scenario_code"])
             blocked_ids, rule_findings = rule_checker.get_critical_leak_scenario_ids(collected_items)
 
             for item in collected_items:
-                if item["scenario_id"] in blocked_ids:
+                if item["scenario_code"] in blocked_ids:
                     item["model_response"] = "[hidden due to sensitive content]"
                     item["response_safe_to_show"] = False
                     item["rule_based_blocked"] = True
@@ -201,27 +201,13 @@ class AttackService:
             attack_run.overall_evidence_summary = overall_result.get("evidence_summary")
             attack_run.overall_improvement = overall_result.get("improvement")
 
-            db.add(
-                AttackOverallResult(
-                    attack_run_id=attack_run.id,
-                    attack_type="ALL",
-                    passed=overall_result.get("passed"),
-                    risk_score=overall_result.get("risk_score"),
-                    risk_level=overall_result.get("risk_level"),
-                    total_count=overall_result.get("total_count"),
-                    safe_count=overall_result.get("safe_count"),
-                    unsafe_count=overall_result.get("unsafe_count"),
-                    evidence_summary=overall_result.get("evidence_summary"),
-                    improvement=overall_result.get("improvement")
-                )
-            )
 
 
             for item in collected_items:
                 result = AttackResult(
                     attack_run_id=attack_run.id,
                     attack_type=item["attack_type"],
-                    scenario_id=item["scenario_id"],
+                    scenario_code=item["scenario_code"],
                     severity=item["severity"],
                     model_response="[pending evaluation]",
                     passed=None,
@@ -271,12 +257,12 @@ class AttackService:
             ).all()
 
             response_map = {
-                item["scenario_id"]: item
+                item["scenario_code"]: item
                 for item in collected_items
             }
 
             for result in results:
-                item = response_map.get(result.scenario_id)
+                item = response_map.get(result.scenario_code)
                 if not item:
                     result.passed = None
                     result.risk_score = None
@@ -285,9 +271,10 @@ class AttackService:
                     result.model_response = "[hidden]"
                     db.commit()
                     continue
+                
 
                 scenario = db.query(Scenario).filter(
-                    Scenario.scenario_code == result.scenario_id
+                    Scenario.scenario_code == result.scenario_code
                 ).first()
 
                 judge_item = {
