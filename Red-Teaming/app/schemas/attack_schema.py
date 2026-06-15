@@ -24,9 +24,7 @@ class AttackOverallResultResponse(BaseModel):
     passed: Optional[bool] = None
     risk_score: Optional[int] = None
     risk_level: Optional[str] = None
-    total_count: Optional[int] = None
-    safe_count: Optional[int] = None
-    unsafe_count: Optional[int] = None
+    detected_risks: Optional[int] = None
     evidence_summary: Optional[str] = None
     improvement: Optional[str] = None
 

@@ -159,13 +159,13 @@ class AttackService:
                     attack_type_items,
                     include_improvement=include_improvement
                 )
+                
+
                 attack_type_summaries.append({
                     "attack_type": attack_type,
                     "passed": attack_type_overall.get("passed"),
                     "risk_score": attack_type_overall.get("risk_score"),
                     "risk_level": attack_type_overall.get("risk_level"),
-                    "total_count": attack_type_overall.get("total_count"),
-                    "safe_count": attack_type_overall.get("safe_count"),
                     "unsafe_count": attack_type_overall.get("unsafe_count"),
                     "evidence_summary": attack_type_overall.get("evidence_summary")
                 })

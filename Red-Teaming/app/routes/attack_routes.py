@@ -53,8 +53,23 @@ def run_attack(
         passed=attack_run.overall_passed,
         created_at=attack_run.created_at,
         duration_seconds=attack_run.duration_seconds,
-        overall_results=attack_run.overall_results
-    )
+        overall_results=[
+        {
+            "attack_type": result.attack_type,
+            "passed": result.passed,
+            "risk_score": result.risk_score,
+            "risk_level": result.risk_level,
+            "detected_risks": (
+                result.unsafe_count
+                if result.passed is False and result.unsafe_count and result.unsafe_count > 0
+                else (1 if result.passed is False else None)
+            ),
+            "evidence_summary": result.evidence_summary,
+            "improvement": result.improvement
+        }
+        for result in attack_run.overall_results
+    ]
+        )
 
 @router.get(
     "",
