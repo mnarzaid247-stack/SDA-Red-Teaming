@@ -2,13 +2,14 @@ from app.database_models.scenario import Scenario
 from app.extensions import SessionLocal
 from app.models.model_factory import get_model
 from app.ai_judge.scenario_evaluator import ScenarioEvaluator
-from app.ai_judge.overall_evaluator import OverallEvaluator
 from app.database_models.attack_run import AttackRun
 from app.database_models.attack_results import AttackResult
 from app.services.rule_based_checker import RuleBasedChecker
 from app.database_models.attack_overall_result import AttackOverallResult
 from datetime import datetime
 from sqlalchemy.orm import Session
+from app.ai_judge.overall_evaluator import OverallEvaluator
+from app.ai_judge.final_overall_evaluator import FinalOverallEvaluator
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 
@@ -76,6 +77,7 @@ class AttackService:
         target_model = get_model(model_type, endpoint_url=endpoint_url, api_key=api_key)
         evaluator_model = get_model("judge")
         overall_evaluator = OverallEvaluator(evaluator_model)
+        final_overall_evaluator = FinalOverallEvaluator(evaluator_model)
         rule_checker = RuleBasedChecker()
         include_improvement = model_type == "user"
         used_scenario_ids = (
@@ -144,10 +146,51 @@ class AttackService:
                     item["rule_based_blocked"] = True
                 else:
                     item["rule_based_blocked"] = False
-            overall_result = overall_evaluator.evaluate(
-    collected_items,
-    include_improvement=include_improvement
-)
+            
+
+            attack_type_summaries = []
+            for attack_type in normalized_attack_types:
+                attack_type_items = [
+                    item for item in collected_items
+                    if item["attack_type"] == attack_type
+                ]
+
+                attack_type_overall = overall_evaluator.evaluate(
+                    attack_type_items,
+                    include_improvement=include_improvement
+                )
+                attack_type_summaries.append({
+                    "attack_type": attack_type,
+                    "passed": attack_type_overall.get("passed"),
+                    "risk_score": attack_type_overall.get("risk_score"),
+                    "risk_level": attack_type_overall.get("risk_level"),
+                    "total_count": attack_type_overall.get("total_count"),
+                    "safe_count": attack_type_overall.get("safe_count"),
+                    "unsafe_count": attack_type_overall.get("unsafe_count"),
+                    "evidence_summary": attack_type_overall.get("evidence_summary")
+                })
+
+                db.add(
+                    AttackOverallResult(
+                        attack_run_id=attack_run.id,
+                        attack_type=attack_type,
+                        passed=attack_type_overall.get("passed"),
+                        risk_score=attack_type_overall.get("risk_score"),
+                        risk_level=attack_type_overall.get("risk_level"),
+                        total_count=attack_type_overall.get("total_count"),
+                        safe_count=attack_type_overall.get("safe_count"),
+                        unsafe_count=attack_type_overall.get("unsafe_count"),
+                        evidence_summary=attack_type_overall.get("evidence_summary"),
+                        improvement=attack_type_overall.get("improvement")
+                    )
+                )
+
+
+            overall_result = final_overall_evaluator.evaluate(
+                collected_items,
+                attack_type_summaries,
+                include_improvement=include_improvement
+            )
 
             attack_run.overall_passed = overall_result.get("passed")
             attack_run.overall_risk_score = overall_result.get("risk_score")
@@ -172,33 +215,6 @@ class AttackService:
                     improvement=overall_result.get("improvement")
                 )
             )
-
-            for attack_type in normalized_attack_types:
-                attack_type_items = [
-                    item for item in collected_items
-                    if item["attack_type"] == attack_type
-                ]
-
-                attack_type_overall = overall_evaluator.evaluate(
-                    attack_type_items,
-                    include_improvement=include_improvement
-                )
-
-                db.add(
-                    AttackOverallResult(
-                        attack_run_id=attack_run.id,
-                        attack_type=attack_type,
-                        passed=attack_type_overall.get("passed"),
-                        risk_score=attack_type_overall.get("risk_score"),
-                        risk_level=attack_type_overall.get("risk_level"),
-                        total_count=attack_type_overall.get("total_count"),
-                        safe_count=attack_type_overall.get("safe_count"),
-                        unsafe_count=attack_type_overall.get("unsafe_count"),
-                        evidence_summary=attack_type_overall.get("evidence_summary"),
-                        improvement=attack_type_overall.get("improvement")
-                    )
-                )
-
 
 
             for item in collected_items:
