@@ -92,7 +92,7 @@ class AttackService:
         attack_run = AttackRun(
             user_id=user_id,
             model_provider=model_type,
-            model_name=model_type,
+            model_name=getattr(target_model, "model_name", model_type),
             selected_attack_types=",".join(normalized_attack_types),
             status="running"
         )

@@ -9,7 +9,8 @@ class AttackResult(BaseModel):
     attack_run_id = Column(
         String(36),
         ForeignKey("attack_runs.id"),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     attack_run = relationship(
@@ -18,9 +19,9 @@ class AttackResult(BaseModel):
     )
 
     attack_type = Column(String(50), nullable=False)
-    scenario_code = Column(String(50), nullable=False)
+    scenario_code = Column(String(50), nullable=False, index=True)
     severity = Column(String(20), nullable=False)
-    model_response = Column(Text, nullable=False)
+    model_response = Column(Text, nullable=True)
     passed = Column(Boolean, nullable=True) 
     risk_score = Column(Integer, nullable=True)
     evaluation_reason = Column(Text, nullable=True) #+

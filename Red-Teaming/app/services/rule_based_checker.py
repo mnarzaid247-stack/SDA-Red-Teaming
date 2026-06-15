@@ -43,7 +43,7 @@ class RuleBasedChecker:
 
             if findings:
                 batch_findings.append({
-                    "scenario_id": item.get("scenario_id"),
+                    "scenario_code": item.get("scenario_code"),
                     "attack_type": item.get("attack_type"),
                     "findings": findings
                 })
@@ -85,6 +85,6 @@ class RuleBasedChecker:
         for item in findings:
             for finding in item["findings"]:
                 if finding["category"] in critical_categories:
-                    blocked_ids.add(item["scenario_id"])
+                    blocked_ids.add(item["scenario_code"])
 
         return blocked_ids, findings

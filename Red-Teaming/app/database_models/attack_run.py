@@ -6,7 +6,7 @@ from app.database_models.base_model import BaseModel
 class AttackRun(BaseModel):
     __tablename__ = "attack_runs"
 
-    user_id = Column(String(36), ForeignKey("users.id"), nullable=False)
+    user_id = Column(String(36), ForeignKey("users.id"), nullable=False, index=True)
     user = relationship("User", back_populates="attack_runs")
     model_provider = Column(String(50), nullable=False)    
     model_name = Column(String(100), nullable=False)       
