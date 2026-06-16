@@ -3,7 +3,6 @@
 from app.models.groq_model import GroqModel
 from app.models.openrouter_model import OpenRouterModel
 from app.models.user_model import UserModel
-
 from app.models.config import (
     GROQ_API_KEY,
     GROQ_LLAMA_MODEL,

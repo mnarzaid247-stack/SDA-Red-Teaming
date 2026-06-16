@@ -15,9 +15,3 @@ class User(BaseModel):
     back_populates="user",
     cascade="all, delete-orphan"
 )
-    
-    ai_models = relationship(
-    "AIModel",
-    back_populates="owner",
-    cascade="all, delete-orphan"
-)
