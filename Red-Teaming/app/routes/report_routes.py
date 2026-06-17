@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.extensions import get_db
@@ -18,14 +18,22 @@ router = APIRouter(
 attack_service = AttackService()
 
 
-@router.get("/me", response_model=list[ReportCardResponse])
-def get_my_report_cards(
+@router.get("", response_model=list[ReportCardResponse])
+def get_report_cards(
+    attack_type: str | None = Query(default=None),
+    model_provider: str | None = Query(default=None),
+    model_name: str | None = Query(default=None),
+    risk_level: str | None = Query(default=None),
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    return attack_service.get_attack_runs_by_user_id(
-        db,
-        current_user.id
+    return attack_service.get_report_cards(
+        db=db,
+        current_user=current_user,
+        attack_type=attack_type,
+        model_provider=model_provider,
+        model_name=model_name,
+        risk_level=risk_level
     )
 
 
