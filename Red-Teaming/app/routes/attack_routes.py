@@ -1,6 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
-from app.schemas.attack_schema import (AttackRunRequest, AttackRunResponse, AttackRunDetailsResponse, AdminAttackRunSummaryResponse)
+from app.schemas.attack_schema import (AttackRunRequest, 
+                                       AttackRunResponse, 
+                                       AttackRunDetailsResponse, 
+                                       AdminAttackRunSummaryResponse, 
+                                       ManualAttackRequest
+                                       )
 from app.services.attack_service import AttackService
 from app.extensions import get_db
 from app.dependencies.auth_dependencies import get_current_user, get_current_admin
@@ -70,6 +75,31 @@ def run_attack(
         for result in attack_run.overall_results
     ]
         )
+
+
+
+@router.post("/manual", response_model=AttackRunDetailsResponse)
+def run_manual_attack(
+    request: ManualAttackRequest,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    try:
+        attack_run = attack_service.run_manual_attack(
+            db=db,
+            user_id=current_user.id,
+            model_type=request.model_type.value,
+            attack_type=request.attack_type.value,
+            prompt=request.prompt,
+            endpoint_url=request.endpoint_url,
+            api_key=request.api_key
+        )
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error))
+    except RuntimeError as error:
+        raise HTTPException(status_code=429, detail=str(error))
+
+    return attack_run
 
 @router.get(
     "",

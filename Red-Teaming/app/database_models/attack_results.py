@@ -21,6 +21,7 @@ class AttackResult(BaseModel):
     attack_type = Column(String(50), nullable=False)
     scenario_code = Column(String(50), nullable=False, index=True)
     severity = Column(String(20), nullable=False)
+    attack_prompt = Column(Text, nullable=True)
     model_response = Column(Text, nullable=True)
     passed = Column(Boolean, nullable=True) 
     risk_score = Column(Integer, nullable=True)

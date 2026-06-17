@@ -18,6 +18,12 @@ class AttackRunRequest(BaseModel):
     endpoint_url: Optional[str] = None
     api_key: Optional[str] = None
 
+class ManualAttackRequest(BaseModel):
+    model_type: ModelType
+    attack_type: AttackType
+    prompt: str
+    endpoint_url: Optional[str] = None
+    api_key: Optional[str] = None
 
 class AttackOverallResultResponse(BaseModel):
     attack_type: str
@@ -63,6 +69,7 @@ class AttackResultResponse(BaseModel):
     attack_type: str
     scenario_code: str
     severity: str
+    attack_prompt: Optional[str] = None
     model_response: Optional[str] = None
     passed: Optional[bool] = None
     risk_score: Optional[int] = None
