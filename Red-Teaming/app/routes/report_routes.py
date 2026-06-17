@@ -29,7 +29,7 @@ def get_my_report_cards(
     )
 
 
-@router.get("/{attack_run_id}", response_model=ReportDetailsResponse)
+@router.get("/{attack_run_id}", response_model=ReportDetailsResponse, response_model_exclude_none=True)
 def get_my_report_details(
     attack_run_id: str,
     db: Session = Depends(get_db),
@@ -52,4 +52,19 @@ def get_my_report_details(
             detail="Not allowed to access this report"
         )
 
-    return report
+    return  ReportDetailsResponse(
+    id=report.id,
+    model_provider=report.model_provider,
+    model_name=report.model_name,
+    selected_attack_types=report.selected_attack_types,
+    status=report.status,
+    created_at=report.created_at,
+    completed_at=report.completed_at,
+    duration_seconds=report.duration_seconds,
+    overall_passed=report.overall_passed,
+    overall_risk_score=report.overall_risk_score,
+    overall_risk_level=report.overall_risk_level,
+    detected_risks=report.overall_unsafe_count,
+    overall_evidence_summary=report.overall_evidence_summary,
+    overall_improvement=report.overall_improvement
+)

@@ -23,8 +23,6 @@ class ReportDetailsResponse(BaseModel):
     overall_passed: Optional[bool] = None
     overall_risk_score: Optional[int] = None
     overall_risk_level: Optional[str] = None
-    overall_total_count: Optional[int] = None
-    overall_safe_count: Optional[int] = None
-    overall_unsafe_count: Optional[int] = None
+    detected_risks: int | None = None
     overall_evidence_summary: Optional[str] = None
     overall_improvement: Optional[str] = None
