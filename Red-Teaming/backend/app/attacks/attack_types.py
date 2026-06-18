@@ -30,6 +30,7 @@ ATTACKS = [
     AttackTypes.DATA_LEAKAGE,
     AttackTypes.TOXICITY,
     AttackTypes.HALLUCINATION
+    
 ]
 
 # Future attacks can be added here if needed.
