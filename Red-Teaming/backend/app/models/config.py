@@ -32,4 +32,3 @@ OPENROUTER_JUDGE_MODEL = os.getenv(
     "OPENROUTER_JUDGE_MODEL",
     "qwen/qwen3-32b"
 )
-# باختصار الشرح مثل خذ قيمة GEMINI_API_KEY من ملف .env وخزنها داخل متغير
