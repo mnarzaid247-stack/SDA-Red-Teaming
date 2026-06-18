@@ -7,11 +7,22 @@ from app.routes.attack_routes import router as attack_router
 from app.routes.scenario_routes import router as scenario_router
 from app.routes import dashboard_routes
 from app.routes import report_routes
+from fastapi.middleware.cors import CORSMiddleware
 
 
 Base.metadata.create_all(bind=engine)
 seed_database()
 app = FastAPI(title="Red Teaming Platform")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:5173"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 app.include_router(user_router)
 app.include_router(attack_router)
 app.include_router(scenario_router)
