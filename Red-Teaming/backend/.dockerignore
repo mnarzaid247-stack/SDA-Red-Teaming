@@ -1,0 +1,11 @@
+.env
+red_teaming.db
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.git
+.gitignore
+.vscode/
+.idea/
