@@ -14,7 +14,8 @@ class ScenarioService:
             "jailbreak": "JB",
             "toxicity": "TX",
             "data_leakage": "DL",
-            "hallucination": "HL"
+            "hallucination": "HL",
+            "tool_misuse": "TM"
         }
 
         if attack_type not in prefix_map:

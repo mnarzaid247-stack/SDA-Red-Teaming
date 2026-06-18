@@ -18,6 +18,7 @@ from app.attacks.scenarios.jailbreak import JAILBREAK_SCENARIOS
 from app.attacks.scenarios.data_leakage import DATA_LEAKAGE_SCENARIOS
 from app.attacks.scenarios.toxicity import TOXICITY_SCENARIOS
 from app.attacks.scenarios.hallucination import HALLUCINATION_SCENARIOS
+from app.attacks.scenarios.tool_misuse import TOOL_MISUSE_SCENARIOS
 
 
 class ScenarioLibrary:
@@ -37,6 +38,7 @@ class ScenarioLibrary:
             AttackTypes.DATA_LEAKAGE: DATA_LEAKAGE_SCENARIOS,
             AttackTypes.TOXICITY: TOXICITY_SCENARIOS,
             AttackTypes.HALLUCINATION: HALLUCINATION_SCENARIOS,
+            AttackTypes.TOOL_MISUSE: TOOL_MISUSE_SCENARIOS,
         }
 
 

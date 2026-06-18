@@ -19,7 +19,8 @@ class AttackTypes:
     JAILBREAK = "jailbreak"
     DATA_LEAKAGE = "data_leakage"
     TOXICITY = "toxicity"
-    HALLUCINATION = "hallucination"            
+    HALLUCINATION = "hallucination"  
+    TOOL_MISUSE = "tool_misuse"          
 
 # List of all supported attacks.
 # Keeping this as a separate list makes it easier to loop through them when needed.
@@ -29,7 +30,8 @@ ATTACKS = [
     AttackTypes.JAILBREAK,
     AttackTypes.DATA_LEAKAGE,
     AttackTypes.TOXICITY,
-    AttackTypes.HALLUCINATION
+    AttackTypes.HALLUCINATION,
+    AttackTypes.TOOL_MISUSE
     
 ]
 

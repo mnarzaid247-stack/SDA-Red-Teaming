@@ -10,6 +10,7 @@ class AttackType(str, Enum):
     toxicity = "toxicity"
     data_leakage = "data_leakage"
     hallucination = "hallucination"
+    tool_misuse = "tool_misuse"
 
 class ScenarioCreate(BaseModel):
     attack_type: AttackType
