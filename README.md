@@ -6,16 +6,20 @@ Backend API for an AI red-teaming platform. The service runs adversarial test sc
 
 - FastAPI backend with Swagger UI at `/docs`
 - JWT authentication with user and admin roles
+- Role-based access control for protected user, admin, scenario, attack, and report operations
 - User registration, login, profile update, and deletion
 - Admin user management
 - Seeded attack scenario library
 - Admin scenario create, read, update, delete, and filtering
 - Automated attack runs across selected attack types
 - Manual single-prompt attack runs
-- Scenario-level and overall attack evaluation
+- Overall attack evaluation returned with the attack run
+- Background scenario evaluation using FastAPI `BackgroundTasks`
+- Rule-based sensitive data leakage checks before AI judge evaluation
+- Safe-response handling that hides unsafe model responses from report output
 - Report cards and report detail views for each authenticated user
 - Dashboard metrics for attack risk distribution, scenario totals, and latest attack time
-- SQLite by default, with `DATABASE_URL` support for another SQLAlchemy database
+- SQLite by default, with `DATABASE_URL` support for SQLAlchemy-compatible databases
 - CORS enabled for `http://localhost:3000` and `http://localhost:5173`
 
 ## Attack Types
@@ -46,6 +50,10 @@ OpenRouter is also used for the judge model configured by `OPENROUTER_JUDGE_MODE
 SDA-Red-Teaming/
 |-- README.md
 `-- Red-Teaming/
+    |-- docker-compose.yml
+    |-- Diagrams/
+    |   |-- database.mmd
+    |   `-- flowchart.mmd
     `-- backend/
         |-- run.py
         |-- requirements.txt
@@ -54,6 +62,7 @@ SDA-Red-Teaming/
             |-- main.py
             |-- extensions.py
             |-- seed.py
+            |-- dependencies/
             |-- routes/
             |-- services/
             |-- schemas/
@@ -143,6 +152,8 @@ docker build -t sda-red-teaming-backend .
 docker run --env-file .env -p 8000:8000 sda-red-teaming-backend
 ```
 
+The repository also includes `Red-Teaming/docker-compose.yml`, which builds the backend from `Red-Teaming/backend`, loads `Red-Teaming/backend/.env`, and exposes the API on port `8000`.
+
 ## API Overview
 
 ### System
@@ -169,6 +180,8 @@ Base path: `/users`
 
 Passwords must be 8-64 characters and include at least one uppercase letter, one lowercase letter, and one number.
 
+Admin role assignment is handled through `PUT /users/{user_id}` by sending the `role` field as `admin` or `user`. There is no separate admin promotion endpoint.
+
 ### Attacks
 
 Base path: `/attacks`
@@ -179,6 +192,8 @@ Base path: `/attacks`
 | `POST` | `/attacks/manual` | User | Run one manual prompt against a model |
 | `GET` | `/attacks` | Admin | List all attack runs |
 | `GET` | `/attacks/{attack_run_id}` | Admin | Get detailed attack run results |
+
+`POST /attacks/run` performs the model calls, stores the overall attack result, and then schedules scenario-level evaluation with FastAPI `BackgroundTasks`. While the background task is pending, individual scenario results may show pending evaluation fields. The background evaluator later updates each scenario with pass/fail status, risk score, evidence summary, unsafe categories, improvement guidance, and safe/hidden response handling.
 
 Example attack request:
 
@@ -220,7 +235,7 @@ All scenario endpoints require admin access.
 
 Base path: `/reports`
 
-All report endpoints require an authenticated user.
+All report endpoints require an authenticated user. Regular users can only access their own reports. Admin users can list report cards across users through the report service behavior and can access all detailed attack runs through the admin-protected `/attacks` endpoints.
 
 | Method | Path | Description |
 | --- | --- | --- |
@@ -270,9 +285,19 @@ Authorization: Bearer <access_token>
 
 Tokens use `HS256` and expire after 60 minutes.
 
+## Role-Based Access Control
+
+The backend uses JWT bearer tokens and dependency-based RBAC:
+
+- Public access: registration, login, and the root status endpoint.
+- User access: authenticated users can manage their own account, run attacks, run manual attacks, and view their own reports.
+- Admin access: admins can manage users, update user roles, manage scenarios, list all attack runs, and view detailed attack results for any user.
+
+Non-admin users receive `403 Admin access required` when calling admin-only endpoints. Invalid or missing users receive authentication errors from the bearer-token dependency.
+
 ## Team
 
 - Manar Alzhrani
-- Nora
-- Lujain
-- Ghada
+- Nora Alqhtani
+- Lujain Aljuaid
+- Ghada Alghamdi
