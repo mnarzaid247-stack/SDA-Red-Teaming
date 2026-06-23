@@ -7,6 +7,7 @@ from app.schemas.attack_schema import (AttackRunRequest,
                                        ManualAttackRequest
                                        )
 from app.services.attack_service import AttackService
+from app.services.report_service import ReportService
 from app.extensions import get_db
 from app.dependencies.auth_dependencies import get_current_user, get_current_admin
 
@@ -17,6 +18,7 @@ router = APIRouter(
 )
 
 attack_service = AttackService()
+report_service = ReportService()
 
 
 @router.post("/run", response_model=AttackRunResponse, response_model_exclude_none=True)
@@ -109,7 +111,7 @@ def get_all_attack_runs(
     db: Session = Depends(get_db),
     current_admin = Depends(get_current_admin)
 ):
-    return attack_service.get_all_attack_runs(db)
+    return report_service.get_all_attack_runs(db)
 
 @router.get(
     "/{attack_run_id}",
@@ -119,7 +121,7 @@ def get_attack_run(
     attack_run_id: str,
     db: Session = Depends(get_db),
     current_admin = Depends(get_current_admin)):
-    attack_run = attack_service.get_attack_run_by_id(
+    attack_run = report_service.get_attack_run_by_id(
         db,
         attack_run_id
     )
