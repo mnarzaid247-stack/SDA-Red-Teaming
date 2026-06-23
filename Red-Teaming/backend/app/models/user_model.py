@@ -1,13 +1,17 @@
-# اليوزر رح يرفع 3 اشياء : 
-# API URL
-# API KEY
-# MODEL NAME
+# User Model Integration
+# ----------------------------------------------------------
+# Allows users to connect their own AI models through a
+# custom API endpoint. The system sends prompts to the user
+# model and retrieves responses using a unified interface.
+# ==========================================================
 import requests
 from app.models.base_model import BaseModel
 
 
+# Implementation of the BaseModel interface for user-provided models.
 class UserModel(BaseModel):
 
+    # Stores the user model connection details and configuration.
     def __init__(
         self,
         endpoint_url,
@@ -18,11 +22,15 @@ class UserModel(BaseModel):
         self.api_key = api_key
         self.model_name = model_name
 
+    # Sends a prompt to the user-provided model endpoint
+    # and returns the generated response.
     def generate(self, prompt):
+        # Default request headers for API communication.
         headers = {
             "Content-Type": "application/json"
         }
 
+        # Add authentication header if an API key was provided.
         if self.api_key:
             headers["Authorization"] = f"Bearer {self.api_key}"
 
@@ -44,6 +52,7 @@ class UserModel(BaseModel):
 
         response.raise_for_status()
 
+        # Parse the API response into JSON format.
         data = response.json()
 
         if "choices" in data:
