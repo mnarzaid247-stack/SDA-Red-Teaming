@@ -75,7 +75,7 @@ const AttackCard = ({
       </div>
 
       {/* Description */}
-      <p className="text-sm text-on-surface-variant mb-4 line-clamp-2">
+      <p className="text-sm text-on-surface-variant mb-4 leading-relaxed">
         {description}
       </p>
 
