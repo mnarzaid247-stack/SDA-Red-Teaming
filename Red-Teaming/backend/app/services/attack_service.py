@@ -14,13 +14,13 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 
 SCENARIOS_PER_ATTACK = 8
-MAX_CONCURRENT_MODEL_CALLS = 8
+MAX_CONCURRENT_MODEL_CALLS = 5
 
 class AttackService:
 
 
     def _generate_response(self, target_model, scenario, attack_type):
-        retries = 5
+        retries = 6
         for attempt in range(retries):
             try:
                 response = target_model.generate(scenario.prompt)
@@ -50,7 +50,7 @@ class AttackService:
                         "Rate limit exceeded after multiple retries. Please try again later."
                     )
 
-                wait_time = 5 * (attempt + 1)
+                wait_time = 15 * (attempt + 1)
 
                 print(
                     f"Rate limit reached for scenario "
