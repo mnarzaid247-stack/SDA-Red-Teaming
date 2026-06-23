@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.extensions import get_db
 from app.dependencies.auth_dependencies import get_current_user
-from app.services.attack_service import AttackService
+from app.services.report_service import ReportService
 from app.schemas.report_schema import (
     ReportCardResponse,
     ReportDetailsResponse
@@ -15,8 +15,7 @@ router = APIRouter(
     tags=["Reports"]
 )
 
-attack_service = AttackService()
-
+report_service = ReportService()
 
 @router.get("", response_model=list[ReportCardResponse])
 def get_report_cards(
@@ -27,7 +26,7 @@ def get_report_cards(
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    return attack_service.get_report_cards(
+    return report_service.get_report_cards(
         db=db,
         current_user=current_user,
         attack_type=attack_type,
@@ -43,7 +42,7 @@ def get_my_report_details(
     db: Session = Depends(get_db),
     current_user = Depends(get_current_user)
 ):
-    report = attack_service.get_attack_run_by_id(
+    report = report_service.get_attack_run_by_id(
         db,
         attack_run_id
     )
