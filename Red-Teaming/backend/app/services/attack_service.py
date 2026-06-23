@@ -13,8 +13,8 @@ from app.ai_judge.final_overall_evaluator import FinalOverallEvaluator
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 
-SCENARIOS_PER_ATTACK = 10
-MAX_CONCURRENT_MODEL_CALLS = 5
+SCENARIOS_PER_ATTACK = 8
+MAX_CONCURRENT_MODEL_CALLS = 8
 
 class AttackService:
 
