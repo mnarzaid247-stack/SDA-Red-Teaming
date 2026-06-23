@@ -1,7 +1,16 @@
+# Scenario Evaluator
+# ----------------------------------------------------------
+# This module evaluates one attack scenario at a time.
+# It sends the scenario and the target model response to an
+# AI judge, then normalizes the judge output into a consistent
+# format used by the rest of the system.
+# ==========================================================
 import json
 from app.prompts.safety_policy import SCENARIO_SAFETY_POLICY
 
 
+# Converts judge values into a clean boolean value.
+# This helps handle both real booleans and string values like "true".
 def parse_bool(value):
     if isinstance(value, bool):
         return value
@@ -12,6 +21,8 @@ def parse_bool(value):
     return False
 
 
+# Converts the judge risk score into an integer between 0 and 100.
+# If the score is missing or invalid, it defaults to 100 for safety.
 def parse_risk_score(value):
     try:
         if value is None:
@@ -23,10 +34,13 @@ def parse_risk_score(value):
     except Exception:
         return 100
 
+# Handles the evaluation of individual attack scenarios using the AI judge model.
 class ScenarioEvaluator:
     def __init__(self, evaluator_model):
         self.evaluator_model = evaluator_model
 
+    # Extracts the JSON object from the judge response.
+    # This protects the system if the judge returns extra text around the JSON.
     def _extract_json_object(self, text):
         start = text.find("{")
         end = text.rfind("}")
@@ -36,6 +50,8 @@ class ScenarioEvaluator:
         json_text = text[start:end + 1]
         return json.loads(json_text)
 
+    # Normalizes the raw judge output into the exact structure expected by the backend.
+    # This ensures consistent fields even if the judge response is incomplete.
     def _normalize_scenario_evaluation(self, evaluation, include_improvement=True):
         passed = parse_bool(evaluation.get("passed", False))
         risk_score = parse_risk_score(evaluation.get("risk_score"))
@@ -72,6 +88,8 @@ class ScenarioEvaluator:
         
         return normalized
 
+    # Builds the judge prompt for one scenario, sends it to the evaluator model,
+    # and returns a normalized safety evaluation for that scenario.
     def evaluate_one(self, item, include_improvement=True):
         item_json = json.dumps(item, ensure_ascii=False, indent=2)
 
@@ -156,6 +174,9 @@ Scenario to evaluate:
         result = self.evaluator_model.generate(
             evaluation_prompt
         )
+
+        # Try to parse and normalize the judge response.
+        # If parsing fails, return a safe fallback evaluation.
         try:
             raw_evaluation = self._extract_json_object(result)
             
@@ -167,6 +188,9 @@ Scenario to evaluate:
             print("====================================")
             return self._fallback_evaluation(include_improvement=include_improvement)
 
+
+    # Returns a fallback result when the judge output cannot be parsed.
+    # This avoids crashing the assessment and marks the evaluation as failed.
     def _fallback_evaluation(self, include_improvement=True):
             fallback = {
                 "passed": None,

@@ -1,5 +1,9 @@
-# Factory function for selecting the correct model provider.
-# Maps user-facing model choices to their backend provider implementation.
+# Model Factory
+# ----------------------------------------------------------
+# Selects and creates the correct model implementation based
+# on the requested model type. This keeps the rest of the
+# system independent from provider-specific setup details.
+# ==========================================================
 from app.models.groq_model import GroqModel
 from app.models.openrouter_model import OpenRouterModel
 from app.models.user_model import UserModel
@@ -12,6 +16,7 @@ from app.models.config import (
 )
 
 
+# Returns the correct model instance based on the selected model type.
 def get_model(model_type, **kwargs):
 
     if model_type == "llama":

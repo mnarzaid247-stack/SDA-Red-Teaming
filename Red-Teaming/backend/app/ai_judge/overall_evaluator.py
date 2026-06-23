@@ -1,7 +1,16 @@
+# Overall Evaluator
+# ----------------------------------------------------------
+# This module evaluates the overall safety performance of a
+# target AI model across multiple attack scenarios. It sends
+# all collected scenario results to the AI judge and returns
+# one summarized safety decision for the full attack run.
+# ==========================================================
 import json
 from app.prompts.safety_policy import  SCENARIO_SAFETY_POLICY, OVERALL_SAFETY_POLICY
 
 
+# Converts judge values into a clean boolean value.
+# This handles both real booleans and string values like "true".
 def parse_bool(value):
     if isinstance(value, bool):
         return value
@@ -12,6 +21,8 @@ def parse_bool(value):
     return False
 
 
+# Converts the judge risk score into a valid integer between 0 and 100.
+# If the score is missing or invalid, it defaults to 100 for safety.
 def parse_risk_score(value):
     try:
         if value is None:
@@ -22,11 +33,15 @@ def parse_risk_score(value):
 
     except Exception:
         return 100
-
+    
+# Handles the evaluation of a single attack type by analyzing
+# all scenarios that belong to that attack category.
 class OverallEvaluator:
     def __init__(self, evaluator_model):
         self.evaluator_model = evaluator_model
 
+# Extracts the JSON object from the judge response.
+# This protects the system if the judge returns extra text around the JSON.
     def _extract_json_object(self, text):
         start = text.find("{")
         end = text.rfind("}")
@@ -37,6 +52,8 @@ class OverallEvaluator:
         json_text = text[start:end + 1]
         return json.loads(json_text)
 
+    # Normalizes the raw judge output into the structure expected by the backend.
+    # This keeps the final result consistent even if some judge fields are missing.
     def _normalize_overall_evaluation(
         self,
         evaluation,
@@ -51,6 +68,7 @@ class OverallEvaluator:
         safe_count = evaluation.get("safe_count", 0)
         unsafe_count = evaluation.get("unsafe_count", 0)
 
+# Convert scenario counts into integers to avoid invalid response types.
         try:
             total_count = int(total_count)
             safe_count = int(safe_count)
@@ -87,6 +105,9 @@ class OverallEvaluator:
 
         return normalized
 
+# Builds the evaluation prompt for one attack category,
+# sends all related scenario results to the judge,
+# and returns a summarized assessment for that attack type.
     def evaluate(
         self,
         items,
@@ -101,6 +122,7 @@ class OverallEvaluator:
         improvement_field = ""
         improvement_json_field = ""
 
+        # Add improvement fields only when the caller wants improvement suggestions.
         if include_improvement:
             improvement_field = "- improvement"
             improvement_json_field = ',\n  "improvement": "short overall improvement suggestion"'
@@ -199,7 +221,8 @@ Scenarios and responses to evaluate:
         result = self.evaluator_model.generate(
             evaluation_prompt
         )
-
+# Try to parse and normalize the judge response.
+# If parsing fails, return a fallback result instead of crashing the run.
         try:
             raw_evaluation = self._extract_json_object(result)
 
@@ -218,6 +241,8 @@ Scenarios and responses to evaluate:
                 include_improvement=include_improvement
             )
 
+    # Returns a fallback overall result when the judge response is invalid.
+    # The total scenario count still comes from the system, not from the judge.
     def _fallback_overall_evaluation(
         self,
         items,
