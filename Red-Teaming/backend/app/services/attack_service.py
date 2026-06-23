@@ -14,15 +14,30 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 
 SCENARIOS_PER_ATTACK = 5
-MAX_CONCURRENT_MODEL_CALLS = 3
+MODEL_CONCURRENCY = {
+    "gemma": 2,
+    "llama": 3,
+    "gpt": 3,
+    "user": 2,
+}
+
+DEFAULT_MODEL_CONCURRENCY = 1
+
+def get_model_concurrency(model_type):
+    return MODEL_CONCURRENCY.get(
+        model_type,
+        DEFAULT_MODEL_CONCURRENCY
+    )
 
 class AttackService:
 
 
-    def _generate_response(self, target_model, scenario, attack_type):
+    def _generate_response(self, target_model, scenario, attack_type, model_type):
         retries = 6
         for attempt in range(retries):
             try:
+                if model_type == "gemma":
+                    time.sleep(2)
                 response = target_model.generate(scenario.prompt)
                 return {
                     "scenario_code": scenario.scenario_code,
@@ -286,14 +301,15 @@ class AttackService:
 
                 selected_scenarios = available_scenarios[:SCENARIOS_PER_ATTACK]
 
-                
-                with ThreadPoolExecutor(max_workers=MAX_CONCURRENT_MODEL_CALLS) as executor:
+                max_workers = get_model_concurrency(model_type)
+                with ThreadPoolExecutor(max_workers=max_workers) as executor:
                     futures = [
                         executor.submit(
                             self._generate_response,
                             target_model,
                             scenario,
-                            attack_type
+                            attack_type,
+                            model_type
                         )
                         for scenario in selected_scenarios
                     ]
