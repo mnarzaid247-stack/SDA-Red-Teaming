@@ -124,7 +124,9 @@ def get_security_trend(
 
     trend = []
 
-    for index, run in enumerate(last_runs, start=1):
+    attack_number = 1
+
+    for run in last_runs:
         safe_count = (
             db.query(AttackResult)
             .filter(
@@ -142,10 +144,14 @@ def get_security_trend(
             )
             .count()
         )
+        total_count = safe_count + unsafe_count
+
+        if total_count == 0:
+            continue
 
         trend.append(
             SecurityTrendItem(
-                attack_number=index,
+                attack_number=attack_number,
                 safe_scenarios=safe_count,
                 unsafe_scenarios=unsafe_count,
                 total_scenarios=safe_count + unsafe_count

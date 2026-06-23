@@ -37,7 +37,7 @@ useEffect(() => {
 const days = data.map((_, index) => `ATTACK ${index + 1}`);
 
 
-const maxTotal = Math.max(...data.map(item => item.total || 10), 10);
+const maxTotal = 10;
 
 const buildPath = (key) => {
   if (data.length === 0) return "";
@@ -129,12 +129,12 @@ const buildAreaPath = (key) => {
 
         {/* Y AXIS */}
         <div className="flex flex-col justify-between text-[10px] text-on-surface-variant pr-4 pb-8 opacity-60 font-label-caps">
-          <span>100%</span>
-          <span>80%</span>
-          <span>60%</span>
-          <span>40%</span>
-          <span>20%</span>
-          <span>0%</span>
+          <span>10</span>
+          <span>8</span>
+          <span>6</span>
+          <span>4</span>
+          <span>2</span>
+          <span>0</span>
         </div>
 
         <div
@@ -207,9 +207,11 @@ const buildAreaPath = (key) => {
 
           {/* X AXIS */}
           <div className="absolute -bottom-8 left-0 right-0 flex justify-between px-2 text-[10px] text-on-surface-variant opacity-80 tracking-widest font-label-caps">
-            {days.map((d) => (
-              <span key={d}>{d}</span>
-            ))}
+            {days.map((d, index) => (
+            <span key={d}>
+            {index % 2 === 0 ? d : ""}
+            </span>
+          ))}
           </div>
 
           {/* Interactive Tooltip: Displays live report values on hover */}
