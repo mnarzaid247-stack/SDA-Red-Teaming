@@ -1,9 +1,13 @@
-# SDA Red Teaming Backend
+# SDA Red Teaming Platform
 
-Backend API for an AI red-teaming platform. The service runs adversarial test scenarios against language models, evaluates responses with an AI judge, stores attack evidence, and exposes authenticated APIs for users, admins, reports, and dashboard metrics.
+Full-stack AI red-teaming platform for testing language models against adversarial scenarios. The project includes a FastAPI backend for authentication, attack execution, evaluation, reporting, and dashboard metrics, plus a Vite React frontend for individual and corporate workflows.
 
 ## Features
 
+- React frontend with landing, authentication, dashboard, attack library, automated lab, manual lab, and reports pages
+- Separate individual and corporate frontend routes
+- Centralized frontend API modules for auth, attacks, reports, and dashboard data
+- Axios JWT bearer-token injection from `localStorage`
 - FastAPI backend with Swagger UI at `/docs`
 - JWT authentication with user and admin roles
 - Role-based access control for protected user, admin, scenario, attack, and report operations
@@ -54,6 +58,16 @@ SDA-Red-Teaming/
     |-- Diagrams/
     |   |-- database.mmd
     |   `-- flowchart.mmd
+    |-- frontend/
+    |   |-- package.json
+    |   |-- vite.config.js
+    |   `-- src/
+    |       |-- API/
+    |       |-- Components/
+    |       |-- Layouts/
+    |       |-- Pages/
+    |       |-- App.jsx
+    |       `-- main.jsx
     `-- backend/
         |-- run.py
         |-- requirements.txt
@@ -85,9 +99,16 @@ SDA-Red-Teaming/
 - Password hashing with `passlib` and `bcrypt`
 - Groq API
 - OpenRouter API
+- React
+- Vite
+- React Router
+- Axios
+- Tailwind CSS tooling
 - Docker
 
 ## Setup
+
+### Backend
 
 1. Go to the backend directory:
 
@@ -142,6 +163,47 @@ Swagger documentation is available at:
 ```text
 http://0.0.0.0:8000/docs
 ```
+
+### Frontend
+
+1. Go to the frontend directory:
+
+```bash
+cd Red-Teaming/frontend
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Run the Vite development server:
+
+```bash
+npm run dev
+```
+
+The frontend uses React Router and includes these main routes:
+
+- `/` - landing page
+- `/auth` - login and registration
+- `/dashboard` - individual dashboard
+- `/attack-library` - individual attack library
+- `/automated-lab` - individual automated attack lab
+- `/manual-lab` - individual manual attack lab
+- `/reports` - individual reports
+- `/reports/attack/:attackType` - filtered individual attack reports
+- `/reports/detail/:attackRunId` - individual report detail
+- `/corporate/dashboard` - corporate dashboard
+- `/corporate/attack-library` - corporate attack library
+- `/corporate/automated-lab` - corporate automated attack lab
+- `/corporate/manual-lab` - corporate manual attack lab
+- `/corporate/reports` - corporate reports
+- `/corporate/reports/attack/:attackType` - filtered corporate attack reports
+- `/corporate/reports/detail/:attackRunId` - corporate report detail
+
+The frontend API client is configured in `Red-Teaming/frontend/src/API/axiosInstance.js`. It attaches the stored JWT token to outgoing requests and currently points to the deployed backend base URL.
 
 ## Docker
 
