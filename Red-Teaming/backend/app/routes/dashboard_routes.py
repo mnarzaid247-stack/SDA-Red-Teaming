@@ -5,7 +5,7 @@ from sqlalchemy import func
 from app.database_models.attack_run import AttackRun
 from datetime import datetime
 from app.database_models.attack_results import AttackResult
-from app.schemas.dashboard_schema import AttackRiskDistributionItem, TotalScenarioCountResponse, LastAttackRunResponse
+from app.schemas.dashboard_schema import AttackRiskDistributionItem, TotalScenarioCountResponse, LastAttackRunResponse, SecurityTrendItem
 
 
 router = APIRouter(
@@ -105,3 +105,51 @@ def get_last_attack(
         last_attack_at=last_attack.created_at,
         message=message
     )
+
+@router.get(
+    "/security-trend",
+    response_model=list[SecurityTrendItem]
+)
+def get_security_trend(
+    db: Session = Depends(get_db)
+):
+    last_runs = (
+        db.query(AttackRun)
+        .order_by(AttackRun.created_at.desc())
+        .limit(10)
+        .all()
+    )
+
+    last_runs = list(reversed(last_runs))
+
+    trend = []
+
+    for index, run in enumerate(last_runs, start=1):
+        safe_count = (
+            db.query(AttackResult)
+            .filter(
+                AttackResult.attack_run_id == run.id,
+                AttackResult.passed == True
+            )
+            .count()
+        )
+
+        unsafe_count = (
+            db.query(AttackResult)
+            .filter(
+                AttackResult.attack_run_id == run.id,
+                AttackResult.passed == False
+            )
+            .count()
+        )
+
+        trend.append(
+            SecurityTrendItem(
+                attack_number=index,
+                safe_scenarios=safe_count,
+                unsafe_scenarios=unsafe_count,
+                total_scenarios=safe_count + unsafe_count
+            )
+        )
+
+    return trend

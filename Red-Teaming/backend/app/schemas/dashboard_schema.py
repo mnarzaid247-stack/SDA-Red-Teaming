@@ -16,3 +16,10 @@ class TotalScenarioCountResponse(BaseModel):
 class LastAttackRunResponse(BaseModel):
     last_attack_at: Optional[datetime] = None
     message: str
+
+
+class SecurityTrendItem(BaseModel):
+    attack_number: int
+    safe_scenarios: int
+    unsafe_scenarios: int
+    total_scenarios: int
