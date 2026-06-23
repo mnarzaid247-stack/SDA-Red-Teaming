@@ -13,8 +13,8 @@ from app.ai_judge.final_overall_evaluator import FinalOverallEvaluator
 from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 
-SCENARIOS_PER_ATTACK = 8
-MAX_CONCURRENT_MODEL_CALLS = 5
+SCENARIOS_PER_ATTACK = 5
+MAX_CONCURRENT_MODEL_CALLS = 3
 
 class AttackService:
 
@@ -50,7 +50,7 @@ class AttackService:
                         "Rate limit exceeded after multiple retries. Please try again later."
                     )
 
-                wait_time = 15 * (attempt + 1)
+                wait_time = 8 * (attempt + 1)
 
                 print(
                     f"Rate limit reached for scenario "
