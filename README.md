@@ -1,118 +1,68 @@
-# SDA Red Teaming Platform
+# SDA Red Teaming Backend
 
-An AI security testing platform that red-teams language models, evaluates their responses, and turns risky behavior into clear, reviewable security results.
+Backend API for an AI red-teaming platform. The service runs adversarial test scenarios against language models, evaluates responses with an AI judge, stores attack evidence, and exposes authenticated APIs for users, admins, reports, and dashboard metrics.
 
-SDA Red Teaming Platform helps teams test how AI models behave under adversarial prompts such as jailbreaks, prompt injection, data leakage attempts, toxic requests, and hallucination checks. Instead of running manual tests one by one, the platform provides a structured backend for launching attacks, judging responses, storing evidence, and tracking risk over time.
+## Features
 
-## What Makes It Stand Out
+- FastAPI backend with Swagger UI at `/docs`
+- JWT authentication with user and admin roles
+- User registration, login, profile update, and deletion
+- Admin user management
+- Seeded attack scenario library
+- Admin scenario create, read, update, delete, and filtering
+- Automated attack runs across selected attack types
+- Manual single-prompt attack runs
+- Scenario-level and overall attack evaluation
+- Report cards and report detail views for each authenticated user
+- Dashboard metrics for attack risk distribution, scenario totals, and latest attack time
+- SQLite by default, with `DATABASE_URL` support for another SQLAlchemy database
+- CORS enabled for `http://localhost:3000` and `http://localhost:5173`
 
-- Multi-attack AI red teaming in one API
-- AI-judge evaluation for every model response
-- Overall risk score, risk level, pass/fail status, and improvement advice
-- Safe-response controls that hide risky model output when it should not be displayed
-- Scenario library seeded automatically at startup
-- Custom scenario management for admins
-- Attack history with detailed per-scenario results
-- Support for hosted models and user-provided model endpoints
-- JWT authentication with user and admin access control
-- Clean FastAPI documentation through Swagger UI
+## Attack Types
 
-## Core Features
+The backend supports these attack categories:
 
-| Area | Features |
-| --- | --- |
-| Authentication | User registration, login, JWT bearer tokens, password hashing, profile updates, account deletion |
-| Authorization | Regular user access, admin-only management, protected attack results |
-| Scenario Library | Seeded attack scenarios, scenario codes, filtering by attack type, admin create/update/delete |
-| Attack Runner | Runs selected attack types against selected model targets and stores each test run |
-| AI Evaluation | Scenario-level judging, overall judging, risk score, risk level, safe/unsafe counts, evidence summary |
-| Output Safety | Marks whether model responses are safe to show and protects sensitive or harmful outputs |
-| Model Support | Groq models, OpenRouter models, OpenRouter judge model, and custom user endpoints |
-| Persistence | SQLite database with SQLAlchemy models for users, scenarios, attack runs, and results |
-| Documentation | Interactive API docs at `/docs` plus Mermaid database and workflow diagrams |
+- `prompt_injection`
+- `jailbreak`
+- `toxicity`
+- `data_leakage`
+- `hallucination`
+- `tool_misuse`
 
-## Attack Coverage
+## Model Targets
 
-The platform currently supports five major AI risk categories:
-
-- `prompt_injection` - tests whether a model follows malicious instructions that override its role or policy
-- `jailbreak` - tests attempts to bypass safety behavior through roleplay or manipulation
-- `toxicity` - checks whether the model produces harmful, abusive, or unsafe language
-- `data_leakage` - tests whether the model exposes secrets, private data, or hidden instructions
-- `hallucination` - checks whether the model invents unsupported or unreliable information
-
-## Supported Model Targets
-
-| Model Type | Provider |
+| Request value | Provider |
 | --- | --- |
 | `llama` | Groq |
 | `gpt` | Groq |
 | `gemma` | OpenRouter |
 | `user` | Custom endpoint URL |
-| `judge` | OpenRouter evaluation model |
 
-## How It Works
-
-1. A user registers or logs in.
-2. The user selects a target model and one or more attack types.
-3. The platform loads matching scenarios from the scenario library.
-4. Each scenario prompt is sent to the selected model.
-5. The overall evaluator scores the full attack run.
-6. Scenario-level evaluation runs in the background for each model response.
-7. Results are saved with severity, pass/fail status, risk score, evidence, unsafe categories, and suggested improvements.
-8. Unsafe responses are hidden unless the evaluator marks them safe to show.
-9. The user reviews their attack history and detailed results through the API.
+OpenRouter is also used for the judge model configured by `OPENROUTER_JUDGE_MODEL`.
 
 ## Project Structure
 
 ```text
 SDA-Red-Teaming/
 |-- README.md
-|-- Diagrams/
-|   |-- database.mmd
-|   `-- flowchart.mmd
 `-- Red-Teaming/
-    |-- run.py
-    |-- requirements.txt
-    `-- app/
-        |-- main.py
-        |-- routes/
-        |-- services/
-        |-- schemas/
-        |-- database_models/
-        |-- models/
-        |-- attacks/
-        |-- ai_judge/
-        `-- prompts/
+    `-- backend/
+        |-- run.py
+        |-- requirements.txt
+        |-- Dockerfile
+        `-- app/
+            |-- main.py
+            |-- extensions.py
+            |-- seed.py
+            |-- routes/
+            |-- services/
+            |-- schemas/
+            |-- database_models/
+            |-- models/
+            |-- attacks/
+            |-- ai_judge/
+            `-- prompts/
 ```
-
-## API Modules
-
-### Users
-
-Base path: `/users`
-
-- Register and log in
-- Get, update, or delete the current user
-- Admin list, view, update, and delete users
-
-### Scenarios
-
-Base path: `/scenarios`
-
-- Get all scenarios
-- Filter scenarios by attack type
-- Get scenario details
-- Admin create, update, and delete scenarios
-
-### Attacks
-
-Base path: `/attacks`
-
-- Run a new attack test
-- View the current user's attack history
-- View detailed attack results
-- Admins can access attack runs across users
 
 ## Tech Stack
 
@@ -120,20 +70,20 @@ Base path: `/attacks`
 - FastAPI
 - Uvicorn
 - SQLAlchemy
-- SQLite
 - Pydantic
+- SQLite by default
 - JWT with `python-jose`
 - Password hashing with `passlib` and `bcrypt`
 - Groq API
 - OpenRouter API
-- Mermaid diagrams
+- Docker
 
 ## Setup
 
 1. Go to the backend directory:
 
 ```bash
-cd Red-Teaming
+cd Red-Teaming/backend
 ```
 
 2. Create and activate a virtual environment:
@@ -149,10 +99,12 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-4. Create a `.env` file in the `Red-Teaming` directory:
+4. Create a `.env` file in `Red-Teaming/backend`:
 
 ```env
 SECRET_KEY=replace-with-a-secure-secret
+DATABASE_URL=sqlite:///./red_teaming.db
+
 GROQ_API_KEY=your-groq-api-key
 OPENROUTER_API_KEY=your-openrouter-api-key
 
@@ -162,40 +114,161 @@ OPENROUTER_GEMMA_MODEL=google/gemma-4-31b-it:free
 OPENROUTER_JUDGE_MODEL=qwen/qwen3-32b
 ```
 
+`SECRET_KEY` is required. `DATABASE_URL` is optional and defaults to `sqlite:///./red_teaming.db`.
+
 5. Run the API:
 
 ```bash
 python run.py
 ```
 
-The server starts at:
+The API starts on:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-Swagger API documentation:
+Swagger documentation is available at:
 
 ```text
 http://127.0.0.1:8000/docs
 ```
 
-## Database
+## Docker
 
-The platform uses SQLite:
+From `Red-Teaming/backend`:
 
-```text
-Red-Teaming/red_teaming.db
+```bash
+docker build -t sda-red-teaming-backend .
+docker run --env-file .env -p 8000:8000 sda-red-teaming-backend
 ```
 
-Database tables are created automatically when the app starts, and the default attack scenarios are seeded during startup.
+## API Overview
 
-## Diagrams
+### System
 
-Mermaid diagrams are included in the `Diagrams` folder:
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/` | Health-style API status message |
 
-- `database.mmd` - database entities and relationships
-- `flowchart.mmd` - backend architecture and attack evaluation flow
+### Users
+
+Base path: `/users`
+
+| Method | Path | Access | Description |
+| --- | --- | --- | --- |
+| `POST` | `/users/register` | Public | Register a user |
+| `POST` | `/users/login` | Public | Log in and receive a bearer token |
+| `GET` | `/users/me` | User | Get the current user |
+| `PUT` | `/users/me` | User | Update the current user |
+| `DELETE` | `/users/me` | User | Delete the current user |
+| `GET` | `/users` | Admin | List users |
+| `GET` | `/users/{user_id}` | Admin | Get a user by ID |
+| `PUT` | `/users/{user_id}` | Admin | Update any user |
+| `DELETE` | `/users/{user_id}` | Admin | Delete any user |
+
+Passwords must be 8-64 characters and include at least one uppercase letter, one lowercase letter, and one number.
+
+### Attacks
+
+Base path: `/attacks`
+
+| Method | Path | Access | Description |
+| --- | --- | --- | --- |
+| `POST` | `/attacks/run` | User | Run selected seeded scenarios against a model |
+| `POST` | `/attacks/manual` | User | Run one manual prompt against a model |
+| `GET` | `/attacks` | Admin | List all attack runs |
+| `GET` | `/attacks/{attack_run_id}` | Admin | Get detailed attack run results |
+
+Example attack request:
+
+```json
+{
+  "model_type": "llama",
+  "selected_attack_types": ["prompt_injection", "jailbreak"]
+}
+```
+
+Example manual attack request:
+
+```json
+{
+  "model_type": "gemma",
+  "attack_type": "toxicity",
+  "prompt": "Test prompt here"
+}
+```
+
+For `model_type: "user"`, include `endpoint_url`. Include `api_key` when the custom endpoint needs one.
+
+### Scenarios
+
+Base path: `/scenarios`
+
+All scenario endpoints require admin access.
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `POST` | `/scenarios` | Create a scenario |
+| `GET` | `/scenarios` | List scenarios |
+| `GET` | `/scenarios/type/{attack_type}` | List scenarios by attack type |
+| `GET` | `/scenarios/{scenario_id}` | Get a scenario |
+| `PUT` | `/scenarios/{scenario_id}` | Update a scenario |
+| `DELETE` | `/scenarios/{scenario_id}` | Delete a scenario |
+
+### Reports
+
+Base path: `/reports`
+
+All report endpoints require an authenticated user.
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/reports` | List current user's report cards |
+| `GET` | `/reports/{attack_run_id}` | Get current user's report details |
+
+`GET /reports` supports optional filters:
+
+- `attack_type`
+- `model_provider`
+- `model_name`
+- `risk_level`
+
+### Dashboard
+
+Base path: `/dashboard`
+
+| Method | Path | Description |
+| --- | --- | --- |
+| `GET` | `/dashboard/attack-risk-distribution` | Count and percentage of failed scenarios by attack type |
+| `GET` | `/dashboard/total-scenarios` | Total saved attack results |
+| `GET` | `/dashboard/last-attack` | Timestamp and relative message for the latest attack |
+
+## Database
+
+The backend creates database tables on startup with SQLAlchemy:
+
+```python
+Base.metadata.create_all(bind=engine)
+```
+
+By default, the SQLite database is created at:
+
+```text
+Red-Teaming/backend/red_teaming.db
+```
+
+Seed scenarios are inserted during startup through `seed_database()`.
+
+## Authentication
+
+After login, pass the returned token as a bearer token:
+
+```http
+Authorization: Bearer <access_token>
+```
+
+Tokens use `HS256` and expire after 60 minutes.
 
 ## Team
 
