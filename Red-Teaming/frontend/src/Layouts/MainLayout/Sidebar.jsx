@@ -6,8 +6,9 @@
  * 'tailwind.config.js' configuration to enforce strict design tokens. 
  * This approach ensures visual harmony and perfect UI consistency throughout the application.
  */
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import api from '../../API/axiosInstance'
 
 const NAV_ITEMS = [
   { label: 'Dashboard', icon: 'dashboard', path: '/dashboard' },
@@ -18,6 +19,20 @@ const NAV_ITEMS = [
 ]
 
 const Sidebar = () => {
+  const [user, setUser] = useState(null)
+
+useEffect(() => {
+  const fetchUser = async () => {
+    try {
+      const res = await api.get('/users/me')
+      setUser(res.data)
+    } catch (error) {
+      console.error('Failed to fetch user:', error)
+    }
+  }
+
+  fetchUser()
+}, [])
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-surface-container-lowest border-r border-outline-variant flex flex-col z-50">
 
@@ -86,10 +101,10 @@ const Sidebar = () => {
 
           <div className="leading-tight">
             <p className="font-semibold text-on-surface text-sm">
-              Eng. Lujain
+              {user?.full_name || 'User'}
             </p>
             <p className="text-[10px] uppercase tracking-widest text-primary">
-              Lead Auditor
+              {user?.role === 'admin' ? 'Security Admin' : 'AI Tester'}
             </p>
           </div>
 
