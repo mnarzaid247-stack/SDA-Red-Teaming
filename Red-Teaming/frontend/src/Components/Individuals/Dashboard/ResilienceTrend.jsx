@@ -3,41 +3,79 @@
  * [ purpose ]: Self-contained analytical container rendering continuous time-series resilience data.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getSecurityTrend } from "../../../API/DashBoardAPI";
 
-// Static timeline labels
-const days = ['MON 01','TUE 02','WED 03','THU 04','FRI 05','SAT 06','SUN 07'];
 
 const ResilienceTrend = () => {
   const [tooltip, setTooltip] = useState(null);
 
   // Mock data representing defense and attack success rates over a 7-day cycle
-  const data = [
-    { x: 0, defense: 70, attack: 30 },
-    { x: 166, defense: 68, attack: 32 },
-    { x: 332, defense: 75, attack: 25 },
-    { x: 498, defense: 72, attack: 28 },
-    { x: 664, defense: 80, attack: 20 },
-    { x: 830, defense: 88, attack: 12 },
-    { x: 1000, defense: 85, attack: 15 },
-  ];
+  const [data, setData] = useState([]);
+
+useEffect(() => {
+  const fetchSecurityTrend = async () => {
+    try {
+      const result = await getSecurityTrend();
+
+      const formattedData = result.map((item, index) => ({
+        x: result.length === 1 ? 0 : (index * 1000) / (result.length - 1),
+        defense: item.safe_scenarios,
+        attack: item.unsafe_scenarios,
+        total: item.total_scenarios,
+        }));
+
+      setData(formattedData);
+    } catch (error) {
+      console.error("Failed to fetch security trend:", error);
+    }
+  };
+
+  fetchSecurityTrend();
+}, []);
+
+const days = data.map((_, index) => `ATTACK ${index + 1}`);
+
+
+const maxTotal = Math.max(...data.map(item => item.total || 10), 10);
+
+const buildPath = (key) => {
+  if (data.length === 0) return "";
+
+  return data
+    .map((item, index) => {
+      const y = 400 - ((item[key] / maxTotal) * 400);
+      return `${index === 0 ? "M" : "L"}${item.x},${y}`;
+    })
+    .join(" ");
+};
+
+const buildAreaPath = (key) => {
+  const linePath = buildPath(key);
+  if (!linePath || data.length === 0) return "";
+
+  return `${linePath} V400 H0 Z`;
+};
 
   // Logic to calculate the nearest data point based on cursor position
   const handleMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 1000;
+  if (data.length === 0) return;
 
-    const nearest = data.reduce((prev, curr) =>
-      Math.abs(curr.x - x) < Math.abs(prev.x - x) ? curr : prev);
+  const rect = e.currentTarget.getBoundingClientRect();
+  const x = ((e.clientX - rect.left) / rect.width) * 1000;
 
-    setTooltip({
-      x: nearest.x,
-      defense: nearest.defense,
-      attack: nearest.attack,
-      mouseX: e.clientX - rect.left,
-      mouseY: e.clientY - rect.top,
-    });
-  };
+  const nearest = data.reduce((prev, curr) =>
+    Math.abs(curr.x - x) < Math.abs(prev.x - x) ? curr : prev
+  );
+
+  setTooltip({
+    x: nearest.x,
+    defense: nearest.defense,
+    attack: nearest.attack,
+    mouseX: e.clientX - rect.left,
+    mouseY: e.clientY - rect.top,
+  });
+};
 
   return (
     <section
@@ -62,7 +100,7 @@ const ResilienceTrend = () => {
             Security Resilience Trend
           </h3>
           <p className="text-body-md text-on-surface-variant">
-            Model robustness analysis over the last 7 cycles.
+            Safe and unsafe scenarios across the last attacks.
           </p>
         </div>
 
@@ -72,14 +110,14 @@ const ResilienceTrend = () => {
           <div className="flex items-center gap-3">
             <div className="w-3 h-3 rounded-full bg-primary shadow-[0_0_10px_#4edea3]" />
             <span className="text-label-caps uppercase text-on-surface">
-              Defense Neutralization
+              Safe Scenarios
             </span>
           </div>
 
           <div className="flex items-center gap-3">
             <div className="w-3 h-3 rounded-full bg-error shadow-[0_0_10px_#ffb4ab]" />
             <span className="text-label-caps uppercase text-on-surface">
-              Attack Success Rate
+             Unsafe Scenarios
             </span>
           </div>
 
@@ -137,37 +175,34 @@ const ResilienceTrend = () => {
               </linearGradient>
             </defs>
 
-            {/* Path rendering for Defense (Green) and Attacks (Red) */}
-            <path
-              d="M0,200 L166,220 L332,180 L498,240 L664,280 L830,300 L1000,320"
-              fill="none"
-              stroke="#ffb4ab"
-              strokeWidth="2.5"
-              className="drop-shadow-[0_0_6px_rgba(255,180,171,0.4)]"
-            />
+            {/* Path rendering for Defense and Attacks from backend data */}
+      <path
+      d={buildPath("attack")}
+      fill="none"
+      stroke="#ffb4ab"
+      strokeWidth="2.5"
+      className="drop-shadow-[0_0_6px_rgba(255,180,171,0.4)]"
+    />
 
-            <path
-              d="M0,200 L166,220 L332,180 L498,240 L664,280 L830,300 L1000,320 V400 H0 Z"
-              fill="url(#redGradient)"
-            />
+<path
+  d={buildAreaPath("attack")}
+  fill="url(#redGradient)"
+/>
 
-            <path
-              d="M0,350 L166,320 L332,280 L498,300 L664,240 L830,120 L1000,80"
-              fill="none"
-              stroke="#4edea3"
-              strokeWidth="3"
-              className="drop-shadow-[0_0_10px_rgba(78,222,163,0.45)]"
-            />
+<path
+  d={buildPath("defense")}
+  fill="none"
+  stroke="#4edea3"
+  strokeWidth="3"
+  className="drop-shadow-[0_0_10px_rgba(78,222,163,0.45)]"
+/>
 
-            <path
-              d="M0,350 L166,320 L332,280 L498,300 L664,240 L830,120 L1000,80 V400 H0 Z"
-              fill="url(#greenGradient)"
-            />
+<path
+  d={buildAreaPath("defense")}
+  fill="url(#greenGradient)"
+/>
 
-            {/* POINTS */}
-            <circle cx="830" cy="120" r="6" fill="#4edea3" />
-            <circle cx="830" cy="300" r="4" fill="#ffb4ab" />
-
+            
           </svg>
 
           {/* X AXIS */}
@@ -192,13 +227,13 @@ const ResilienceTrend = () => {
 
               <div className="space-y-1 text-[11px]">
                 <div className="flex justify-between gap-6">
-                  <span className="text-primary">DEFENSE</span>
-                  <span className="font-bold text-on-surface">{tooltip.defense}%</span>
+                  <span className="text-primary">SAFE</span>
+                  <span className="font-bold text-on-surface">{tooltip.defense}</span>
                 </div>
 
                 <div className="flex justify-between gap-6">
-                  <span className="text-error">ATTACK</span>
-                  <span className="font-bold text-on-surface">{tooltip.attack}%</span>
+                  <span className="text-error">UNSAFE</span>
+                  <span className="font-bold text-on-surface">{tooltip.attack}</span>
                 </div>
               </div>
             </div>
