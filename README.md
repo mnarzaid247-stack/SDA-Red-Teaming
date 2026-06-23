@@ -134,13 +134,13 @@ python run.py
 The API starts on:
 
 ```text
-http://127.0.0.1:8000
+http://0.0.0.0:8000
 ```
 
 Swagger documentation is available at:
 
 ```text
-http://127.0.0.1:8000/docs
+http://0.0.0.0:8000/docs
 ```
 
 ## Docker
@@ -235,7 +235,7 @@ All scenario endpoints require admin access.
 
 Base path: `/reports`
 
-All report endpoints require an authenticated user. Regular users can only access their own reports. Admin users can list report cards across users through the report service behavior and can access all detailed attack runs through the admin-protected `/attacks` endpoints.
+All report endpoints require an authenticated user. Regular users can list and view only their own reports. Admin users can use the same report listing endpoint to view report cards across all users. Detailed attack run results for any user are available to admins through the admin-protected `/attacks` endpoints.
 
 | Method | Path | Description |
 | --- | --- | --- |
@@ -258,6 +258,8 @@ Base path: `/dashboard`
 | `GET` | `/dashboard/attack-risk-distribution` | Count and percentage of failed scenarios by attack type |
 | `GET` | `/dashboard/total-scenarios` | Total saved attack results |
 | `GET` | `/dashboard/last-attack` | Timestamp and relative message for the latest attack |
+
+The response field `successful_scenarios` represents failed detected scenarios in the current implementation.
 
 ## Database
 
