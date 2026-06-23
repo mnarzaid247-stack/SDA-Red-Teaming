@@ -1,19 +1,29 @@
+/**
+ * [ architectural concept ]: Dedicated route-level container component handling localized audit intelligence.
+ * [ purpose ]: Decodes targeted attack vector parameters, coordinates asynchronous telemetric telemetry fetching,
+ * and manages an inline drill-down viewport (modal modal) to expose deep-level structural execution payloads.
+ */
+
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getReportDetails } from "../../../API/ReportAPI.js";
+import { getReports, getReportDetails } from "../../../API/ReportAPI.js";
 
 const AttackReports = () => {
+  // 1. ROUTE PARSING & NORMALIZATION: Resolving dynamic URL tokens to match underlying storage schemas
   const { attackType } = useParams();
   const decodedAttackType = decodeURIComponent(attackType);
 
+  // 2. STATE CONFIGURATION: Reactive anchors governing structural collection lists and global error state boundaries
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // 3. DRILL-DOWN SUB-STATE: Ephemeral storage tracking specific inspection instances and lazy-loaded telemetry payloads
   const [selectedReportId, setSelectedReportId] = useState(null);
   const [detailedReport, setDetailedReport] = useState(null);
   const [loadingDetails, setLoadingDetails] = useState(false);
 
+  // 4. LIFECYCLE SYNCHRONIZATION: Resolves vectorized report indices upon parameter change boundaries
   useEffect(() => {
     const fetchReports = async () => {
       try {
@@ -33,6 +43,7 @@ const AttackReports = () => {
     fetchReports();
   }, [decodedAttackType]);
 
+  // 5. INTERACTION DISPATCHERS: Asynchronous transactional routines for dynamic item lookup and state flushing
   const handleOpenDetails = async (id) => {
     setSelectedReportId(id);
     setLoadingDetails(true);
@@ -51,6 +62,7 @@ const AttackReports = () => {
     setDetailedReport(null);
   };
 
+  // 6. STYLE CONFIGURATION: Dynamic tailwind utility class variant mapping tied to severity thresholds
   const getScoreColor = (score) => {
     const numericScore = Number(score) || 0;
     if (numericScore >= 75) return 'text-error';
@@ -58,12 +70,15 @@ const AttackReports = () => {
     return 'text-success';
   };
 
+  // 7. EARLY ESCAPE BOUNDARIES: Fallback viewports rendering transient lifecycle placeholders
   if (loading) return <div className="text-on-surface-variant p-6 font-mono">Loading reports...</div>;
   if (error) return <div className="text-error p-6 font-mono">{error}</div>;
 
+  // 8. MAIN VIEWPORT RESOLUTION: Micro-interaction log container grid structure
   return (
     <div className="flex flex-col gap-6 relative w-full animate-fadeIn">
-      {/* HEADER */}
+      
+      {/* NODE: Identity header and quantitative audit trail counter */}
       <div>
         <h1 className="text-headline-lg font-black text-primary tracking-tight">
           {decodedAttackType}
@@ -73,7 +88,7 @@ const AttackReports = () => {
         </p>
       </div>
 
-      {/* GRID */}
+      {/* NODE: Audit metrics data display grid */}
       <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {reports.length === 0 ? (
           <p className="text-on-surface-variant font-mono">No logs found for this specific vector.</p>
@@ -106,7 +121,7 @@ const AttackReports = () => {
         )}
       </section>
 
-      {/* DETAILED EXPANDED MODAL */}
+      {/* NODE: Isolated telemetry modal displaying full audit payload metadata */}
       {selectedReportId && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fadeIn">
           <div className="bg-surface-container border border-outline-variant rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 shadow-2xl relative scrollbar-thin">

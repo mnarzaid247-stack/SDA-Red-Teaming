@@ -1,15 +1,23 @@
+/**
+ * [ architectural concept ]: Central orchestrator layer designed to manage top-level analytical audit aggregations.
+ * [ purpose ]: Synchronizes global backend report collections, handles early-bound asynchronous routing metrics, 
+ * and maps aggregated data structures down to specialized presentations (ReportGrid).
+ */
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReportGrid from "../../../Components/Individuals/Reports/ReportGrid.jsx";
-import { getReportDetails } from "../../../API/ReportAPI.js";
+import { getReports, getReportDetails } from "../../../API/ReportAPI.js";
 
 const Reports = () => {
+  // 1. STATE CONFIGURATION: Structural reactive anchors managing aggregated collection arrays and global network boundaries
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // 2. ROUTING INSTANCE: Core navigation hook initialization for programmatic view-state shifts
   const navigate = useNavigate();
 
+  // 3. LIFECYCLE SYNCHRONIZATION: Concurrently resolves global threat intelligence matrices upon initial orchestration mounting
   useEffect(() => {
     const fetchReports = async () => {
       try {
@@ -25,11 +33,12 @@ const Reports = () => {
     fetchReports();
   }, []);
 
-  // 🔥 لما يضغط على Attack Type Card
+  // 4. NAVIGATION HANDLER: Encodes distinct categorical parameters to secure cross-route tracking parameters safely
   const handleAttackClick = (attackType) => {
     navigate(`/reports/attack/${encodeURIComponent(attackType)}`);
   };
 
+  // 5. EARLY ESCAPE BOUNDARIES: Standard terminal nodes providing loading latencies or fallback execution logs
   if (loading) {
     return (
       <div className="text-on-surface-variant">
@@ -46,6 +55,7 @@ const Reports = () => {
     );
   }
 
+  // 6. MAIN VIEWPORT RESOLUTION: High-fidelity layout container encapsulating nested presentation grids
   return (
     <div className="flex flex-col gap-10 w-full">
 

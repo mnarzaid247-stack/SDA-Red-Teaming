@@ -1,20 +1,27 @@
+/**
+ * [ architectural concept ]: Route-level detailed inspection container acting as the terminal data layout layer.
+ * [ purpose ]: Captures explicit or fallback transactional record identifiers, orchestrates deep asynchronous 
+ * report payload retrieval, and maps multi-dimensional forensic telemetry into categorized data nodes.
+ */
+
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getReportDetails } from "../../../API/ReportAPI.js";
 
 const ReportDetail = () => {
-  // استخدام تفكيك الكائن مع إعطاء اسم بديل مرن أو التأكد من مطابقة الـ Params لـ ID التقرير
-  const params = useParams();
-  // جلب أول قيمة موجودة بالـ params لتفادي اختلاف التسمية في الـ Route
+
+// 1. ROUTE PARSING & FALLBACK RESOLUTION: Dynamically extracting identifier records across varying route definitions  const params = useParams();
   const reportId = params.id || params.categoryId || Object.values(params)[0];
 
+// 2. STATE CONFIGURATION: Structural reactive boundaries managing telemetry payloads and lifecycle exceptions
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+// 3. LIFECYCLE SYNCHRONIZATION: Executes high-fidelity lookup query for targeted audit telemetry records
   useEffect(() => {
     if (!reportId) {
-      setError("معرّف التقرير غير موجود في رابط الصفحة (Report ID missing).");
+      setError("(Report ID missing).");
       setLoading(false);
       return;
     }
@@ -34,15 +41,18 @@ const ReportDetail = () => {
     fetchReport();
   }, [reportId]);
 
+  // 4. EARLY ESCAPE BOUNDARIES: Rendering transient state fallbacks for network latency or validation anomalies
   if (loading) return <div className="text-on-surface-variant p-6 font-mono">Loading report details...</div>;
   if (error) return <div className="text-error p-6 font-mono">{error}</div>;
   if (!report) return <div className="text-on-surface-variant p-6 font-mono">No report found.</div>;
 
+  // 5. DATA TRANSFORMATION: Normalizing diverse backend payload serialization variations into structural arrays
   const attacks =
     typeof report.selected_attack_types === 'string'
       ? report.selected_attack_types.split(',')
       : report.selected_attack_types || [];
 
+  // 6. MAIN VIEWPORT RESOLUTION: High-fidelity audit trail presentation interface
   return (
     <div className="flex flex-col gap-8 p-6 max-w-4xl mx-auto animate-fadeIn">
       {/* HEADER */}
