@@ -19,32 +19,6 @@ router = APIRouter(
 
 user_service = UserService()
 
-@router.post("/make-admin")
-def make_admin(
-    email: str,
-    db: Session = Depends(get_db)
-):
-    user = user_service.get_user_by_email(db, email)
-
-    if not user:
-        raise HTTPException(
-            status_code=404,
-            detail="User not found"
-        )
-
-    user.role = "admin"
-    db.commit()
-    db.refresh(user)
-
-    return {
-        "message": "User promoted to admin",
-        "email": user.email,
-        "role": user.role
-    }
-
-
-
-
 @router.get("/me", response_model=UserResponse)
 def get_me(
     current_user = Depends(get_current_user)
