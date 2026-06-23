@@ -1,6 +1,8 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+from typing import Optional, List
+from app.schemas.attack_schema import AttackOverallResultResponse
 
 
 class ReportCardResponse(BaseModel):
@@ -26,3 +28,4 @@ class ReportDetailsResponse(BaseModel):
     detected_risks: int | None = None
     overall_evidence_summary: Optional[str] = None
     overall_improvement: Optional[str] = None
+    overall_results: List[AttackOverallResultResponse] = []

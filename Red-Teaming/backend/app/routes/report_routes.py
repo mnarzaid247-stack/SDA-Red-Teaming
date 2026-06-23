@@ -73,5 +73,21 @@ def get_my_report_details(
     overall_risk_level=report.overall_risk_level,
     detected_risks=report.overall_unsafe_count,
     overall_evidence_summary=report.overall_evidence_summary,
-    overall_improvement=report.overall_improvement
+    overall_improvement=report.overall_improvement,
+    overall_results=[
+    {
+        "attack_type": result.attack_type,
+        "passed": result.passed,
+        "risk_score": result.risk_score,
+        "risk_level": result.risk_level,
+        "detected_risks": (
+            result.unsafe_count
+            if result.unsafe_count is not None
+            else 0
+        ),
+        "evidence_summary": result.evidence_summary,
+        "improvement": result.improvement
+    }
+    for result in report.overall_results
+]
 )
