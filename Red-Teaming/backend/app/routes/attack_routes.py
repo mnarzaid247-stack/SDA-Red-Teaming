@@ -58,6 +58,7 @@ def run_attack(
             if item.strip()],
         status=attack_run.status,
         passed=attack_run.overall_passed,
+        overall_risk_score=attack_run.overall_risk_score,
         created_at=attack_run.created_at,
         duration_seconds=attack_run.duration_seconds,
         overall_results=[

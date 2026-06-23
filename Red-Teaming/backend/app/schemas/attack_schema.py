@@ -44,6 +44,7 @@ class AttackRunResponse(BaseModel):
     selected_attack_types: List[str]
     status: str
     passed: Optional[bool] = None
+    overall_risk_score: Optional[int] = None
     created_at: datetime
     duration_seconds: int | None = None
     overall_results: List[AttackOverallResultResponse]
