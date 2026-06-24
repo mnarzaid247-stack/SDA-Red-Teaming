@@ -1,3 +1,8 @@
+/**
+ * [ architectural concept ]: Centralized Identity & Access Management (IAM) Gateway.
+ * [ purpose ]: Orchestrates dual-mode user session lifecycles (Authentication & Account Provisioning). 
+ * Handles secure token integration, front-end password strength validation, and structured backend error parsing.
+ */
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, registerUser, getCurrentUser } from '../../../API/AuthAPI.js';
@@ -5,6 +10,8 @@ import { useAuth } from '../../../AuthFolder/AuthContext.jsx';
 const AuthForm = ({ onSuccess }) => {
   const navigate = useNavigate();
   const { login } = useAuth();
+
+  // 1. COMPONENT STATES: Managing switching modes, load indicators, error stacks, and form inputs
   const [mode, setMode] = useState('login');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -15,6 +22,7 @@ const AuthForm = ({ onSuccess }) => {
     full_name: ''
   });
 
+  // 2. INPUT SYNCHRONIZATION: Clears existing error states and captures dynamic field changes
   const handleChange = (e) => {
     setError('');
 
@@ -23,7 +31,7 @@ const AuthForm = ({ onSuccess }) => {
       [e.target.name]: e.target.value
     }));
   };
-
+// 3. SECURE VALIDATION RULESET: Enforces complex password standards and email structures before network calls
   const validateRegister = () => {
     if (!form.full_name.trim()) {
       return 'Full name is required';
@@ -54,6 +62,7 @@ const AuthForm = ({ onSuccess }) => {
     return null;
   };
 
+  // 4. TRANSACTION SUBMISSION PIPELINE: Manages either active session initialization or data generation
   const handleSubmit = async () => {
     setLoading(true);
     setError('');
@@ -63,9 +72,10 @@ const AuthForm = ({ onSuccess }) => {
 
       if (mode === 'login') {
   data = await loginUser(form.email, form.password);
-
+  // Fetch specific profile data corresponding to the newly validated session token
   const currentUser = await getCurrentUser();
 
+  // Commit credentials globally to the shared context state
   login(currentUser, data.access_token);
 
   navigate('/dashboard');
@@ -86,7 +96,8 @@ const AuthForm = ({ onSuccess }) => {
           email: form.email,
           password: form.password
         });
-
+        
+        // Switch controller views back to authorization after registration succeeds
         setMode('login');
 
         setForm({
@@ -99,7 +110,7 @@ const AuthForm = ({ onSuccess }) => {
       }
     } catch (err) {
       console.error(err);
-
+      // 5. BACKEND ERROR PARSING: Destructures structured response detail matrices from the API
       const backendError =
         err?.response?.data?.detail;
 
@@ -116,7 +127,7 @@ const AuthForm = ({ onSuccess }) => {
       setLoading(false);
     }
   };
-
+// 6. MAIN AUTH CANVAS: Centered presentation viewport leveraging radial neon ambient backdrops
   return (
     <div className="min-h-screen flex items-center justify-center bg-surface-container relative overflow-hidden">
 

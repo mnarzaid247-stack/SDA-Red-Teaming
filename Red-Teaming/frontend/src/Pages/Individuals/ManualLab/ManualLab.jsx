@@ -1,3 +1,9 @@
+/**
+ * [ architectural concept ]: Manual Assessment Lab Wizard Controller.
+ * [ purpose ]: Controls the step-by-step wizard pipeline for manual red-teaming. 
+ * Coordinates configurations from target LLM selection to attack taxonomy mapping, 
+ * before unlocking the active payload injection lab.
+ */
 import React, { useState } from 'react';
 import WizardHeader from '../../../Components/Individuals/Labs/WizardHeader.jsx';
 import StepContainer from '../../../Components/Individuals/Labs/StepContainer.jsx';
@@ -6,16 +12,16 @@ import AttackSelection from '../../../Components/Individuals/Labs/AttackSelectio
 import ManAssessment from './ManAssessment.jsx';
 
 const ManualLab = () => {
+  // 1. CONTROL LIFECYCLE STATES: Managing active wizard steps, data selections, and execution status
   const [activeStep, setActiveStep] = useState(1);
   const [selections, setSelections] = useState({
     model: null,
-    attacks: [] // مصفوفة تحمل أنواع الهجمات المختارة
+    attacks: []
   });
-  
-  // State إضافي لمتابعة ما إذا تم تنفيذ هجوم يدوي واحد على الأقل بنجاح
+
+  // Dynamic Flag: Tracks if at least one manual attack has run successfully to update step metrics
   const [hasExecuted, setHasExecuted] = useState(false);
 
-  // الخيار الأول: تحديد النموذج المستهدف وفك قفل الخطوة التالية تلقائياً
   const handleModelSelect = (selectedModel) => {
     setSelections((prev) => ({
       ...prev,
@@ -24,7 +30,7 @@ const ManualLab = () => {
     setActiveStep(2);
   };
 
-  // الخيار الثاني: إدارة هجمات الـ Red Teaming المحددة وتحديث حالة معالج الخطوات
+  // 2. STEP 2 CONTROL (ATTACK): Updates target attack configuration and advances to the manual prompt
   const handleAttackSelect = (updatedAttacks) => {
     setSelections((prev) => ({
       ...prev,

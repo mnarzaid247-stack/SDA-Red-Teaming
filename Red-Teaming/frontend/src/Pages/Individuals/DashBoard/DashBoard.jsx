@@ -1,6 +1,6 @@
 /**
- * [ ARCHITECTURAL CONCEPT ]: The central Orchestrator/Page component acting as the application state layer.
- * [ PURPOSE ]: Resolves data-fetching via asynchronous concurrency, manages loading/error boundaries, 
+ * [ architectural concept ]: The central Orchestrator/Page component acting as the application state layer.
+ * [ purpose ]: Resolves data-fetching via asynchronous concurrency, manages loading/error boundaries, 
  * and distributes live backend telemetry to presentation sub-components (MetricCard, ResilienceTrend, AttackSurface).
  */
 

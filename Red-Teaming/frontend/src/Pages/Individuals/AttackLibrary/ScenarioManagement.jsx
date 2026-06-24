@@ -41,11 +41,12 @@ const ScenarioManagement = () => {
       setLoading(false);
     }
   };
-
+// 4. LIFECYCLE SYNC: Automatically triggers data reload whenever the attack type shifts
   useEffect(() => {
     loadScenarios();
   }, [attackType]);
 
+  // 5. SECURITY GUARD: Strictly blocks non-admin users from accessing or executing operations
   if (user?.role !== 'admin') {
     return (
       <div className="max-w-[1200px] mx-auto">
@@ -57,6 +58,7 @@ const ScenarioManagement = () => {
     );
   }
 
+// 6. FORM HANDLER: Synchronizes input keystrokes directly into local component state
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -64,6 +66,7 @@ const ScenarioManagement = () => {
     });
   };
 
+// 7. SUBMIT LOGIC: Decides whether to provision a new scenario or update an existing instance
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -82,9 +85,10 @@ const ScenarioManagement = () => {
 
     setForm(emptyForm);
     setEditingId(null);
-    loadScenarios();
+    loadScenarios();        // Refresh local catalog database layout
   };
 
+// 8. EDIT MODE INITIALIZER: Fills the form fields with target scenario metadata for updates
   const handleEdit = (scenario) => {
     setEditingId(scenario.id);
     setForm({
@@ -94,16 +98,18 @@ const ScenarioManagement = () => {
     });
   };
 
+// 9. PURGE OPERATION: Prompts for confirmation then permanently removes target records
   const handleDelete = async (scenarioId) => {
     const confirmed = window.confirm('Delete this scenario?');
     if (!confirmed) return;
 
     await deleteScenario(scenarioId);
-    loadScenarios();
+    loadScenarios();       // Refresh local catalog database layout
   };
 
   return (
     <div className="max-w-[1400px] mx-auto flex flex-col gap-8">
+      {/* 10. PAGE HEADER & BREADCRUMBS: Returns back to core library domain */}
       <div>
         <button
           onClick={() => navigate('/attack-library')}
@@ -120,7 +126,7 @@ const ScenarioManagement = () => {
           Attack type: <span className="font-bold text-primary">{attackType}</span>
         </p>
       </div>
-
+      {/* 11. ACTION FORM: Dynamic structural inputs serving creation and update modes */}
       <form
         onSubmit={handleSubmit}
         className="bg-surface-container-low border border-outline-variant rounded-2xl p-6 flex flex-col gap-4"
@@ -181,7 +187,8 @@ const ScenarioManagement = () => {
           )}
         </div>
       </form>
-
+      
+      {/* 12. DATA RENDERING LAYER: Iterates and maps existing scenarios or outputs loaders */}
       <div className="flex flex-col gap-4">
         {loading ? (
           <p className="text-on-surface-variant">Loading scenarios...</p>
