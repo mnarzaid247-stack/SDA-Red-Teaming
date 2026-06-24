@@ -127,7 +127,7 @@ const AttackCard = ({
           </div>
 
           {/* هنا الفحص الذكي والتبديل بين الزر للأدمن والنص العادي لليوزر */}
-          {user?.role === 'admin' ? (
+          {String(user?.role || '').toLowerCase().trim() === 'admin' ? (
             <button 
               onClick={handleManageScenarios}
               className="
