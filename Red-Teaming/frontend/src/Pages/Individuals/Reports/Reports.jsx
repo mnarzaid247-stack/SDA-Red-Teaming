@@ -60,7 +60,7 @@ const Reports = () => {
     <div className="flex flex-col gap-10 w-full">
 
       <header className="space-y-3">
-        <h1 className="text-headline-lg font-bold text-primary">
+        <h1 className="text-2xl sm:text-headline-lg font-bold text-primary">
           Reports
         </h1>
 

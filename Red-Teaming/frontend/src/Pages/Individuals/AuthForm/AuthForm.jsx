@@ -134,7 +134,7 @@ const AuthForm = ({ onSuccess }) => {
       <div className="absolute -top-32 -right-32 w-96 h-96 bg-primary/20 blur-3xl rounded-full" />
       <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-primary/10 blur-3xl rounded-full" />
 
-      <div className="relative w-full max-w-md p-10 rounded-3xl border border-outline-variant bg-surface-container-low shadow-xl">
+      <div className="relative w-full max-w-md p-4 sm:p-8 lg:p-10 rounded-3xl border border-outline-variant bg-surface-container-low shadow-xl mx-4">
 
         <h2 className="text-3xl font-black text-center text-white mb-8">
           {mode === 'login'

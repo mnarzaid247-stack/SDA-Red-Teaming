@@ -118,7 +118,7 @@ const ScenarioManagement = () => {
           ← Back to Attack Library
         </button>
 
-        <h1 className="text-4xl font-black text-on-surface">
+        <h1 className="text-2xl sm:text-4xl font-black text-on-surface">
           Manage Scenarios
         </h1>
 
@@ -129,8 +129,7 @@ const ScenarioManagement = () => {
       {/* 11. ACTION FORM: Dynamic structural inputs serving creation and update modes */}
       <form
         onSubmit={handleSubmit}
-        className="bg-surface-container-low border border-outline-variant rounded-2xl p-6 flex flex-col gap-4"
-      >
+className="bg-surface-container-low border border-outline-variant rounded-2xl p-4 sm:p-6 flex flex-col gap-4"      >
         <h2 className="text-xl font-black text-on-surface">
           {editingId ? 'Edit Scenario' : 'Add New Scenario'}
         </h2>
@@ -165,10 +164,10 @@ const ScenarioManagement = () => {
           <option value="critical">critical</option>
         </select>
 
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           <button
             type="submit"
-            className="bg-primary text-on-primary font-bold px-5 py-3 rounded-xl"
+            className="w-full sm:w-auto bg-primary text-on-primary font-bold px-5 py-3 rounded-xl"
           >
             {editingId ? 'Update Scenario' : 'Add Scenario'}
           </button>
@@ -198,7 +197,7 @@ const ScenarioManagement = () => {
               key={scenario.id}
               className="bg-surface-container-low border border-outline-variant rounded-2xl p-5"
             >
-              <div className="flex justify-between gap-4 mb-3">
+              <div className="flex flex-col sm:flex-row sm:justify-between gap-4 mb-3">
                 <div>
                   <p className="text-xs font-bold text-primary">
                     {scenario.scenario_code}
@@ -208,7 +207,7 @@ const ScenarioManagement = () => {
                   </p>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <button
                     onClick={() => handleEdit(scenario)}
                     className="text-xs font-bold text-primary border border-primary/30 px-3 py-2 rounded-lg"

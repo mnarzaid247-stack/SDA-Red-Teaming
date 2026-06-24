@@ -34,7 +34,7 @@ const TopNav = ({ setSidebarOpen }) => {
  
 
       {/* 4. UTILITY CONTROLS: Grouped interactive vectors for system triggers and preferences */}
-      <div className="flex items-center gap-3 sm:gap-8">
+      <div className="hidden sm:flex items-center gap-3 sm:gap-8">
         
 
         {/* 5. ICON BAR: Interactive navigation buttons for system alerts, settings, and profile */}
