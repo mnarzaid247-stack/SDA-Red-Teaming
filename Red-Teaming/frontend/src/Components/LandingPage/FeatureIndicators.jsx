@@ -20,11 +20,13 @@ const FeatureIndicators = () => {
         
         {FEATURES.map((feature, idx) => (
           <React.Fragment key={feature}>
+            
             {/* typographic token displaying static capability identifier */}
             <span className="hover:text-[#10b981] 
             transition-colors duration-300">
               {feature}
             </span>
+
             {/* conditional lookahead boundary to suppress trailing separation markers on final indices */}
             {idx < FEATURES.length - 1 && (
               <span className="w-1.5 h-1.5 rounded-full bg-[#10b981] 

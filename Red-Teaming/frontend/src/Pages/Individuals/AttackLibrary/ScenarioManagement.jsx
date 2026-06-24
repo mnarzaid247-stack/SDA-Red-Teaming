@@ -1,3 +1,8 @@
+/**
+ * [ architectural concept ]: Admin-Only Scenario Management Controller.
+ * [ purpose ]: Provides full CRUD operations for vulnerability simulation scenarios. 
+ * Allows security admins to create, read, update, and delete specific attack vectors based on the current library type.
+ */
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../AuthFolder/AuthContext.jsx';
@@ -8,17 +13,20 @@ import {
   deleteScenario
 } from '../../../API/ScenarioAPI.js';
 
+// 1. INITIAL STATE: Reset token schema for the input form fields
 const emptyForm = {
   prompt: '',
   expected_behavior: '',
   severity: 'medium'
 };
 
+// 2. COMPONENT STATES: Tracking lists, dynamic forms, editing indices, and HTTP lifecycles
 const ScenarioManagement = () => {
   const { attackType } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  // 3. DATA FETCHING: Retrieves attack scenarios related to the current URL parameter type
   const [scenarios, setScenarios] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);

@@ -1,11 +1,6 @@
 /**
- * Component: TopNav
- * Description: The global navigation header for the application.
- * This component functions as a core shared layout. 
- * I utilized Tailwind CSS as our styling engine, leveraging the centralized 
- * 'tailwind.config.js' configuration to enforce strict design tokens. 
- * This approach ensures visual harmony and perfect UI consistency across 
- * every page of the system.
+ * [  architectural concept ]: Global Navigation Header Module (TopNav).
+ * [ purpose ]: Provides a persistent top bar across the application to display the ecosystem branding, handle functional utilities (notifications/settings), and orchestrate the secure user logout sequence.
  */
 
 import React from 'react';
@@ -16,16 +11,17 @@ const TopNav = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
+  // 1. AUTHENTICATION LOGIC: Clears current session credentials and redirects analyst to the gateway
   const handleLogout = () => {
     logout();
     navigate('/auth');
      };
   return (
-    // Fixed header that stays at the top, maintaining a constant navigation anchor.
+    // 2. FIXED HEADER CONTAINER: Anchored at the top, offsetting horizontal layout space for the sidebar
     <header className="fixed top-0 right-0 left-64 z-40 flex items-center justify-between 
     px-8 h-16 border-b border-outline-variant bg-surface">
 
-      {/* Left Section: Displays the project identity/brand title */}
+      {/* 3. PLATFORM BRANDING: Renders the central security domain title */}
       <div className="flex items-center gap-4">
         <span className="font-bold text-headline-sm text-on-surface tracking-widest">
           LLM SECURITY HUB
@@ -33,11 +29,11 @@ const TopNav = () => {
       </div>
  
 
-      {/* Right Section: Contains functional tools (Search and User Menu) */}
+      {/* 4. UTILITY CONTROLS: Grouped interactive vectors for system triggers and preferences */}
       <div className="flex items-center gap-8">
         
 
-        {/* Icons Bar: Interactive navigation buttons for system alerts, settings, and profile */}
+        {/* 5. ICON BAR: Interactive navigation buttons for system alerts, settings, and profile */}
         <div className="flex items-center gap-6">
 
           <button className="text-on-surface-variant hover:text-primary transition-colors">

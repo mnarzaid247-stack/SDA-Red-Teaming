@@ -1,31 +1,27 @@
 /**
- * Component: MainLayout
- * Description: The main structural wrapper for the application's main interface.
- * This layout component acts as the architectural foundation of the system.
- * I utilized Tailwind CSS as our styling engine, leveraging the centralized 
- * 'tailwind.config.js' configuration to enforce strict design tokens. 
- * This approach ensures visual harmony and perfect UI consistency across every page 
- * by providing a unified container for our global navigation and main content.
-**/
+ * [ architectural concept ]: Root structural shell layout orchestration framework.
+ * [ purpose ]: Establishes the persistent viewport wireframe by anchoring telemetry navigation nodes (Sidebar & TopNav) and exposing a fluid content viewport for dynamic application modules via React Router's Outlet.
+ */
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from './Sidebar.jsx';
 import TopNav from './TopNav.jsx';
 
 const MainLayout = () => {
+  // 1. ROOT CANVAS DOMAIN: Enforces strict theme alignment with background vectors and surface typography tokens
   return (
     <div className="min-h-screen bg-background text-on-surface flex">
 
-      {/* Sidebar - ثابت على اليسار */}
+      {/* 2. PERSISTENT NAVIGATION VECTOR: Rigidly anchored sidebar matrix on the left axis */}
       <Sidebar />
 
-      {/* Main Area */}
+      {/* 3. CORE EXECUTABLE REGION: Fluid layout column offset to accommodate navigation bounds */}
       <div className="flex-1 flex flex-col ml-70 relative">
 
-        {/* TopNav - الهيدر الثابت في الأعلى */}
+      {/* 4. SUPERIOR TELEMETRY HEADER: Stationary system top bar monitoring controller status */}
         <TopNav />
 
-        {/* Page Content - المحتوى ويحترم الهيدر بفضل الـ pt-20 */}
+        {/* 5. METRIC VIEWPORT LAYER: Isolated scrollable workspace dedicated to dynamic page rendering */}
         <main className="flex-1 p-6 pt-30 overflow-y-auto">
           <Outlet />
         </main>

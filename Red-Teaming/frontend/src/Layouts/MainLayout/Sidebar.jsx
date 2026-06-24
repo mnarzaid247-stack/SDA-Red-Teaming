@@ -1,15 +1,12 @@
 /**
- * Component: Sidebar
- * Description: The global navigation sidebar for the application.
- * This is a "Shared Layout Component" integrated into all system pages. 
- * I utilized Tailwind CSS as our styling engine, leveraging the centralized 
- * 'tailwind.config.js' configuration to enforce strict design tokens. 
- * This approach ensures visual harmony and perfect UI consistency throughout the application.
+ * [ architectural concept ]: Primary persistent navigation matrix and user profile telemetry block.
+ * [ purpose ]: Anchors the main navigation vectors for threat libraries, labs, and reporting modules while computing and displaying real-time session identity configurations.
  */
 import React, { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import api from '../../API/axiosInstance'
 
+// 1. ROUTING REGISTRY: Static array mapping dashboard subsystem destinations
 const NAV_ITEMS = [
   { label: 'Dashboard', icon: 'dashboard', path: '/dashboard' },
   { label: 'Attack Library', icon: 'security', path: '/attack-library' },
@@ -21,6 +18,7 @@ const NAV_ITEMS = [
 const Sidebar = () => {
   const [user, setUser] = useState(null)
 
+// 2. SESSION TELEMETRY: Fetches authenticated analyst metadata on component mount
 useEffect(() => {
   const fetchUser = async () => {
     try {
@@ -34,9 +32,10 @@ useEffect(() => {
   fetchUser()
 }, [])
   return (
+    // 3. ANCHOR VIEWPORT FRAME: Rigidly docked on the left screen layout layer
     <aside className="fixed left-0 top-0 h-screen w-64 bg-surface-container-lowest border-r border-outline-variant flex flex-col z-50">
 
-      {/* BRAND */}
+      {/* 4. BRAND VECTORS: Core application identity header block */}
       <div className="px-6 py-8 border-b border-outline-variant/20">
         <h1 className="text-headline-md font-bold text-primary tracking-tight">
           VERITAS AI
@@ -46,7 +45,7 @@ useEffect(() => {
         </p>
       </div>
 
-      {/* NAVIGATION */}
+      {/* 5. INTERACTIVE MATRIX: Evaluates route state and dynamically mutates visual tokens */}
       <nav className="flex-1 flex flex-col py-4">
 
         {NAV_ITEMS.map((item) => (

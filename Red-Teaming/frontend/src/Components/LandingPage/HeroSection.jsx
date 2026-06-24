@@ -1,9 +1,16 @@
+/**
+ * [ architectural concept ]: Primary identity presentation layer serving as the root interface gateway.
+ * [ purpose ]: Establishes the core branding vectors, system telemetry indicators, and system deployment status definitions for the AI Security framework.
+ */
 import React from 'react';
 
 const HeroSection = () => {
+
+  // 1. ANCHOR VIEWPORT NODE: Centralized layout alignment utilizing absolute user-interaction dampening (select-none)
   return (
     <section className="relative z-10 text-center max-w-4xl mx-auto select-none">
-  
+      
+      {/* 2. OPERATIONAL TELEMETRY: System state verification micro-banner */}
       <div className="mb-10">
         <div className="border-t border-[#353944] pt-3 px-8 text-[11px] md:text-xs tracking-[0.3em] font-mono uppercase inline-block">
           <span className="text-[#94a3b8]">[ SYSTEM STATUS: </span>
@@ -12,17 +19,17 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* العنوان الرئيسي الضخم */}
+      {/* 3. CORE BRAND VECTOR: High-impact typography defining the primary platform moniker */}
       <h1 className="text-6xl sm:text-7xl md:text-9xl font-extrabold tracking-tighter mb-4 text-white">
         VERITAS AI
       </h1>
 
-      {/* الوصف الفرعي العريض */}
-      <p className="text-[#94a3b8] text-xs md:text-sm tracking-[0.4em] font-light uppercase mb-8">
+      {/* 4. DOMAIN SPECIFICATION SUBTEXT: Extended spacing tracking to emphasize the system's defensive security scope */} 
+     <p className="text-[#94a3b8] text-xs md:text-sm tracking-[0.4em] font-light uppercase mb-8">
         AI Security Red Teaming Intelligence System
       </p>
 
-      {/* صف المؤشرات الثانوية - تقليل المسافة لرفع زر الدخول */}
+      {/* 5. LIVE ENVIRONMENT METRICS: Status nodes tracking connectivity and runtime integrity */}
       <div className="flex items-center justify-center space-x-6 text-[10px] md:text-xs tracking-widest font-mono uppercase mb-10">
         <div className="flex items-center gap-2">
           <span className="text-[#94a3b8]">System Status:</span>

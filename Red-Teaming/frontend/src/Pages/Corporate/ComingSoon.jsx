@@ -1,19 +1,18 @@
 /**
- * [ ARCHITECTURAL CONCEPT ]: Central Dashboard Orchestrator - COMING SOON VARIANT.
- * [ PURPOSE ]: Placeholder presentation layer with a premium corporate layout to block 
+ * [ architectural concept ]: Central Dashboard Orchestrator - COMING SOON VARIANT.
+ * [ purpose ]: Placeholder presentation layer with a premium corporate layout to block 
  * access to unauthorized telemetry until production modules are officially released.
  */
 import React from 'react';
 
 const ComingSoon = () => {
   return (
-    // تم إضافة min-h-screen وضبط الخلفية لتشمل الصفحة بالكامل
     <div className="flex flex-col items-center justify-center min-h-screen w-full px-6 text-center bg-background relative overflow-hidden font-sans">
       
       {/* BACKGROUND DECORATIVE GLOW */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-primary/10 rounded-full blur-[100px] pointer-events-none z-0" />
 
-      {/* PREMIUM COMING SOON CARD - تم تصغير العرض والبادينج */}
+      {/* PREMIUM COMING SOON CARD */}
       <div className="relative max-w-lg w-full p-6 md:p-8 rounded-xl border border-outline-variant bg-surface/60 backdrop-blur-lg shadow-2xl transition-all duration-300 hover:border-primary/20 z-10">
         
         {/* TOP ACCENT GLOW BAR */}
@@ -35,7 +34,7 @@ const ComingSoon = () => {
           </div>
         </div>
 
-        {/* MAIN HEADINGS - تم تصغير النصوص قليلاً لتتناسب مع الحجم الجديد */}
+        {/* MAIN HEADINGS */}
         <h1 className="text-headline-lg font-extrabold tracking-tight text-primary mb-1.5 leading-tight uppercase">
           Coming Soon
         </h1>

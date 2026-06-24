@@ -88,7 +88,7 @@ if (loading) {
       {/* HEADER */}
       <div className="mb-2">
         <h1 className="text-headline-lg font-bold tracking-tight text-primary leading-tight">
-          Advanced Resilience Framework
+          DashBoard
         </h1>
         <p className="text-body-md text-on-surface-variant">
           <br/>
