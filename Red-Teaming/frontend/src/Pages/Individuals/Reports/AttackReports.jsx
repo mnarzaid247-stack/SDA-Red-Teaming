@@ -13,6 +13,11 @@ const AttackReports = () => {
   // 1. ROUTE PARSING & NORMALIZATION: Resolving dynamic URL tokens to match underlying storage schemas
   const { attackType } = useParams();
   const decodedAttackType = decodeURIComponent(attackType);
+  const getAttackResult = (report) => {
+  return report?.overall_results?.find(
+    (result) => result.attack_type === decodedAttackType
+  );
+};
 
   // 2. STATE CONFIGURATION: Reactive anchors governing structural collection lists and global error state boundaries
   const [reports, setReports] = useState([]);
@@ -101,7 +106,10 @@ const AttackReports = () => {
         {reports.length === 0 ? (
           <p className="text-on-surface-variant font-mono">No logs found for this specific vector.</p>
         ) : (
-          reports.map((report) => (
+          reports.map((report) => {
+  const attackResult = getAttackResult(report);
+
+  return (
             <div
               key={report.id}
               onClick={() => handleOpenDetails(report.id)}
@@ -110,12 +118,11 @@ const AttackReports = () => {
               <div className="absolute top-0 right-0 w-20 h-20 bg-primary/5 rounded-bl-full group-hover:bg-primary/10 transition-colors" />
 
               <div className="mb-6 mt-2">
-                <p className={`text-4xl font-black tracking-tight ${getScoreColor(report.overall_risk_score)}`}>
-                  {report.overall_risk_score ?? 0}
-                </p>
+                <p className={`text-4xl font-black tracking-tight ${getScoreColor(attackResult?.risk_score)}`}>
+  {attackResult?.risk_score ?? 0}
+</p>
                 <p className="text-xs uppercase tracking-widest text-on-surface-variant mt-1 font-mono">
-                  Risk Index ({report.overall_risk_level || 'UNKNOWN'})
-                </p>
+Risk Index ({attackResult?.risk_level || 'UNKNOWN'})                </p>
               </div>
 
               <div className="flex justify-between items-center text-xs text-on-surface-variant mt-4 pt-4 border-t border-outline-variant/30 font-mono">
@@ -125,7 +132,8 @@ const AttackReports = () => {
                 </span>
               </div>
             </div>
-          ))
+            );
+})
         )}
       </section>
 
@@ -146,7 +154,11 @@ const AttackReports = () => {
                 <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
                 <p className="text-on-surface-variant text-sm font-mono">Streaming full audit payload...</p>
               </div>
-            ) : detailedReport ? (
+            ) : detailedReport ? (() => {
+  const attackResult = getAttackResult(detailedReport);
+
+  return (
+              
               <div className="space-y-6">
                 
                 <div>
@@ -174,14 +186,14 @@ const AttackReports = () => {
 
   <div>
     <span className="text-xs text-on-surface-variant uppercase tracking-wider block mb-1">Risk Score</span>
-    <span className={`text-sm font-black text-lg ${getScoreColor(detailedReport.overall_risk_score)}`}>
-      {detailedReport.overall_risk_score ?? 0}/100
-    </span>
+    <span className={`text-sm font-black text-lg ${getScoreColor(attackResult?.risk_score)}`}>
+  {attackResult?.risk_score ?? 0}/100
+</span>
   </div>
 
   <div>
     <span className="text-xs text-on-surface-variant uppercase tracking-wider block mb-1">Detected Risks</span>
-    <span className="text-sm font-black text-on-surface text-lg">{detailedReport.detected_risks ?? 0}</span>
+    <span className="text-sm font-black text-on-surface text-lg">{attackResult?.detected_risks ?? 0}</span>
   </div>
 
   <div>
@@ -202,14 +214,14 @@ const AttackReports = () => {
                 <div>
                   <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Overall Evidence Summary</h4>
                   <div className="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/50 text-sm text-on-surface-variant leading-relaxed max-h-32 overflow-y-auto font-mono scrollbar-thin">
-                    {detailedReport.overall_evidence_summary || 'No execution logs available.'}
+                    {attackResult?.evidence_summary || 'No execution logs available.'}
                   </div>
                 </div>
 
                 <div>
                   <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Recommended Mitigation</h4>
                   <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 text-sm text-primary/90 leading-relaxed">
-                    {detailedReport.overall_improvement || 'No architectural recommendations recorded.'}
+                    {attackResult?.improvement || 'No architectural recommendations recorded.'}
                   </div>
                 </div>
 
@@ -222,7 +234,8 @@ const AttackReports = () => {
                   </button>
                 </div>
               </div>
-            ) : (
+  );
+})() : (
               <p className="text-error py-6 text-center font-mono">Failed to parse report structure.</p>
             )}
           </div>
