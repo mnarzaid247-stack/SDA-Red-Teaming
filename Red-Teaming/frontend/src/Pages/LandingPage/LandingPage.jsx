@@ -9,11 +9,11 @@ const LandingPage = () => {
   const navigate = useNavigate();
 
   const handleLogin = () => {
-    navigate('/auth'); // أو صفحة تسجيل الدخول عندك
+    navigate('/auth'); 
   };
 
   const handleGuest = () => {
-  navigate('/corporate/dashboard');
+  navigate('/Corporate/CoomingSoon');
 };
 
   return (

@@ -19,13 +19,7 @@ import ReportDetail from "./Pages/Individuals/Reports/ReportDetail.jsx";
 import ScenarioManagement from "./Pages/Individuals/AttackLibrary/ScenarioManagement.jsx";
 
 // Corporate
-import CorporateDashBoard from "./Pages/Corporate/DashBoard/CDashBoard.jsx";
-import CorporateAttackLibrary from "./Pages/Corporate/AttackLibrary/AttackLibrary.jsx";
-import CorporateAutomatedLab from "./Pages/Corporate/AutomatedLab/AutomatedLab.jsx";
-import CorporateManualLab from "./Pages/Corporate/ManualLab/ManualLab.jsx";
-import CorporateReports from "./Pages/Corporate/Reports/Reports.jsx";
-import CorporateAttackReports from "./Pages/Corporate/Reports/AttackReports.jsx";
-import CorporateReportDetail from "./Pages/Corporate/Reports/ReportDetail.jsx";
+import ComingSoon from './Pages/Corporate/ComingSoon.jsx';
 
 function App() {
   return (
@@ -51,14 +45,8 @@ function App() {
 
 
       {/* CORPORATE  */}
-      <Route element={<MainLayout />}>
-        <Route path="/corporate/dashboard" element={<CorporateDashBoard />} />
-        <Route path="/corporate/attack-library" element={<CorporateAttackLibrary />} />
-        <Route path="/corporate/automated-lab" element={<CorporateAutomatedLab />} />
-        <Route path="/corporate/manual-lab" element={<CorporateManualLab />} />
-        <Route path="/corporate/reports" element={<CorporateReports />} />
-        <Route path="/corporate/reports/attack/:attackType" element={<CorporateAttackReports />} />
-        <Route path="/corporate/reports/detail/:attackRunId" element={<CorporateReportDetail />} />
+      <Route>
+        <Route path="/corporate/CoomingSoon" element={<ComingSoon />} />
       </Route>
 
     </Routes>
