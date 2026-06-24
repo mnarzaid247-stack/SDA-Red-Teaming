@@ -11,6 +11,7 @@ class ReportCardResponse(BaseModel):
     created_at: datetime
     overall_risk_score: Optional[int] = None
     overall_risk_level: Optional[str] = None
+    overall_results: List[AttackOverallResultResponse] = []
 
 
 class ReportDetailsResponse(BaseModel):
