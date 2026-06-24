@@ -16,6 +16,7 @@ import ManualLab from "./Pages/Individuals/ManualLab/ManualLab.jsx";
 import Reports from "./Pages/Individuals/Reports/Reports.jsx";
 import AttackReports from "./Pages/Individuals/Reports/AttackReports.jsx";
 import ReportDetail from "./Pages/Individuals/Reports/ReportDetail.jsx";
+import ScenarioManagement from "./Pages/Individuals/AttackLibrary/ScenarioManagement.jsx";
 
 // Corporate
 import CorporateDashBoard from "./Pages/Corporate/DashBoard/CDashBoard.jsx";
@@ -39,6 +40,7 @@ function App() {
       <Route element={<MainLayout />}>
         <Route path="/dashboard" element={<DashBoard />} />
         <Route path="/attack-library" element={<AttackLibrary />} />
+        <Route path="/admin/scenarios/:attackType" element={<ScenarioManagement />} />
         <Route path="/automated-lab" element={<AutomatedLab />} />
         <Route path="/manual-lab" element={<ManualLab />} />
 

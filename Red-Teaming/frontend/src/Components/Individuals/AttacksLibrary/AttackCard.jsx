@@ -10,6 +10,7 @@ import { useAuth } from '../../../AuthFolder/AuthContext.jsx';    //  لجلب �
 
 const AttackCard = ({
   name,
+  attackType,
   category,
   risk,
   riskLevel,
@@ -33,10 +34,8 @@ const AttackCard = ({
 
   //  دالة عند ضغط الأدمن على زر إدارة السيناريوهات
   const handleManageScenarios = () => {
-    // يحول الاسم لنظام روابط مثل: Prompt-Injection
-    const formattedName = name.replace(/\s+/g, '-');
-    navigate(`/admin/scenarios/${formattedName}`);
-  };
+  navigate(`/admin/scenarios/${attackType}`);
+};
 
   // 2. MAIN VIEWPORT RESOLUTION: micro-interaction card structure
   return (
@@ -140,7 +139,7 @@ const AttackCard = ({
                 active:scale-95
               "
             >
-              Manage {scenarios} Scenarios →
+              {scenarios} Scenarios
             </button>
           ) : (
             <span className="text-xs font-bold text-primary">

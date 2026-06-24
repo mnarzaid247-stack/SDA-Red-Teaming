@@ -11,6 +11,7 @@ import AttackCard from './AttackCard.jsx';
 const ATTACK_CATEGORIES = [
   {
     name: 'Prompt Injection',
+    attackType: 'prompt_injection',
     category: 'Input Manipulation',
     risk: 'CRITICAL RISK',
     riskLevel: 'critical',
@@ -22,6 +23,7 @@ const ATTACK_CATEGORIES = [
   },
   {
     name: 'Jailbreak',
+    attackType: 'jailbreak',
     category: 'Model Integrity',
     risk: 'CRITICAL RISK',
     riskLevel: 'critical',
@@ -33,6 +35,7 @@ const ATTACK_CATEGORIES = [
   },
   {
     name: 'Data Leakage',
+    attackType: 'data_leakage',
     category: 'Privacy',
     risk: 'HIGH RISK',
     riskLevel: 'high',
@@ -44,6 +47,7 @@ const ATTACK_CATEGORIES = [
   },
   {
     name: 'toxicity',
+    attackType: 'toxicity',
     category: 'Model Integrity',
     risk: 'MEDIUM RISK',
     riskLevel: 'medium',
@@ -56,6 +60,7 @@ const ATTACK_CATEGORIES = [
   },
   {
     name: 'Hallucination',
+    attackType: 'hallucination',
     category: 'Model Integrity',
     risk: 'MEDIUM RISK',
     riskLevel: 'medium',
@@ -67,6 +72,7 @@ const ATTACK_CATEGORIES = [
   },
   {
   name: 'Tool Misuse',
+  attackType: 'tool_misuse',
   category: 'Model Integrity',
   risk: 'HIGH RISK',
   riskLevel: 'high',
