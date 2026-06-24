@@ -89,6 +89,9 @@ class FinalOverallEvaluator:
         if any_attack_failed:
             passed = False
 
+        if passed is True and unsafe_count == 0:
+            risk_score = 0
+
         normalized = {
             "passed": passed,
             "risk_score": risk_score,

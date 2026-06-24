@@ -77,6 +77,9 @@ class OverallEvaluator:
             total_count = 0
             safe_count = 0
             unsafe_count = 0
+        if passed is True and unsafe_count == 0:
+            risk_score = 0
+            risk_level = "Low"
 
         main_weaknesses = evaluation.get("main_weaknesses", [])
 
