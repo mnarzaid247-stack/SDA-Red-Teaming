@@ -157,5 +157,6 @@ def get_security_trend(
                 total_scenarios=safe_count + unsafe_count
             )
         )
+        attack_number += 1
 
     return trend

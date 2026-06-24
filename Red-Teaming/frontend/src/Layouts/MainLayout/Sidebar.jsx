@@ -14,6 +14,9 @@ const NAV_ITEMS = [
   { label: 'Automated Lab', icon: 'precision_manufacturing', path: '/automated-lab' },
   { label: 'Reports', icon: 'description', path: '/reports' },
 ]
+const ADMIN_NAV_ITEMS = [
+  { label: 'Users', icon: 'manage_accounts', path: '/admin/users' },
+];
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const [user, setUser] = useState(null)
@@ -31,6 +34,11 @@ useEffect(() => {
 
   fetchUser()
 }, [])
+
+const visibleNavItems =
+  user?.role === 'admin'
+    ? [...NAV_ITEMS, ...ADMIN_NAV_ITEMS]
+    : NAV_ITEMS;
   return (
     // 3. ANCHOR VIEWPORT FRAME: Rigidly docked on the left screen layout layer
 <aside
@@ -63,7 +71,7 @@ useEffect(() => {
       {/* 5. INTERACTIVE MATRIX: Evaluates route state and dynamically mutates visual tokens */}
       <nav className="flex-1 flex flex-col py-4">
 
-        {NAV_ITEMS.map((item) => (
+        {visibleNavItems.map((item) => (
           <NavLink
             key={item.label}
             to={item.path}

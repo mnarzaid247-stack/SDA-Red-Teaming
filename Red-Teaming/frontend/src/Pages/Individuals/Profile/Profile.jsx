@@ -45,7 +45,12 @@ const Profile = () => {
     setError('');
 
     try {
-      await updateMyProfile(formData);
+      const updatedUser = await updateMyProfile(formData);
+
+setFormData({
+  full_name: updatedUser.full_name || '',
+  email: updatedUser.email || '',
+});
       setMessage('Profile updated successfully.');
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to update profile.');
