@@ -10,12 +10,6 @@ from app.schemas.report_schema import (
 )
 
 
-
-from app.dependencies.auth_dependencies import get_current_user, get_current_admin
-from app.database_models.attack_run import AttackRun
-from app.database_models.attack_overall_result import AttackOverallResult
-
-
 router = APIRouter(
     prefix="/reports",
     tags=["Reports"]
@@ -40,47 +34,6 @@ def get_report_cards(
         model_name=model_name,
         risk_level=risk_level
     )
-
-
-
-@router.post("/admin/fix-safe-risk-scores")
-def fix_safe_risk_scores(
-    db: Session = Depends(get_db),
-    current_admin = Depends(get_current_admin)
-):
-    fixed_runs = 0
-    fixed_overall_results = 0
-
-    safe_runs = db.query(AttackRun).filter(
-        AttackRun.overall_passed == True,
-        AttackRun.overall_unsafe_count == 0,
-        AttackRun.overall_risk_score != 0
-    ).all()
-
-    for run in safe_runs:
-        run.overall_risk_score = 0
-        run.overall_risk_level = "Low"
-        fixed_runs += 1
-
-    safe_overall_results = db.query(AttackOverallResult).filter(
-        AttackOverallResult.passed == True,
-        AttackOverallResult.unsafe_count == 0,
-        AttackOverallResult.risk_score != 0
-    ).all()
-
-    for result in safe_overall_results:
-        result.risk_score = 0
-        result.risk_level = "Low"
-        fixed_overall_results += 1
-
-    db.commit()
-
-    return {
-        "message": "Safe risk scores fixed successfully",
-        "fixed_runs": fixed_runs,
-        "fixed_overall_results": fixed_overall_results
-    }
-
 
 
 @router.get("/{attack_run_id}", response_model=ReportDetailsResponse, response_model_exclude_none=True)
