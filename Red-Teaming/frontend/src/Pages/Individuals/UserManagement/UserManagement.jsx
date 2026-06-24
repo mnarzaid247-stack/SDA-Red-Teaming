@@ -1,16 +1,26 @@
+/**
+ * [ architectural concept ]: Centralized User Access & Identity Administration Panel.
+ * [ purpose ]: Governs administrative CRUD privileges for the application's user database. 
+ * Orchestrates dynamic role modifications, account purges, runtime action locking, and strict 
+ * token-level security guards to block unauthorized access.
+ */
 import React, { useEffect, useState } from 'react';
 import { getAllUsers, updateAnyUser, deleteUser } from '../../../API/AuthAPI.js';
 import { useAuth } from '../../../AuthFolder/AuthContext.jsx';
 
 const UserManagement = () => {
+  // 1. IDENTITY DESTRUCTURING: Grabs current session metadata to prevent self-mutation loops
   const { user: currentUser } = useAuth();
 
+  // 2. CORE COMPONENT STATES: Tracking system users, global indicators, and contextual action loaders
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [actionLoadingId, setActionLoadingId] = useState(null);
+  const [actionLoadingId, setActionLoadingId] = useState(null);    // Locks specific table rows during async updates
+  const [error, setError] = useState('');
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
+  // 3. CATALOG FETCHING: Loads the master record registry containing all registered system accounts
   const fetchUsers = async () => {
     try {
       setLoading(true);
@@ -24,16 +34,20 @@ const UserManagement = () => {
     }
   };
 
+  // 4. INITIALIZATION LIFECYCLE: Syncs registry records immediately when the panel mounts
   useEffect(() => {
     fetchUsers();
   }, []);
 
+
+  // 5. PRIVILEGE MUTATION PIPELINE: Dispatches payload modifications to alter system access tiers
   const handleRoleChange = async (targetUser, newRole) => {
     try {
       setActionLoadingId(targetUser.id);
       setError('');
       setMessage('');
 
+      // Optimistically update the single modified record inside the local collection array
       const updatedUser = await updateAnyUser(targetUser.id, {
         full_name: targetUser.full_name,
         email: targetUser.email,
@@ -52,6 +66,7 @@ const UserManagement = () => {
     }
   };
 
+  // 6. DELETION PIPELINE: Prompts confirmation, then permanently purges record indexes from the database
   const handleDelete = async (targetUser) => {
     const confirmed = window.confirm(
       `Are you sure you want to delete ${targetUser.full_name}?`
@@ -66,6 +81,7 @@ const UserManagement = () => {
 
       await deleteUser(targetUser.id);
 
+      // Instantly remove the deleted user index from the state vector array
       setUsers((prev) => prev.filter((u) => u.id !== targetUser.id));
       setMessage('User deleted successfully.');
     } catch (err) {
@@ -75,6 +91,7 @@ const UserManagement = () => {
     }
   };
 
+  // 7. SECURITY HARDENING GUARD: Restricts the execution context entirely to accounts with the 'admin' role token
   if (currentUser?.role !== 'admin') {
     return (
       <div className="rounded-2xl border border-error/30 bg-error/10 text-error p-6 font-bold">
@@ -84,6 +101,7 @@ const UserManagement = () => {
   }
 
   return (
+    // 8. MASTER VIEWPORT LAYER: Renders responsive administration metrics tables and interactive options
     <section className="space-y-6 animate-fadeIn">
       <div>
         <h1 className="text-2xl sm:text-4xl font-black text-on-surface">

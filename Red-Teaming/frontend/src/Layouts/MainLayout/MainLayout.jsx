@@ -16,9 +16,8 @@ const MainLayout = () => {
       {/* 2. PERSISTENT NAVIGATION VECTOR: Rigidly anchored sidebar matrix on the left axis */}
       
     <Sidebar
-  sidebarOpen={sidebarOpen}
-  setSidebarOpen={setSidebarOpen}
-/>
+      sidebarOpen={sidebarOpen}
+      setSidebarOpen={setSidebarOpen}/>
 
 <TopNav
   setSidebarOpen={setSidebarOpen}
