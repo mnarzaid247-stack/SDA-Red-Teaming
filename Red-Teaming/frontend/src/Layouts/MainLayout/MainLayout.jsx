@@ -16,7 +16,7 @@ const MainLayout = () => {
       <Sidebar />
 
       {/* 3. CORE EXECUTABLE REGION: Fluid layout column offset to accommodate navigation bounds */}
-      <div className="flex-1 flex flex-col ml-70 relative">
+      <div className="flex-1 flex flex-col lg:ml-64 relative">
 
       {/* 4. SUPERIOR TELEMETRY HEADER: Stationary system top bar monitoring controller status */}
         <TopNav />

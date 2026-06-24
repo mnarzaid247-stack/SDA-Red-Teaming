@@ -33,8 +33,7 @@ useEffect(() => {
 }, [])
   return (
     // 3. ANCHOR VIEWPORT FRAME: Rigidly docked on the left screen layout layer
-    <aside className="fixed left-0 top-0 h-screen w-64 bg-surface-container-lowest border-r border-outline-variant flex flex-col z-50">
-
+<aside className="hidden lg:flex fixed left-0 top-0 h-screen w-64 bg-surface-container-lowest border-r border-outline-variant flex-col z-50">
       {/* 4. BRAND VECTORS: Core application identity header block */}
       <div className="px-6 py-8 border-b border-outline-variant/20">
         <h1 className="text-headline-md font-bold text-primary tracking-tight">

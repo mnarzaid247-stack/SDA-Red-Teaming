@@ -18,23 +18,22 @@ const TopNav = () => {
      };
   return (
     // 2. FIXED HEADER CONTAINER: Anchored at the top, offsetting horizontal layout space for the sidebar
-    <header className="fixed top-0 right-0 left-64 z-40 flex items-center justify-between 
-    px-8 h-16 border-b border-outline-variant bg-surface">
+    <header className="fixed top-0 right-0 left-0 lg:left-64 z-40 flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16 border-b border-outline-variant bg-surface">
 
       {/* 3. PLATFORM BRANDING: Renders the central security domain title */}
       <div className="flex items-center gap-4">
-        <span className="font-bold text-headline-sm text-on-surface tracking-widest">
-          LLM SECURITY HUB
-        </span>
+        <span className="font-bold text-sm sm:text-headline-sm text-on-surface tracking-widest">
+  LLM SECURITY HUB
+</span>
       </div>
  
 
       {/* 4. UTILITY CONTROLS: Grouped interactive vectors for system triggers and preferences */}
-      <div className="flex items-center gap-8">
+      <div className="flex items-center gap-3 sm:gap-8">
         
 
         {/* 5. ICON BAR: Interactive navigation buttons for system alerts, settings, and profile */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3 sm:gap-6">
 
           <button className="text-on-surface-variant hover:text-primary transition-colors">
             <span className="material-symbols-outlined">
