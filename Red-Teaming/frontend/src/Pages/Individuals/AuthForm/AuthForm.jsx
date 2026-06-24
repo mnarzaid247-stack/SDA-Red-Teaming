@@ -66,10 +66,6 @@ const AuthForm = ({ onSuccess }) => {
           form.password
         );
 
-        localStorage.setItem(
-          'token',
-          data.access_token
-        );
 
          navigate('/dashboard');
       } else {

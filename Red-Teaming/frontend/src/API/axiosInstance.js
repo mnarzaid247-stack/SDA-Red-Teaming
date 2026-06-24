@@ -22,7 +22,7 @@ const api = axios.create({
 // REQUEST INTERCEPTOR: Global Auth Injection
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('access_token');
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -41,8 +41,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       console.warn('Unauthorized - clearing token');
-      localStorage.removeItem('token');
-
+      localStorage.removeItem('access_token');
       // 🔥 optional (لو عندك router)
       // window.location.href = '/login';
     }

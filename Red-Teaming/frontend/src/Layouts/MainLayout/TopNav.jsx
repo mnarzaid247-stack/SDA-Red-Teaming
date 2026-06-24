@@ -9,8 +9,17 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../AuthFolder/AuthContext.jsx';
 
 const TopNav = () => {
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/auth');
+     };
   return (
     // Fixed header that stays at the top, maintaining a constant navigation anchor.
     <header className="fixed top-0 right-0 left-64 z-40 flex items-center justify-between 
@@ -48,6 +57,14 @@ const TopNav = () => {
               account_circle
             </span>
           </button>
+          <button
+  onClick={handleLogout}
+  className="text-on-surface-variant hover:text-primary transition-colors"
+>
+  <span className="material-symbols-outlined">
+    logout
+  </span>
+</button>
 
         </div>
 
