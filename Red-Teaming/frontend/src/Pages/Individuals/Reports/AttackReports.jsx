@@ -165,53 +165,39 @@ const AttackReports = () => {
                   </div>
                 </div>
 
-<div className="p-4 rounded-xl bg-surface-container-high border border-outline-variant/30 grid grid-cols-2 sm:grid-cols-5 gap-4 text-center items-center">                  <div>
-                    <span className="text-xs text-on-surface-variant uppercase tracking-wider block mb-1">Status</span>
-                    <span className="text-sm font-black text-primary uppercase">{detailedReport.status || 'COMPLETED'}</span>
-                  </div>
-                  
-                  <div>
-                    <span className="text-xs text-on-surface-variant uppercase tracking-wider block mb-1">Risk Score</span>
-                    <span className={`text-sm font-black text-lg ${getScoreColor(detailedReport.overall_risk_score)}`}>
-                      {detailedReport.overall_risk_score ?? 0}/100
-                    </span>
-                  </div>
-                  
-                  <div className="relative group/tooltip flex flex-col items-center">
-                    <div className="flex items-center gap-1 justify-center mb-1">
-                      <span className="text-xs text-on-surface-variant uppercase tracking-wider">Detected Risks</span>
-                      <span className="material-symbols-outlined text-[15px] text-on-surface-variant cursor-help hover:text-primary transition-colors">
-                        info
-                      </span>
-                    </div>
-                    <span className="text-sm font-black text-on-surface text-lg">{detailedReport.detected_risks ?? 0}</span>
-                  </div>
-                </div>
-<div>
-  <span className="text-xs text-on-surface-variant uppercase tracking-wider block mb-1">
-    Total Scenarios
-  </span>
-  <span className="text-sm font-black text-on-surface text-lg">
-    {detailedReport.overall_total_count ?? 0}
-  </span>
-</div>
 
-<div>
-  <span className="text-xs text-on-surface-variant uppercase tracking-wider block mb-1">
-    Safe
-  </span>
-  <span className="text-sm font-black text-success text-lg">
-    {detailedReport.overall_safe_count ?? 0}
-  </span>
-</div>
+                <div className="p-4 rounded-xl bg-surface-container-high border border-outline-variant/30 grid grid-cols-2 sm:grid-cols-3 gap-4 text-center items-center">
+  <div>
+    <span className="text-xs text-on-surface-variant uppercase tracking-wider block mb-1">Status</span>
+    <span className="text-sm font-black text-primary uppercase">{detailedReport.status || 'COMPLETED'}</span>
+  </div>
 
-<div>
-  <span className="text-xs text-on-surface-variant uppercase tracking-wider block mb-1">
-    Unsafe
-  </span>
-  <span className="text-sm font-black text-error text-lg">
-    {detailedReport.overall_unsafe_count ?? 0}
-  </span>
+  <div>
+    <span className="text-xs text-on-surface-variant uppercase tracking-wider block mb-1">Risk Score</span>
+    <span className={`text-sm font-black text-lg ${getScoreColor(detailedReport.overall_risk_score)}`}>
+      {detailedReport.overall_risk_score ?? 0}/100
+    </span>
+  </div>
+
+  <div>
+    <span className="text-xs text-on-surface-variant uppercase tracking-wider block mb-1">Detected Risks</span>
+    <span className="text-sm font-black text-on-surface text-lg">{detailedReport.detected_risks ?? 0}</span>
+  </div>
+
+  <div>
+    <span className="text-xs text-on-surface-variant uppercase tracking-wider block mb-1">Total Scenarios</span>
+    <span className="text-sm font-black text-on-surface text-lg">{detailedReport.overall_total_count ?? 0}</span>
+  </div>
+
+  <div>
+    <span className="text-xs text-on-surface-variant uppercase tracking-wider block mb-1">Safe</span>
+    <span className="text-sm font-black text-success text-lg">{detailedReport.overall_safe_count ?? 0}</span>
+  </div>
+
+  <div>
+    <span className="text-xs text-on-surface-variant uppercase tracking-wider block mb-1">Unsafe</span>
+    <span className="text-sm font-black text-error text-lg">{detailedReport.overall_unsafe_count ?? 0}</span>
+  </div>
 </div>
                 <div>
                   <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">Overall Evidence Summary</h4>
