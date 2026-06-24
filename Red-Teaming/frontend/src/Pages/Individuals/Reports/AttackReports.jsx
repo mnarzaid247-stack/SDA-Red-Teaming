@@ -106,7 +106,7 @@ const AttackReports = () => {
         {reports.length === 0 ? (
           <p className="text-on-surface-variant font-mono">No logs found for this specific vector.</p>
         ) : (
-          reports.map((report) => {
+          reports.map((report, index) => {
   const attackResult = getAttackResult(report);
 
   return (
@@ -116,7 +116,11 @@ const AttackReports = () => {
               className="relative overflow-hidden bg-surface-container-low border border-outline-variant rounded-2xl p-6 cursor-pointer transition-all duration-300 hover:border-primary/40 hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(var(--primary-rgb),0.05)] group"
             >
               <div className="absolute top-0 right-0 w-20 h-20 bg-primary/5 rounded-bl-full group-hover:bg-primary/10 transition-colors" />
-
+              <div className="mb-4">
+  <p className="text-xs uppercase tracking-widest text-primary font-black">
+    Report #{reports.length - index}
+  </p>
+</div>
               <div className="mb-6 mt-2">
                 <p className={`text-4xl font-black tracking-tight ${getScoreColor(attackResult?.risk_score)}`}>
   {attackResult?.risk_score ?? 0}
