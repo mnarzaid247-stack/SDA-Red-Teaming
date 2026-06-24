@@ -1,9 +1,9 @@
 /**
- * [ ARCHITECTURAL CONCEPT & PURPOSE ]:
+ * [ architectural concept ]:
  * This file acts as the central Network Layer for the application. It creates and 
  * configures a global Axios instance to standardize all outgoing HTTP requests.
  * 
- * [ INTERCEPTORS LOGIC & BENEFITS ]:
+ * [ Logic ]:
  * 1. Request Interceptor: Automatically injects the JWT Bearer Token from localStorage 
  *    into the Authorization header of every request, handling global authentication seamlessly.
  * 2. Response Interceptor: Centrally handles HTTP errors. If a 401 (Unauthorized) status 
@@ -16,7 +16,7 @@ import axios from 'axios';
 
 const api = axios.create({
   baseURL: 'https://sda-red-teaming.onrender.com/',
-  withCredentials: true, // مهم لو الباك يستخدم cookies أو جلسات
+  withCredentials: true, 
 });
 
 // REQUEST INTERCEPTOR: Global Auth Injection
@@ -42,8 +42,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       console.warn('Unauthorized - clearing token');
       localStorage.removeItem('access_token');
-      // 🔥 optional (لو عندك router)
-      // window.location.href = '/login';
+
     }
 
     return Promise.reject(error);

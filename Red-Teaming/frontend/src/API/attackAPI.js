@@ -1,8 +1,8 @@
 /**
- * [ ARCHITECTURAL CONCEPT ]:
+ * [ architectural concept ]:
  * A centralized Service Module managing all API interactions for the "Attacks" domain.
  * 
- * [ FILE STRUCTURE ]:
+ * [ File Stucture  ]:
  *   - runAttack: Triggers the Automated Vulnerability Suite.
  *   - runManualAttack: Triggers the custom Manual Sandbox Attack.
  *   - getAttackReport: Fetches specific attack analytics using its unique ID.

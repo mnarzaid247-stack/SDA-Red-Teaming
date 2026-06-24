@@ -1,8 +1,8 @@
 /**
- * [ ARCHITECTURAL CONCEPT ]:
+ * [ architectural concept ]:
  * A centralized Authentication and Authorization Context Provider managing global user session state.
  * 
- * * [ FILE STRUCTURE ]:
+ * * [ File Stucture ]:
  * - AuthProvider: Context wrapper that persists user session and validates identity on initialization.
  * - login: Persists the access token and updates the global user data context.
  * - logout: Clears active session tokens and resets the global state.

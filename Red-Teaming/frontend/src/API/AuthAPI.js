@@ -1,9 +1,9 @@
 /**
- * [ ARCHITECTURAL CONCEPT ]:
+ * [ architectural concept ]: 
  * A centralized Service Module handling user lifecycle operations, authentication, 
  * and administrative user management within the "Users" domain.
  * 
- * [ FILE STRUCTURE ]:
+ * [ File Stucture ]:
  *   - loginUser: Authenticates user and securely stores the returned JWT token.
  *   - registerUser: Handles new user registration.
  *   - getCurrentUser: Fetches authenticated user profile data.

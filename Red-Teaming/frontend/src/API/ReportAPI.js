@@ -1,11 +1,11 @@
 /**
- * * [ ARCHITECTURAL CONCEPT ]:
+ * * [ architectural concept ]:
  * A centralized Service Module dedicated to handling data retrieval for security 
  * assessment reports, audit summaries, and detailed technical findings.
  * Domain-Driven Setup: Consolidates all report-related operations under the 
  * (/reports) resource domain, ensuring a single source of truth for audit data.
  * 
- * * [ FILE STRUCTURE ]:
+ * * [ File Stucture ]:
  * - getReports: Fetches an overview of all generated security reports (supporting dynamic filters/params).
  * - getReportDetails: Retrieves comprehensive analytics and technical logs for a specific report via its Attack Run ID.
  */
