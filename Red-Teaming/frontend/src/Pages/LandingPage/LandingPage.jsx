@@ -1,3 +1,9 @@
+/**
+ * [ architectural concept ]: System Gateway Landing Page Matrix.
+ * [ purpose ]: Serves as the primary public interface wrapper. 
+ * Orchestrates ambient background telemetry, handles access vector branching (Individuals vs. Corporate), 
+ * and anchors peripheral feature status indicators within a uniform viewport canvas.
+ */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import BackgroundGrid from '../../Components/LandingPage/BackgroundGrid.jsx';
@@ -8,19 +14,23 @@ import FeatureIndicators from '../../Components/LandingPage/FeatureIndicators.js
 const LandingPage = () => {
   const navigate = useNavigate();
 
+  // 1. ROUTING VECTOR (B2C): Redirects personal tier operators to the IAM authorization loop
   const handleLogin = () => {
     navigate('/auth'); 
   };
 
+  // 2. ROUTING VECTOR (B2B): Routes corporate/enterprise requests to the dedicated holding container
   const handleGuest = () => {
   navigate('/Corporate/CoomingSoon');
 };
 
   return (
+    // 3. BASE VISUAL CANVAS: Enforces global responsive bounding boxes and prevents runtime overflow leaks
     <div
       className="relative h-screen w-full bg-[#0f131d] text-white
       font-sans overflow-hidden flex flex-col justify-between p-6 md:p-8"
     >
+      {/* AMBIENT LAYERING: Digital background telemetry layout node */}
       <BackgroundGrid />
 
       {/* MAIN */}
