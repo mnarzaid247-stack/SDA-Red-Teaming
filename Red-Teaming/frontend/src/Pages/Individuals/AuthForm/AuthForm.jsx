@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginUser, registerUser } from '../../../API/AuthAPI.js';
-
+import { loginUser, registerUser, getCurrentUser } from '../../../API/AuthAPI.js';
+import { useAuth } from '../../../AuthFolder/AuthContext.jsx';
 const AuthForm = ({ onSuccess }) => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [mode, setMode] = useState('login');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -61,14 +62,17 @@ const AuthForm = ({ onSuccess }) => {
       let data;
 
       if (mode === 'login') {
-        data = await loginUser(
-          form.email,
-          form.password
-        );
+  data = await loginUser(form.email, form.password);
+
+  const currentUser = await getCurrentUser();
+
+  login(currentUser, data.access_token);
+
+  navigate('/dashboard');
+}
 
 
-         navigate('/dashboard');
-      } else {
+      else {
         const validationError = validateRegister();
 
         if (validationError) {
