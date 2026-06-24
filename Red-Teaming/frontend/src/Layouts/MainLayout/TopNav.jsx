@@ -38,7 +38,7 @@ const TopNav = ({ setSidebarOpen }) => {
         
 
         {/* 5. ICON BAR: Interactive navigation buttons for system alerts, settings, and profile */}
-        <div className="flex items-center gap-3 sm:gap-6">
+        <div className="hidden sm:flex items-center gap-3 sm:gap-6">
 
           <button className="text-on-surface-variant hover:text-primary transition-colors">
             <span className="material-symbols-outlined">

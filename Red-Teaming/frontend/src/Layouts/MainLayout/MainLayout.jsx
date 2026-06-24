@@ -30,7 +30,7 @@ const MainLayout = () => {
         
 
         {/* 5. METRIC VIEWPORT LAYER: Isolated scrollable workspace dedicated to dynamic page rendering */}
-        <main className="flex-1 p-6 pt-30 overflow-y-auto">
+        <main className="flex-1 px-4 sm:px-6 lg:px-8 pt-24 pb-8 overflow-x-hidden">
           <Outlet />
         </main>
 

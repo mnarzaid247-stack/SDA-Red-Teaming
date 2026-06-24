@@ -20,17 +20,17 @@ const HeroSection = () => {
       </div>
 
       {/* 3. CORE BRAND VECTOR: High-impact typography defining the primary platform moniker */}
-      <h1 className="text-6xl sm:text-7xl md:text-9xl font-extrabold tracking-tighter mb-4 text-white">
+      <h1 className="text-4xl sm:text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter mb-4 text-white">
         VERITAS AI
       </h1>
 
       {/* 4. DOMAIN SPECIFICATION SUBTEXT: Extended spacing tracking to emphasize the system's defensive security scope */} 
-     <p className="text-[#94a3b8] text-xs md:text-sm tracking-[0.4em] font-light uppercase mb-8">
+     <p className="text-[#94a3b8] text-[10px] sm:text-xs md:text-sm tracking-[0.18em] sm:tracking-[0.3em] md:tracking-[0.4em] font-light uppercase mb-8 px-2">
         AI Security Red Teaming Intelligence System
       </p>
 
       {/* 5. LIVE ENVIRONMENT METRICS: Status nodes tracking connectivity and runtime integrity */}
-      <div className="flex items-center justify-center space-x-6 text-[10px] md:text-xs tracking-widest font-mono uppercase mb-10">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-[10px] md:text-xs tracking-widest font-mono uppercase mb-10">
         <div className="flex items-center gap-2">
           <span className="text-[#94a3b8]">System Status:</span>
           <span className="text-blue-400">Online</span>

@@ -61,7 +61,7 @@ const ReportDetail = () => {
       : report.selected_attack_types || [];
 
   return (
-    <div className="flex flex-col gap-8 p-6 max-w-6xl mx-auto animate-fadeIn">
+    <div className="flex flex-col gap-6 sm:gap-8 p-4 sm:p-6 max-w-6xl mx-auto animate-fadeIn">
 
       <button
         onClick={() => navigate('/reports')}

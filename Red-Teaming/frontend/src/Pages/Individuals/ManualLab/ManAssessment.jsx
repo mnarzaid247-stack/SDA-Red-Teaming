@@ -104,7 +104,7 @@ const ManAssessment = ({ selections = {}, onRun }) => {
   const isSubmissionDisabled = isRunning || !model || !currentAttackType || !prompt.trim();
 
   return (
-    <section className="relative rounded-3xl border border-outline-variant bg-surface-container p-10 overflow-hidden w-full">
+    <section className="relative rounded-3xl border border-outline-variant bg-surface-container p-4 sm:p-6 lg:p-10 overflow-hidden w-full">
       
       {/* GLOW DECORATIONS */}
       <div className="absolute -top-20 -right-20 w-72 h-72 bg-primary/10 blur-3xl rounded-full pointer-events-none" />
@@ -127,7 +127,7 @@ const ManAssessment = ({ selections = {}, onRun }) => {
             onClick={handleAttackExecution}
             disabled={isSubmissionDisabled}
             className={`
-              px-8 py-4 rounded-2xl font-bold transition-all duration-300 whitespace-nowrap text-sm
+              w-full sm:w-auto px-6 sm:px-8 py-4 rounded-2xl font-bold transition-all duration-300 whitespace-nowrap text-sm
               ${isSubmissionDisabled
                 ? 'bg-surface-container-high text-on-surface-variant cursor-not-allowed opacity-50'
                 : 'bg-primary text-on-primary hover:scale-[1.02] hover:shadow-lg active:scale-[0.98]'

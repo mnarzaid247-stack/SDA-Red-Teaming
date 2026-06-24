@@ -27,8 +27,8 @@ const LandingPage = () => {
   return (
     // 3. BASE VISUAL CANVAS: Enforces global responsive bounding boxes and prevents runtime overflow leaks
     <div
-      className="relative h-screen w-full bg-[#0f131d] text-white
-      font-sans overflow-hidden flex flex-col justify-between p-6 md:p-8"
+      className="relative min-h-screen w-full bg-[#0f131d] text-white
+font-sans overflow-x-hidden flex flex-col justify-between px-4 py-6 md:p-8"
     >
       {/* AMBIENT LAYERING: Digital background telemetry layout node */}
       <BackgroundGrid />

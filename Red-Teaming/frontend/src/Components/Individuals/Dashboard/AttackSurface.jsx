@@ -54,7 +54,7 @@ const colors = [
       : null;
 
   return (
-    <div className="bg-surface-container-low border border-outline-variant/40 rounded-3xl p-8">
+    <div className="bg-surface-container-low border border-outline-variant/40 rounded-3xl p-4 sm:p-6 lg:p-8">
 
       {/* NODE: Component Header */}
       <div className="flex justify-between items-center mb-8">
@@ -70,7 +70,7 @@ const colors = [
       {/* NODE: Interactive SVG Grid Topology */}
       <div className="flex flex-col items-center mb-10">
 
-        <div className="relative w-[200px] h-[200px]">
+        <div className="relative w-[170px] h-[170px] sm:w-[200px] sm:h-[200px]">
 
           <svg
             viewBox="0 0 200 200"
