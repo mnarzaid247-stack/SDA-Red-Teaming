@@ -22,3 +22,8 @@ export const getReportDetails = async (attackRunId) => {
   const response = await api.get(`/reports/${attackRunId}`);
   return response.data;
 };
+
+export const getAdminReportDetails = async (attackRunId) => {
+  const response = await api.get(`/attacks/${attackRunId}`);
+  return response.data;
+};

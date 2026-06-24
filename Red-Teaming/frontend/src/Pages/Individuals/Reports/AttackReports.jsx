@@ -6,10 +6,12 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { getReports, getReportDetails } from "../../../API/ReportAPI.js";
+import { getReports, getReportDetails, getAdminReportDetails } from "../../../API/ReportAPI.js";
+import { useAuth } from "../../../AuthFolder/AuthContext.jsx";
 
 const AttackReports = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   // 1. ROUTE PARSING & NORMALIZATION: Resolving dynamic URL tokens to match underlying storage schemas
   const { attackType } = useParams();
   const [searchParams] = useSearchParams();
@@ -80,8 +82,12 @@ const getRunAttackTypes = (report) => {
     setSelectedReportId(id);
     setLoadingDetails(true);
     try {
-      const details = await getReportDetails(id);
-      setDetailedReport(details);
+      const details =
+  user?.role === "admin"
+    ? await getAdminReportDetails(id)
+    : await getReportDetails(id);
+
+setDetailedReport(details);
     } catch (err) {
       console.error("Error fetching report details:", err);
     } finally {
