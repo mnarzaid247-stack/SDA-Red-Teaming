@@ -17,6 +17,7 @@ import Reports from "./Pages/Individuals/Reports/Reports.jsx";
 import AttackReports from "./Pages/Individuals/Reports/AttackReports.jsx";
 import ReportDetail from "./Pages/Individuals/Reports/ReportDetail.jsx";
 import ScenarioManagement from "./Pages/Individuals/AttackLibrary/ScenarioManagement.jsx";
+import Profile from "./Pages/Individuals/Profile/Profile.jsx";
 
 // Corporate
 import ComingSoon from './Pages/Corporate/ComingSoon.jsx';
@@ -33,6 +34,7 @@ function App() {
       {/*  INDIVIDUALS  */}
       <Route element={<MainLayout />}>
         <Route path="/dashboard" element={<DashBoard />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/attack-library" element={<AttackLibrary />} />
         <Route path="/admin/scenarios/:attackType" element={<ScenarioManagement />} />
         <Route path="/automated-lab" element={<AutomatedLab />} />

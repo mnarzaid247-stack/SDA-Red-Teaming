@@ -52,11 +52,14 @@ const TopNav = ({ setSidebarOpen }) => {
             </span>
           </button>
 
-          <button className="text-on-surface-variant hover:text-primary transition-colors">
-            <span className="material-symbols-outlined">
-              account_circle
-            </span>
-          </button>
+          <button
+  onClick={() => navigate('/profile')}
+  className="text-on-surface-variant hover:text-primary transition-colors"
+>
+  <span className="material-symbols-outlined">
+    account_circle
+  </span>
+</button>
           <button
   onClick={handleLogout}
   className="text-on-surface-variant hover:text-primary transition-colors"

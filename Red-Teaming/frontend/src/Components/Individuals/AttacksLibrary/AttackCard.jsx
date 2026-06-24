@@ -115,7 +115,7 @@ const AttackCard = ({
 
           <div>
             <p className="text-xs font-bold text-on-surface-variant mb-1">
-              Coverage: {coverage}%
+              Threat Severity: {coverage}%
             </p>
 
             <div className="w-32 h-1 bg-surface-variant rounded-full overflow-hidden">
