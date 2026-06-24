@@ -86,7 +86,7 @@ const buildAreaPath = (key) => {
 
         rounded-3xl
 
-        p-10
+        p-4 sm:p-6 lg:p-10
         relative
         overflow-hidden
 
@@ -105,7 +105,7 @@ const buildAreaPath = (key) => {
         </div>
 
         {/* LEGEND */}
-        <div className="flex gap-8">
+        <div className="flex gap-4 sm:gap-8">
 
           <div className="flex items-center gap-3">
             <div className="w-3 h-3 rounded-full bg-primary shadow-[0_0_10px_#4edea3]" />

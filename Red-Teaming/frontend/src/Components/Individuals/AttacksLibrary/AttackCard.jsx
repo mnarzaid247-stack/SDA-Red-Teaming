@@ -46,7 +46,7 @@ const AttackCard = ({
       bg-surface-container-low
       border border-outline-variant
       rounded-xl
-      p-8
+      p-4 sm:p-6 lg:p-8
       flex flex-col
       h-full
       relative

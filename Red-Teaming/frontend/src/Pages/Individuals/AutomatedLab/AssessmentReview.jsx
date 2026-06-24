@@ -92,14 +92,14 @@ const AssessmentReview = ({ selections = {}, onRun, onViewReport }) => {
 
   // 5. MAIN VIEWPORT RESOLUTION: localized interactive simulation card node
   return (
-    <section className="relative rounded-3xl border border-outline-variant bg-surface-container p-10 overflow-hidden">
+    <section className="relative rounded-3xl border border-outline-variant bg-surface-container p-4 sm:p-6 lg:p-10 overflow-hidden">
       
       {/* NODE: background aesthetic spatial gradient shapes */}
       <div className="absolute -top-20 -right-20 w-72 h-72 bg-primary/10 blur-3xl rounded-full pointer-events-none" />
       <div className="absolute -bottom-20 -left-20 w-72 h-72 bg-primary/5 blur-3xl rounded-full pointer-events-none" />
 
       {/* NODE: structural orchestration header and core reactive trigger action button */}
-      <div className="flex justify-between items-start">
+      <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
         <h2 className="text-display-sm font-black text-on-surface">
           Red Team Assessment
         </h2>
@@ -108,7 +108,7 @@ const AssessmentReview = ({ selections = {}, onRun, onViewReport }) => {
           <button
             onClick={handleRun}
             disabled={status.running}
-            className={`px-8 py-4 rounded-2xl font-bold transition-all duration-300 ${
+            className={`w-full sm:w-auto px-6 sm:px-8 py-4 rounded-2xl font-bold transition-all duration-300 ${
               status.running
                 ? 'bg-surface-container-high text-on-surface-variant cursor-not-allowed'
                 : 'bg-primary text-on-primary hover:scale-[1.02] hover:shadow-lg'

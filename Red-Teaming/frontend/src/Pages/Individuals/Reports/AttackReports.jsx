@@ -176,7 +176,7 @@ Risk Index ({attackResult?.risk_level || 'UNKNOWN'})                </p>
       {/* NODE: Isolated telemetry modal displaying full audit payload metadata */}
       {selectedReportId && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-fadeIn">
-          <div className="bg-surface-container border border-outline-variant rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-8 shadow-2xl relative scrollbar-thin">
+          <div className="bg-surface-container border border-outline-variant rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-6 lg:p-8 shadow-2xl relative scrollbar-thin">
             
             <button 
               onClick={handleCloseDetails}

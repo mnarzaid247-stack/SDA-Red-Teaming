@@ -9,7 +9,7 @@ const WizardHeader = ({ title, description }) => {
   // 1. MAIN VIEWPORT RESOLUTION: compound container synthesizing structural framing and graphic assets
   return (
     <section className="mb-section-gap relative overflow-hidden rounded-xl border 
-    border-outline-variant bg-surface-container-low p-10">
+    border-outline-variant bg-surface-container-low p-4 sm:p-6 lg:p-10">
 
       {/* NODE: structural background filter - injects gradient vectors and decorative high-fidelity mesh texturing */}
       <div className="absolute top-0 right-0 h-full w-1/2 opacity-20 pointer-events-none">
@@ -30,12 +30,12 @@ const WizardHeader = ({ title, description }) => {
       <div className="relative z-10 max-w-2xl">
 
         {/* workspace title identity display */}
-        <h2 className="font-headline-lg text-headline-lg mb-4 text-on-surface">
+        <h2 className="font-headline-lg text-2xl sm:text-headline-lg mb-4 text-on-surface">
           {title}
         </h2>
 
         {/* operational scoping paragraph block */}
-        <p className="font-body-lg text-body-lg text-on-surface-variant mb-8">
+        <p className="font-body-lg text-sm sm:text-body-lg text-on-surface-variant mb-8">
           {description}
         </p>
 

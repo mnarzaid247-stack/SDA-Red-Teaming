@@ -27,7 +27,7 @@ const StepContainer = ({
         isLocked ? 'opacity-40' : 'opacity-100'
       } ${clickable ? 'cursor-pointer' : ''}`}
     >
-      <div className="flex items-start gap-8">
+      <div className="flex items-start gap-3 sm:gap-8">
 
         {/* NODE: progress milestone indicators - numerical state circles and pipeline connectors */}
         <div className="flex flex-col items-center pt-1">
@@ -70,7 +70,7 @@ const StepContainer = ({
           {/* action header capturing current sequential identifier info and badges */}
           <div className="flex items-center gap-3 mb-6">
 
-            <h2 className="text-headline-sm font-bold text-on-surface tracking-tight uppercase">
+            <h2 className="text-lg sm:text-headline-sm font-bold text-on-surface tracking-tight uppercase">
               {title}
             </h2>
 
