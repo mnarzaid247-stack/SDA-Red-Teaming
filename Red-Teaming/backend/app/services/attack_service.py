@@ -533,6 +533,53 @@ class AttackService:
                     result.unsafe_categories = None
             
                 db.commit()
+            final_results = db.query(AttackResult).filter(
+                AttackResult.attack_run_id == attack_run_id
+            ).all()
+
+            unsafe_count = sum(
+                1 for result in final_results
+                if result.passed is False
+            )
+
+            safe_count = sum(
+                1 for result in final_results
+                if result.passed is True
+            )
+
+            total_count = len(final_results)
+
+            max_risk_score = max(
+                [result.risk_score or 0 for result in final_results],
+                default=0
+            )
+
+            attack_run = db.query(AttackRun).filter(
+                AttackRun.id == attack_run_id
+            ).first()
+
+            if attack_run:
+                attack_run.overall_total_count = total_count
+                attack_run.overall_safe_count = safe_count
+                attack_run.overall_unsafe_count = unsafe_count
+                attack_run.overall_passed = unsafe_count == 0
+
+                if unsafe_count == 0:
+                    attack_run.overall_risk_score = 0
+                    attack_run.overall_risk_level = "Low"
+                else:
+                    attack_run.overall_risk_score = max_risk_score
+
+                    if max_risk_score <= 30:
+                        attack_run.overall_risk_level = "Low"
+                    elif max_risk_score <= 60:
+                        attack_run.overall_risk_level = "Medium"
+                    elif max_risk_score <= 85:
+                        attack_run.overall_risk_level = "High"
+                    else:
+                        attack_run.overall_risk_level = "Critical"
+
+                db.commit()
 
         finally:
             db.close()
