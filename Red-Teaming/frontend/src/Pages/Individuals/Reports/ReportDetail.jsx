@@ -291,7 +291,54 @@ const ReportDetail = () => {
           )}
         </div>
       </div>
+          <div className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/40">
+  <h2 className="text-title-sm font-bold uppercase tracking-wider text-on-surface-variant mb-4">
+    Target Model Responses
+  </h2>
 
+  <div className="space-y-4">
+    {report.results?.length ? (
+      report.results.map((result) => (
+        <div
+          key={result.id}
+          className="p-4 rounded-xl bg-surface-container-high border border-outline-variant/30"
+        >
+          <div className="flex flex-wrap gap-2 mb-3">
+            <span className="px-2 py-1 text-xs rounded-lg bg-surface-container-low text-primary font-bold">
+              {result.attack_type}
+            </span>
+
+            <span className="px-2 py-1 text-xs rounded-lg bg-surface-container-low text-on-surface-variant font-bold">
+              {result.scenario_code}
+            </span>
+
+            <span className="px-2 py-1 text-xs rounded-lg bg-surface-container-low text-on-surface-variant font-bold">
+              {result.severity}
+            </span>
+          </div>
+
+          <p className="text-xs uppercase tracking-wider text-on-surface-variant font-bold mb-2">
+            Model Response
+          </p>
+
+          {result.response_safe_to_show && result.model_response ? (
+            <pre className="text-sm text-on-surface-variant bg-surface-container-lowest p-4 rounded-xl border border-outline-variant/30 font-mono whitespace-pre-wrap max-h-72 overflow-y-auto">
+              {result.model_response}
+            </pre>
+          ) : (
+            <p className="text-sm text-error font-mono">
+              Response hidden because it was not safe to display.
+            </p>
+          )}
+        </div>
+      ))
+    ) : (
+      <p className="text-on-surface-variant font-mono">
+        No target model responses recorded.
+      </p>
+    )}
+  </div>
+</div>
     </div>
   );
 };

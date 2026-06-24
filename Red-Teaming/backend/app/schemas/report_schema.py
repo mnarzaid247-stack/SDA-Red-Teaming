@@ -2,7 +2,7 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 from typing import Optional, List
-from app.schemas.attack_schema import AttackOverallResultResponse
+from app.schemas.attack_schema import AttackOverallResultResponse, AttackResultResponse
 
 
 class ReportCardResponse(BaseModel):
@@ -33,3 +33,4 @@ class ReportDetailsResponse(BaseModel):
     overall_evidence_summary: Optional[str] = None
     overall_improvement: Optional[str] = None
     overall_results: List[AttackOverallResultResponse] = []
+    results: List[AttackResultResponse] = []

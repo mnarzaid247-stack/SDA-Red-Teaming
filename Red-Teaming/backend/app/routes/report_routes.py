@@ -92,5 +92,23 @@ def get_my_report_details(
         "improvement": result.improvement
     }
     for result in report.overall_results
+],
+results=[
+    {
+        "id": result.id,
+        "attack_type": result.attack_type,
+        "scenario_code": result.scenario_code,
+        "severity": result.severity,
+        "attack_prompt": result.attack_prompt,
+        "model_response": result.model_response if result.response_safe_to_show else None,
+        "passed": result.passed,
+        "risk_score": result.risk_score,
+        "evaluation_reason": result.evaluation_reason,
+        "improvement": result.improvement,
+        "response_safe_to_show": result.response_safe_to_show,
+        "evidence_summary": result.evidence_summary,
+        "unsafe_categories": result.unsafe_categories,
+    }
+    for result in report.results
 ]
 )
