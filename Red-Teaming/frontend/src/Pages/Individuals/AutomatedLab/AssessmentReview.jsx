@@ -6,6 +6,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { runAttack } from "../../../API/attackAPI.js";
+import { useNavigate } from 'react-router-dom';
 
 const STEPS = [
   'Initializing model',
@@ -15,6 +16,7 @@ const STEPS = [
 ];
 
 const AssessmentReview = ({ selections = {}, onRun, onViewReport }) => {
+  const navigate = useNavigate();
   // 1. DATA CONFIG: localized structural caching utilizing useMemo to mitigate redundant rendering cycles
   const model = selections?.model;
   const attacks = useMemo(() => selections?.attacks || [], [selections?.attacks]);
@@ -186,6 +188,25 @@ const AssessmentReview = ({ selections = {}, onRun, onViewReport }) => {
         To view results for each attack type, go to the Reports page.
       </p>
     </div>
+    <div className="rounded-2xl border border-outline-variant bg-surface-container-low p-5">
+  <p className="text-xs uppercase tracking-widest text-on-surface-variant font-bold mb-4">
+    View attack reports
+  </p>
+
+  <div className="flex flex-wrap gap-3">
+    {summary.overall_results?.map((result) => (
+      <button
+        key={result.attack_type}
+        onClick={() =>
+          navigate(`/reports/attack/${result.attack_type}?runId=${summary.id}`)
+        }
+        className="px-4 py-3 rounded-xl bg-primary text-on-primary font-bold text-sm hover:scale-[1.02] transition-all"
+      >
+        {result.attack_type.replace(/_/g, ' ')} Report
+      </button>
+    ))}
+  </div>
+</div>
 
   </div>
 )}

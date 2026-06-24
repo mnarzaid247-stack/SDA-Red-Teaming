@@ -50,6 +50,7 @@ def run_attack(
         )
     
     return AttackRunResponse(
+        id=attack_run.id,
         model_provider=attack_run.model_provider,
         model_name=attack_run.model_name,
         selected_attack_types=[

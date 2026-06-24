@@ -39,6 +39,7 @@ class AttackOverallResultResponse(BaseModel):
 
 
 class AttackRunResponse(BaseModel):
+    id: str
     model_provider: str
     model_name: str
     selected_attack_types: List[str]

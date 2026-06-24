@@ -5,13 +5,15 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { getReports, getReportDetails } from "../../../API/ReportAPI.js";
 
 const AttackReports = () => {
   const navigate = useNavigate();
   // 1. ROUTE PARSING & NORMALIZATION: Resolving dynamic URL tokens to match underlying storage schemas
   const { attackType } = useParams();
+  const [searchParams] = useSearchParams();
+const targetRunId = searchParams.get("runId");
   const decodedAttackType = decodeURIComponent(attackType);
   const getAttackResult = (report) => {
   return report?.overall_results?.find(
@@ -48,6 +50,12 @@ const AttackReports = () => {
 
     fetchReports();
   }, [decodedAttackType]);
+
+  useEffect(() => {
+  if (!loading && targetRunId && reports.some(report => report.id === targetRunId)) {
+    handleOpenDetails(targetRunId);
+  }
+}, [loading, targetRunId, reports]);
 
   // 5. INTERACTION DISPATCHERS: Asynchronous transactional routines for dynamic item lookup and state flushing
   const handleOpenDetails = async (id) => {
