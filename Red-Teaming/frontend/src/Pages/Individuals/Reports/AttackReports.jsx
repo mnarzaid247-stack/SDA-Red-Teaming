@@ -283,6 +283,48 @@ Risk Index ({attackResult?.risk_level || 'UNKNOWN'})                </p>
                     {attackResult?.improvement || 'No architectural recommendations recorded.'}
                   </div>
                 </div>
+                <div>
+  <h4 className="text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2">
+    Target Model Responses
+  </h4>
+
+  <div className="space-y-3">
+    {detailedReport.results?.length ? (
+      detailedReport.results
+        .filter((result) => result.attack_type === decodedAttackType)
+        .map((result) => (
+          <div
+            key={result.id}
+            className="p-4 rounded-xl bg-surface-container-lowest border border-outline-variant/50"
+          >
+            <div className="flex flex-wrap gap-2 mb-3">
+              <span className="px-2 py-1 text-xs rounded-lg bg-surface-container-high text-primary font-bold">
+                {result.scenario_code}
+              </span>
+
+              <span className="px-2 py-1 text-xs rounded-lg bg-surface-container-high text-on-surface-variant font-bold">
+                {result.severity}
+              </span>
+            </div>
+
+            {result.response_safe_to_show ? (
+              <pre className="text-sm text-on-surface-variant font-mono whitespace-pre-wrap max-h-60 overflow-y-auto">
+                {result.model_response || 'No response text recorded.'}
+              </pre>
+            ) : (
+              <p className="text-sm text-error font-mono">
+                Response hidden because it was not safe to display.
+              </p>
+            )}
+          </div>
+        ))
+    ) : (
+      <p className="text-sm text-on-surface-variant font-mono">
+        No target model responses recorded.
+      </p>
+    )}
+  </div>
+</div>
 
                 <div className="pt-2 flex justify-end">
                   <button 
