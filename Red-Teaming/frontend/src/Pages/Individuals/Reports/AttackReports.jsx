@@ -21,12 +21,22 @@ const targetRunId = searchParams.get("runId");
   );
 };
 const getRunAttackTypes = (report) => {
-  if (!report?.selected_attack_types) return [];
+  const types = report?.selected_attack_types;
 
-  return report.selected_attack_types
-    .split(',')
-    .map((type) => type.trim())
-    .filter(Boolean);
+  if (!types) return [];
+
+  if (Array.isArray(types)) {
+    return types.map((type) => String(type).trim()).filter(Boolean);
+  }
+
+  if (typeof types === "string") {
+    return types
+      .split(",")
+      .map((type) => type.trim())
+      .filter(Boolean);
+  }
+
+  return [];
 };
 
   // 2. STATE CONFIGURATION: Reactive anchors governing structural collection lists and global error state boundaries
@@ -191,7 +201,9 @@ Risk Index ({attackResult?.risk_level || 'UNKNOWN'})                </p>
   </p>
 
   <div className="flex flex-wrap gap-2">
-    {getRunAttackTypes(detailedReport).map((type) => (
+    {getRunAttackTypes(
+  detailedReport || reports.find((report) => report.id === selectedReportId)
+).map((type) => (
       <button
         key={type}
         onClick={() => navigate(`/reports/attack/${type}?runId=${detailedReport.id}`)}
