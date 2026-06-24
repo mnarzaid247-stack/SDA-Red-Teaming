@@ -17,7 +17,6 @@ const UserManagement = () => {
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState(null);    // Locks specific table rows during async updates
   const [error, setError] = useState('');
-  const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
   // 3. CATALOG FETCHING: Loads the master record registry containing all registered system accounts
