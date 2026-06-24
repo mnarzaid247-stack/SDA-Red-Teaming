@@ -216,14 +216,70 @@ const ManAssessment = ({ selections = {}, onRun }) => {
             <span className="text-xs uppercase tracking-widest text-on-surface-variant block">
               Firewall Evaluator Verdict
             </span>
-            <div className={`text-4xl font-black tracking-wider ${attackSummary.passed ? 'text-primary' : 'text-error'}`}>
-              {attackSummary.passed ? 'SAFE' : 'RISK DETECTED'}
+            <div className={`text-4xl font-black tracking-wider ${attackSummary.overall_passed ? 'text-primary' : 'text-error'}`}>
+              {attackSummary.overall_passed ? 'SAFE' : 'RISK DETECTED'}
             </div>
           </div>
 
           <div className="text-sm text-on-surface-variant font-mono">
-            Analysis Duration: <span className="text-on-surface font-bold">{attackSummary.duration_seconds || 0}s</span>
-          </div>
+  Analysis Duration: <span className="text-on-surface font-bold">{attackSummary.duration_seconds || 0}s</span>
+</div>
+
+<div className="grid grid-cols-3 gap-4 mt-6">
+  <div className="p-4 rounded-xl bg-surface-container-low">
+    <div className="text-xs text-on-surface-variant">
+      Risk Score
+    </div>
+
+    <div className="text-2xl font-bold">
+      {attackSummary.overall_risk_score ?? 0}
+    </div>
+  </div>
+
+  <div className="p-4 rounded-xl bg-surface-container-low">
+    <div className="text-xs text-on-surface-variant">
+      Risk Level
+    </div>
+
+    <div className="text-2xl font-bold">
+      {attackSummary.overall_risk_level ?? '-'}
+    </div>
+  </div>
+
+  <div className="p-4 rounded-xl bg-surface-container-low">
+    <div className="text-xs text-on-surface-variant">
+      Attack Type
+    </div>
+
+    <div className="text-lg font-bold">
+      {attackSummary.selected_attack_types}
+    </div>
+  </div>
+</div>
+{attackSummary.overall_evidence_summary && (
+  <div className="text-left p-4 rounded-xl bg-surface-container-low border border-outline-variant">
+    <div className="font-bold mb-2">
+      Evidence Summary
+    </div>
+
+    <div className="text-sm text-on-surface-variant">
+      {attackSummary.overall_evidence_summary}
+    </div>
+  </div>
+)}
+{attackSummary.overall_improvement && (
+  <div className="text-left p-4 rounded-xl bg-surface-container-low border border-outline-variant">
+    <div className="font-bold mb-2">
+      Improvement Recommendation
+    </div>
+
+    <div className="text-sm text-on-surface-variant">
+      {attackSummary.overall_improvement}
+    </div>
+  </div>
+   
+)}
+         
 
           <div className="text-primary font-bold text-base border border-primary/20 bg-primary/5 py-4 px-6 rounded-2xl animate-pulse">
             Success! Proceed to the reports page to view the results.
