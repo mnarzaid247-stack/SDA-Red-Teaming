@@ -7,7 +7,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../AuthFolder/AuthContext.jsx';
 
-const TopNav = () => {
+const TopNav = ({ setSidebarOpen }) => {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
@@ -19,7 +19,12 @@ const TopNav = () => {
   return (
     // 2. FIXED HEADER CONTAINER: Anchored at the top, offsetting horizontal layout space for the sidebar
     <header className="fixed top-0 right-0 left-0 lg:left-64 z-40 flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16 border-b border-outline-variant bg-surface">
-
+      <button
+  onClick={() => setSidebarOpen(true)}
+  className="lg:hidden p-2 rounded-lg border border-outline-variant"
+>
+  ☰
+</button>
       {/* 3. PLATFORM BRANDING: Renders the central security domain title */}
       <div className="flex items-center gap-4">
         <span className="font-bold text-sm sm:text-headline-sm text-on-surface tracking-widest">

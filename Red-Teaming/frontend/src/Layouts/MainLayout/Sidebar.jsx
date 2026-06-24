@@ -15,7 +15,7 @@ const NAV_ITEMS = [
   { label: 'Reports', icon: 'description', path: '/reports' },
 ]
 
-const Sidebar = () => {
+const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
   const [user, setUser] = useState(null)
 
 // 2. SESSION TELEMETRY: Fetches authenticated analyst metadata on component mount
@@ -33,8 +33,24 @@ useEffect(() => {
 }, [])
   return (
     // 3. ANCHOR VIEWPORT FRAME: Rigidly docked on the left screen layout layer
-<aside className="hidden lg:flex fixed left-0 top-0 h-screen w-64 bg-surface-container-lowest border-r border-outline-variant flex-col z-50">
-      {/* 4. BRAND VECTORS: Core application identity header block */}
+<aside
+  className={`
+    fixed left-0 top-0 h-screen w-64
+    bg-surface-container-lowest border-r border-outline-variant
+    flex flex-col z-50
+    transition-transform duration-300
+    ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+    lg:translate-x-0
+  `}
+
+>   
+<button
+  onClick={() => setSidebarOpen(false)}
+  className="lg:hidden absolute top-4 right-4 text-on-surface-variant hover:text-on-surface"
+>
+  ✕
+</button>
+   {/* 4. BRAND VECTORS: Core application identity header block */}
       <div className="px-6 py-8 border-b border-outline-variant/20">
         <h1 className="text-headline-md font-bold text-primary tracking-tight">
           VERITAS AI
@@ -51,6 +67,7 @@ useEffect(() => {
           <NavLink
             key={item.label}
             to={item.path}
+            onClick={() => setSidebarOpen(false)}
             className={({ isActive }) => {
               const base =
                 "flex items-center gap-4 px-6 py-3 mx-3 rounded-lg transition-all duration-200 group"
