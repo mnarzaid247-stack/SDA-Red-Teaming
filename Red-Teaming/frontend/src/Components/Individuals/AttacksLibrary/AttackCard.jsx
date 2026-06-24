@@ -6,7 +6,7 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../../AuthFolder/AuthContext.jsx';    //  لجلب صلاحية المستخدم الحالي (Admin/User)
+import { useAuth } from '../../../AuthFolder/AuthContext.jsx';    //  لجلب صلاحية المستخدم الحالي (Admin/User)
 
 const AttackCard = ({
   name,
