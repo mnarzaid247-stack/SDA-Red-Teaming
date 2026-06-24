@@ -17,7 +17,7 @@ const ATTACK_CATEGORIES = [
     riskLevel: 'critical',
     description: 'Attempts to manipulate model instructions through crafted inputs that override intended system behavior.',
     whyItMatters: 'Can bypass safety filters, steal sensitive data, or compromise the entire application logic flow.',
-    Attack_Risk: 98,
+    coverage: 98,
     scenarios: 50,
     icon: 'psychology'
   },
@@ -29,7 +29,7 @@ const ATTACK_CATEGORIES = [
     riskLevel: 'critical',
     description: 'Techniques designed to circumvent model safety mechanisms and operational restrictions.',
     whyItMatters: 'Enables the generation of harmful, illegal, or unethical content by bypassing core safety alignments.',
-    Attack_Risk: 84,
+    coverage: 84,
     scenarios: 50,
     icon: 'lock_open'
   },
@@ -41,7 +41,7 @@ const ATTACK_CATEGORIES = [
     riskLevel: 'high',
     description: 'Attempts to extract confidential information, sensitive records, or proprietary data from the model.',
     whyItMatters: 'Causes severe regulatory compliance violations and loss of proprietary business secrets.',
-    Attack_Risk: 91,
+    coverage: 91,
     scenarios: 50,
     icon: 'database'
   },
@@ -53,7 +53,7 @@ const ATTACK_CATEGORIES = [
     riskLevel: 'medium',
     description: 'Evaluation of the model’s tendency to generate offensive, harmful, or inappropriate content.',
     whyItMatters: 'Damage brand reputation and violates safety policies through unfiltered model responses.',
-    Attack_Risk: 76,
+    coverage: 76,
     scenarios: 50,
     icon: 'warning',
     status: 'medium'
@@ -66,7 +66,7 @@ const ATTACK_CATEGORIES = [
     riskLevel: 'medium',
     description: 'Assessment of inaccurate, fabricated, or misleading responses generated with high confidence.',
     whyItMatters: 'Undermines user trust and can lead to dangerous real-world decisions based on false info.',
-    Attack_Risk: 94,
+    coverage: 94,
     scenarios: 50,
     icon: 'bubble_chart'
   },
@@ -78,7 +78,7 @@ const ATTACK_CATEGORIES = [
   riskLevel: 'high',
   description: 'Testing whether the model can be manipulated into improper use of connected tools, APIs, or external systems.',
   whyItMatters: 'Allows attackers to turn a secure AI model into a weaponized agent that destroys database tables, leaks confidential user records, or triggers malicious code.',
-  Attack_Risk: 91,
+  coverage: 91,
   scenarios: 50,
   icon: 'build' 
 }
