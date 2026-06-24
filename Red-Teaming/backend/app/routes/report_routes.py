@@ -10,11 +10,6 @@ from app.schemas.report_schema import (
 )
 
 
-from app.dependencies.auth_dependencies import get_current_admin
-from app.database_models.attack_run import AttackRun
-from app.database_models.attack_results import AttackResult
-
-
 router = APIRouter(
     prefix="/reports",
     tags=["Reports"]
@@ -39,72 +34,6 @@ def get_report_cards(
         model_name=model_name,
         risk_level=risk_level
     )
-
-
-@router.post("/admin/recalculate-old-runs")
-def recalculate_old_runs(
-    db: Session = Depends(get_db),
-    current_admin = Depends(get_current_admin)
-):
-    runs = db.query(AttackRun).all()
-
-    updated = 0
-
-    for run in runs:
-        results = db.query(AttackResult).filter(
-            AttackResult.attack_run_id == run.id
-        ).all()
-
-        if not results:
-            continue
-
-        total_count = len(results)
-
-        safe_count = sum(
-            1 for result in results
-            if result.passed is True
-        )
-
-        unsafe_count = sum(
-            1 for result in results
-            if result.passed is False
-        )
-
-        max_risk_score = max(
-            [result.risk_score or 0 for result in results],
-            default=0
-        )
-
-        run.overall_total_count = total_count
-        run.overall_safe_count = safe_count
-        run.overall_unsafe_count = unsafe_count
-        run.overall_passed = unsafe_count == 0
-
-        if unsafe_count == 0:
-            run.overall_risk_score = 0
-            run.overall_risk_level = "Low"
-        else:
-            run.overall_risk_score = max_risk_score
-
-            if max_risk_score <= 30:
-                run.overall_risk_level = "Low"
-            elif max_risk_score <= 60:
-                run.overall_risk_level = "Medium"
-            elif max_risk_score <= 85:
-                run.overall_risk_level = "High"
-            else:
-                run.overall_risk_level = "Critical"
-
-        updated += 1
-
-    db.commit()
-
-    return {
-        "message": "Runs recalculated successfully",
-        "updated_runs": updated
-    }
-
-
 
 
 @router.get("/{attack_run_id}", response_model=ReportDetailsResponse, response_model_exclude_none=True)
