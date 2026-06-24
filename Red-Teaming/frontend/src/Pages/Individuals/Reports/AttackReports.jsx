@@ -5,10 +5,11 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getReports, getReportDetails } from "../../../API/ReportAPI.js";
 
 const AttackReports = () => {
+  const navigate = useNavigate();
   // 1. ROUTE PARSING & NORMALIZATION: Resolving dynamic URL tokens to match underlying storage schemas
   const { attackType } = useParams();
   const decodedAttackType = decodeURIComponent(attackType);
@@ -77,6 +78,13 @@ const AttackReports = () => {
   // 8. MAIN VIEWPORT RESOLUTION: Micro-interaction log container grid structure
   return (
     <div className="flex flex-col gap-6 relative w-full animate-fadeIn">
+      <button
+  onClick={() => navigate('/reports')}
+  className="flex items-center gap-2 text-primary font-bold uppercase tracking-wider text-sm hover:translate-x-[-4px] transition-transform w-fit"
+>
+  <span className="material-symbols-outlined">arrow_back</span>
+  Back to Reports
+</button>
       
       {/* NODE: Identity header and quantitative audit trail counter */}
       <div>
