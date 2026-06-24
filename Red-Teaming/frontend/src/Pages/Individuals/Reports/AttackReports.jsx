@@ -20,6 +20,14 @@ const targetRunId = searchParams.get("runId");
     (result) => result.attack_type === decodedAttackType
   );
 };
+const getRunAttackTypes = (report) => {
+  if (!report?.selected_attack_types) return [];
+
+  return report.selected_attack_types
+    .split(',')
+    .map((type) => type.trim())
+    .filter(Boolean);
+};
 
   // 2. STATE CONFIGURATION: Reactive anchors governing structural collection lists and global error state boundaries
   const [reports, setReports] = useState([]);
@@ -177,6 +185,27 @@ Risk Index ({attackResult?.risk_level || 'UNKNOWN'})                </p>
                   <span className="text-xs uppercase tracking-widest text-primary font-bold">Detailed Audit Trail</span>
                   <h2 className="text-2xl font-bold text-on-surface mt-1">Report Details</h2>
                 </div>
+                <div className="p-4 rounded-xl bg-surface-container-high border border-outline-variant/30">
+  <p className="text-xs uppercase tracking-widest text-on-surface-variant font-bold mb-3">
+    Same Run Reports
+  </p>
+
+  <div className="flex flex-wrap gap-2">
+    {getRunAttackTypes(detailedReport).map((type) => (
+      <button
+        key={type}
+        onClick={() => navigate(`/reports/attack/${type}?runId=${detailedReport.id}`)}
+        className={`px-3 py-2 rounded-lg text-xs font-bold uppercase transition-all ${
+          type === decodedAttackType
+            ? 'bg-primary text-on-primary'
+            : 'bg-surface-container-low text-on-surface-variant border border-outline-variant hover:text-primary hover:border-primary/40'
+        }`}
+      >
+        {type.replace(/_/g, ' ')}
+      </button>
+    ))}
+  </div>
+</div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="p-4 rounded-xl bg-surface-container-high border border-outline-variant/30">
