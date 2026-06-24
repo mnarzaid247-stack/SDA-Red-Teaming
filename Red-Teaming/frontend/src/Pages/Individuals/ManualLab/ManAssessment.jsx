@@ -6,6 +6,7 @@
  */
 import React, { useState, useMemo } from 'react';
 import { runManualAttack } from '../../../API/attackAPI.js'; 
+import { useNavigate } from 'react-router-dom';
 
 // 1. DATA DICTIONARIES & PIPELINE STATIC CONSTANTS
 const SIMULATION_STEPS = [
@@ -44,6 +45,7 @@ const ATTACK_KEYWORDS = {
 };
 
 const ManAssessment = ({ selections = {}, onRun }) => {
+  const navigate = useNavigate();
   const { model, attacks = [] } = selections;
 
   // 2. CORE COMPONENT CONTROLLER STATES
@@ -210,84 +212,72 @@ const ManAssessment = ({ selections = {}, onRun }) => {
       </div>
 
       {/* REAL-TIME ASSESSMENT RESULTS */}
-      {isCompleted && attackSummary && (
-        <div className="mt-10 text-center space-y-6 p-6 rounded-2xl bg-surface-container-high border border-outline-variant/50 animate-fade-in z-10 relative">
-          <div className="space-y-1">
-            <span className="text-xs uppercase tracking-widest text-on-surface-variant block">
-              Firewall Evaluator Verdict
-            </span>
-            <div className={`text-4xl font-black tracking-wider ${attackSummary.overall_passed ? 'text-primary' : 'text-error'}`}>
-              {attackSummary.overall_passed ? 'SAFE' : 'RISK DETECTED'}
-            </div>
-          </div>
+{isCompleted && attackSummary && (
+  <div className="mt-10 space-y-6 animate-fadeIn z-10 relative">
 
-          <div className="text-sm text-on-surface-variant font-mono">
-  Analysis Duration: <span className="text-on-surface font-bold">{attackSummary.duration_seconds || 0}s</span>
-</div>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="rounded-2xl border border-outline-variant bg-surface-container-low p-5">
+        <p className="text-xs uppercase tracking-widest text-on-surface-variant">
+          Overall Result
+        </p>
+        <h3 className={`mt-2 text-3xl font-black ${attackSummary.overall_passed ? 'text-success' : 'text-error'}`}>
+          {attackSummary.overall_passed ? 'PASSED' : 'FAILED'}
+        </h3>
+      </div>
 
-<div className="grid grid-cols-3 gap-4 mt-6">
-  <div className="p-4 rounded-xl bg-surface-container-low">
-    <div className="text-xs text-on-surface-variant">
-      Risk Score
+      <div className="rounded-2xl border border-outline-variant bg-surface-container-low p-5">
+        <p className="text-xs uppercase tracking-widest text-on-surface-variant">
+          Overall Risk Score
+        </p>
+        <h3 className="mt-2 text-3xl font-black text-on-surface">
+          {attackSummary.overall_risk_score ?? 0}
+        </h3>
+      </div>
+
+      <div className="rounded-2xl border border-outline-variant bg-surface-container-low p-5">
+        <p className="text-xs uppercase tracking-widest text-on-surface-variant">
+          Duration
+        </p>
+        <h3 className="mt-2 text-3xl font-black text-on-surface">
+          {attackSummary.duration_seconds ?? 0}s
+        </h3>
+      </div>
     </div>
 
-    <div className="text-2xl font-bold">
-      {attackSummary.overall_risk_score ?? 0}
-    </div>
-  </div>
-
-  <div className="p-4 rounded-xl bg-surface-container-low">
-    <div className="text-xs text-on-surface-variant">
-      Risk Level
-    </div>
-
-    <div className="text-2xl font-bold">
-      {attackSummary.overall_risk_level ?? '-'}
-    </div>
-  </div>
-
-  <div className="p-4 rounded-xl bg-surface-container-low">
-    <div className="text-xs text-on-surface-variant">
-      Attack Type
+    <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 text-center">
+      <p className="text-on-surface font-bold">
+        Manual assessment completed.
+      </p>
+      <p className="text-on-surface-variant text-sm mt-2">
+        To view the full manual attack report, go to the Reports page.
+      </p>
     </div>
 
-    <div className="text-lg font-bold">
-      {attackSummary.selected_attack_types}
-    </div>
-  </div>
-</div>
-{attackSummary.overall_evidence_summary && (
-  <div className="text-left p-4 rounded-xl bg-surface-container-low border border-outline-variant">
-    <div className="font-bold mb-2">
-      Evidence Summary
+    <div className="rounded-2xl border border-outline-variant bg-surface-container-low p-5">
+      <p className="text-xs uppercase tracking-widest text-on-surface-variant font-bold mb-4">
+        View attack reports
+      </p>
+
+      <div className="flex flex-wrap gap-3">
+        {attackSummary.overall_results?.map((result) => (
+          <button
+            key={result.attack_type}
+            onClick={() =>
+              navigate(`/reports/attack/${result.attack_type}?runId=${attackSummary.id}`)
+            }
+            className="px-4 py-3 rounded-xl bg-primary text-on-primary font-bold text-sm hover:scale-[1.02] transition-all"
+          >
+            {result.attack_type.replace(/_/g, ' ')} Report
+          </button>
+        ))}
+      </div>
     </div>
 
-    <div className="text-sm text-on-surface-variant">
-      {attackSummary.overall_evidence_summary}
-    </div>
   </div>
 )}
-{attackSummary.overall_improvement && (
-  <div className="text-left p-4 rounded-xl bg-surface-container-low border border-outline-variant">
-    <div className="font-bold mb-2">
-      Improvement Recommendation
-    </div>
-
-    <div className="text-sm text-on-surface-variant">
-      {attackSummary.overall_improvement}
-    </div>
-  </div>
-   
-)}
-         
-
-          <div className="text-primary font-bold text-base border border-primary/20 bg-primary/5 py-4 px-6 rounded-2xl animate-pulse">
-            Success! Proceed to the reports page to view the results.
-          </div>
-        </div>
-      )}
-    </section>
+</section>
   );
 };
+
 
 export default ManAssessment;
