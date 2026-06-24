@@ -5,6 +5,8 @@
  */
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from './AuthContext.jsx';    //  لجلب صلاحية المستخدم الحالي (Admin/User)
 
 const AttackCard = ({
   name,
@@ -18,6 +20,9 @@ const AttackCard = ({
   icon
 }) => {
 
+  const { user } = useAuth(); //  سحب بيانات الصلاحية تلقائياً
+  const navigate = useNavigate();
+
   // 1. STYLE CONFIG: dynamic tailwind variant selection mapping based on severity classification
   const riskStyle =
     riskLevel === 'critical'
@@ -26,7 +31,14 @@ const AttackCard = ({
       ? 'bg-secondary-container text-secondary'
       : 'bg-tertiary-container/20 text-tertiary';
 
-      // 2. MAIN VIEWPORT RESOLUTION: micro-interaction card structure
+  //  دالة عند ضغط الأدمن على زر إدارة السيناريوهات
+  const handleManageScenarios = () => {
+    // يحول الاسم لنظام روابط مثل: Prompt-Injection
+    const formattedName = name.replace(/\s+/g, '-');
+    navigate(`/admin/scenarios/${formattedName}`);
+  };
+
+  // 2. MAIN VIEWPORT RESOLUTION: micro-interaction card structure
   return (
     <div className="
       hover:-translate-y-1
@@ -115,9 +127,27 @@ const AttackCard = ({
             </div>
           </div>
 
-          <span className="text-xs font-bold text-primary">
-            {scenarios} Scenarios
-          </span>
+          {/* هنا الفحص الذكي والتبديل بين الزر للأدمن والنص العادي لليوزر */}
+          {user?.role === 'admin' ? (
+            <button 
+              onClick={handleManageScenarios}
+              className="
+                text-xs font-bold text-primary 
+                bg-primary/10 hover:bg-primary/20 
+                border border-primary/30 
+                px-3 py-2 rounded-lg 
+                transition-all duration-200 
+                active:scale-95
+              "
+            >
+              Manage {scenarios} Scenarios →
+            </button>
+          ) : (
+            <span className="text-xs font-bold text-primary">
+              {scenarios} Scenarios
+            </span>
+          )}
+
         </div>
       </div>
     </div>
