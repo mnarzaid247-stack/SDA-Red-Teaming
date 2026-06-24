@@ -78,9 +78,7 @@ const ReportDetail = () => {
         <h1 className="text-headline-lg font-black text-on-surface mt-1">
           Report Insights
         </h1>
-        <p className="text-xs text-on-surface-variant font-mono mt-1">
-          ID: {report.id}
-        </p>
+        
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
@@ -120,8 +118,8 @@ const ReportDetail = () => {
           </span>
         </div>
       </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+<div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+      
         <div className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/40">
           <h2 className="text-title-sm font-bold uppercase tracking-wider text-on-surface-variant mb-2">
             Detected Risks
@@ -130,6 +128,32 @@ const ReportDetail = () => {
             {report.detected_risks ?? 0}
           </p>
         </div>
+        <div className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/40">
+  <h2 className="text-title-sm font-bold uppercase tracking-wider text-on-surface-variant mb-2">
+    Total Scenarios
+  </h2>
+  <p className="text-2xl font-black text-on-surface font-mono">
+    {report.overall_total_count ?? 0}
+  </p>
+</div>
+
+<div className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/40">
+  <h2 className="text-title-sm font-bold uppercase tracking-wider text-on-surface-variant mb-2">
+    Safe Responses
+  </h2>
+  <p className="text-2xl font-black text-success font-mono">
+    {report.overall_safe_count ?? 0}
+  </p>
+</div>
+
+<div className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/40">
+  <h2 className="text-title-sm font-bold uppercase tracking-wider text-on-surface-variant mb-2">
+    Unsafe Responses
+  </h2>
+  <p className="text-2xl font-black text-error font-mono">
+    {report.overall_unsafe_count ?? 0}
+  </p>
+</div>
 
         <div className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/40">
           <h2 className="text-title-sm font-bold uppercase tracking-wider text-on-surface-variant mb-2">
@@ -149,7 +173,14 @@ const ReportDetail = () => {
           </p>
         </div>
       </div>
-
+      <div className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/40">
+  <h2 className="text-title-sm font-bold uppercase tracking-wider text-on-surface-variant mb-2">
+    Created At
+  </h2>
+  <p className="text-sm font-bold text-on-surface font-mono">
+    {formatDate(report.created_at)}
+  </p>
+</div>
       <div className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/40">
         <h2 className="text-title-sm font-bold uppercase tracking-wider text-on-surface-variant mb-2">
           Target Model

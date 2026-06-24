@@ -72,6 +72,9 @@ def get_my_report_details(
     overall_risk_score=report.overall_risk_score,
     overall_risk_level=report.overall_risk_level,
     detected_risks=report.overall_unsafe_count,
+    overall_total_count=report.overall_total_count,
+    overall_safe_count=report.overall_safe_count,
+    overall_unsafe_count=report.overall_unsafe_count,
     overall_evidence_summary=report.overall_evidence_summary,
     overall_improvement=report.overall_improvement,
     overall_results=[

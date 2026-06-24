@@ -26,6 +26,9 @@ class ReportDetailsResponse(BaseModel):
     overall_risk_score: Optional[int] = None
     overall_risk_level: Optional[str] = None
     detected_risks: int | None = None
+    overall_total_count: Optional[int] = None
+    overall_safe_count: Optional[int] = None
+    overall_unsafe_count: Optional[int] = None
     overall_evidence_summary: Optional[str] = None
     overall_improvement: Optional[str] = None
     overall_results: List[AttackOverallResultResponse] = []
