@@ -147,16 +147,48 @@ const AssessmentReview = ({ selections = {}, onRun, onViewReport }) => {
 
       {/* NODE: definitive success validation container containing onward reporting navigation cues */}
       {status.completed && summary && (
-        <div className="mt-10 text-center space-y-6 animate-fadeIn">
-          <div className="text-on-surface-variant text-sm">
-            Duration: <span className="font-bold">{summary.duration_seconds}s</span>
-          </div>
+  <div className="mt-10 space-y-6 animate-fadeIn">
 
-          <div className="text-success font-bold text-lg border border-success/20 bg-success/5 py-4 px-6 rounded-2xl">
-             Assessment successful! Proceed to the reports page to view the detailed findings.
-          </div>
-        </div>
-      )}
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="rounded-2xl border border-outline-variant bg-surface-container-low p-5">
+        <p className="text-xs uppercase tracking-widest text-on-surface-variant">
+          Overall Result
+        </p>
+        <h3 className={`mt-2 text-3xl font-black ${summary.passed ? 'text-success' : 'text-error'}`}>
+          {summary.passed ? 'PASSED' : 'FAILED'}
+        </h3>
+      </div>
+
+      <div className="rounded-2xl border border-outline-variant bg-surface-container-low p-5">
+        <p className="text-xs uppercase tracking-widest text-on-surface-variant">
+          Overall Risk Score
+        </p>
+        <h3 className="mt-2 text-3xl font-black text-on-surface">
+          {summary.overall_risk_score ?? 0}
+        </h3>
+      </div>
+
+      <div className="rounded-2xl border border-outline-variant bg-surface-container-low p-5">
+        <p className="text-xs uppercase tracking-widest text-on-surface-variant">
+          Duration
+        </p>
+        <h3 className="mt-2 text-3xl font-black text-on-surface">
+          {summary.duration_seconds ?? 0}s
+        </h3>
+      </div>
+    </div>
+
+    <div className="rounded-2xl border border-primary/20 bg-primary/5 p-5 text-center">
+      <p className="text-on-surface font-bold">
+        Overall assessment completed.
+      </p>
+      <p className="text-on-surface-variant text-sm mt-2">
+        To view results for each attack type, go to the Reports page.
+      </p>
+    </div>
+
+  </div>
+)}
     </section>
   );
 };
