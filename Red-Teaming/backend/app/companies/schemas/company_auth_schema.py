@@ -6,7 +6,7 @@ class CompanyRegister(BaseModel):
     full_name: str = Field(min_length=2, max_length=100)
     company_name: str = Field(min_length=2, max_length=120)
     email: EmailStr
-    password: str = Field(min_length=8, max_length=64)
+    password: str = Field(min_length=8, max_length=64, examples=["MyPassword123!"])
 
     @field_validator("password")
     @classmethod
