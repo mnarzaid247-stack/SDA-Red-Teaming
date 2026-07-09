@@ -8,6 +8,8 @@ from app.individuals.routes.scenario_routes import router as scenario_router
 from app.individuals.routes import dashboard_routes
 from app.individuals.routes import report_routes
 from fastapi.middleware.cors import CORSMiddleware
+import app.companies.database_models.company_user
+from app.companies.routes.company_auth_routes import router as company_auth_router
 
 
 Base.metadata.create_all(bind=engine)
@@ -29,6 +31,7 @@ app.include_router(attack_router)
 app.include_router(scenario_router)
 app.include_router(dashboard_routes.router)
 app.include_router(report_routes.router)
+app.include_router(company_auth_router)
 
 
 
