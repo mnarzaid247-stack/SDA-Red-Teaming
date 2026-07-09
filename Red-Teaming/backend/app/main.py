@@ -1,12 +1,12 @@
 from fastapi import FastAPI
-from app.seed import seed_database
+from app.individuals.seed import seed_database
 from app.extensions import Base, engine
-import app.database_models
-from app.routes.user_routes import router as user_router
-from app.routes.attack_routes import router as attack_router
-from app.routes.scenario_routes import router as scenario_router
-from app.routes import dashboard_routes
-from app.routes import report_routes
+import app.individuals.database_models
+from app.individuals.routes.user_routes import router as user_router
+from app.individuals.routes.attack_routes import router as attack_router
+from app.individuals.routes.scenario_routes import router as scenario_router
+from app.individuals.routes import dashboard_routes
+from app.individuals.routes import report_routes
 from fastapi.middleware.cors import CORSMiddleware
 
 
