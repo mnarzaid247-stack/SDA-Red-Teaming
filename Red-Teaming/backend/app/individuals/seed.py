@@ -1,5 +1,5 @@
 from app.extensions import SessionLocal
-from app.services.scenario_service import ScenarioService
+from app.individuals.services.scenario_service import ScenarioService
 
 
 def seed_database():
