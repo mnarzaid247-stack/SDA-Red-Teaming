@@ -62,12 +62,6 @@ def login_company_user(
             detail="Invalid email or password"
         )
 
-    if not user.is_active:
-        raise HTTPException(
-            status_code=403,
-            detail="Company user is inactive"
-        )
-
     access_token = company_auth_service.create_access_token(
         data={
             "sub": user.id,

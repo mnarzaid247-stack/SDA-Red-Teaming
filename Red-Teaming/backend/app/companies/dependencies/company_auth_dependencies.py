@@ -34,10 +34,10 @@ def get_current_company_user(
 
     user = company_auth_service.get_user_by_id(db, user_id)
 
-    if not user or not user.is_active:
+    if not user :
         raise HTTPException(
             status_code=401,
-            detail="Company user not found or inactive"
+            detail="Company user not found "
         )
 
     return user
